@@ -1,5 +1,6 @@
 require "vagrant-digitalocean/actions/up"
 require "vagrant-digitalocean/actions/read_state"
+require "vagrant-digitalocean/actions/destroy"
 
 module VagrantPlugins
   module DigitalOcean
@@ -33,6 +34,13 @@ module VagrantPlugins
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
           builder.use Actions::ReadState
+        end
+      end
+
+      def destroy
+        return Vagrant::Action::Builder.new.tap do |builder|
+          builder.use ConfigValidate
+          builder.use Actions::Destroy
         end
       end
     end

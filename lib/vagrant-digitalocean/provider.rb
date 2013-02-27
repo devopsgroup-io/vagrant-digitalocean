@@ -69,13 +69,13 @@ module VagrantPlugins
       #
       # @return [MachineState]
       def state
-        state_id = @machine.action("read_state")[:machine_state]["status"]
+        state_id = @machine.action("read_state")[:machine_state]["status"].to_sym
 
         # TODO provide an actual description
-        long = short = state_id
+        long = short = state_id.to_s
 
         # Return the MachineState object
-        Vagrant::MachineState.new(state_id.to_sym, short, long)
+        Vagrant::MachineState.new(state_id, short, long)
       end
     end
   end
