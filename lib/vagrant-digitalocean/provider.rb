@@ -53,6 +53,7 @@ module VagrantPlugins
       # @return [Hash] SSH information. For the structure of this hash
       #   read the accompanying documentation for this method.
       def ssh_info
+
         nil
       end
 
@@ -62,7 +63,15 @@ module VagrantPlugins
       #
       # @return [MachineState]
       def state
-        nil
+        env = @machine.action("read_state")
+
+        state_id = env[:machine_state]
+
+        # TODO provide an actual description
+        long = short = state_id.to_s
+
+        # Return the MachineState object
+        Vagrant::MachineState.new(state_id, short, long)
       end
     end
   end

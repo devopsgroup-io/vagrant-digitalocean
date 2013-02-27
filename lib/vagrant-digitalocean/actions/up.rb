@@ -1,8 +1,4 @@
-require "vagrant-digitalocean/helpers/result"
-require "faraday"
-require "log4r"
-require "json"
-require "cgi"
+require "vagrant-digitalocean/helpers/client"
 
 module VagrantPlugins
   module DigitalOcean
@@ -12,14 +8,18 @@ module VagrantPlugins
           @app, @env = app, env
 
           # TODO move urls to a settings file
-          @client = Faraday.new(:url => "https://api.digitalocean.com/")
-          @client.response :logger
+          @client = Helpers::Client.new
         end
 
         def call(env)
+          # if the machine state is anything but created skip
+          if env[:machine].state != :not_created
+            env[:ui].info "Droplet state is: #{env[:machine].state.short_description}, skipping the up"
+            return @app.call(env)
+          end
+
           ssh_key_id = request("/ssh_keys/").find_id(:ssh_keys, "Vagrant Insecure")
 
-          # TODO move to settings file
           if !ssh_key_id
             key = nil
             File.open(DigitalOcean.source_root + "keys/vagrant.pub") do |file|
@@ -51,25 +51,14 @@ module VagrantPlugins
             :ssh_key_ids => ssh_key_id
           })
 
+          # assign the machine id for reference in other commands
+          env[:machine].id = result["droplet"]["id"]
+
           @app.call(env)
         end
 
         def request(path, params = {})
-          # create the key
-          result = @client.get(path, params.merge({
-            :client_id => ENV["DO_CLIENT_ID"],
-            :api_key => ENV["DO_API_KEY"]
-          }))
-
-          # TODO catch parsing errors
-          body = JSON.parse(result.body)
-
-          # TODO wrap all calls to api with this check and throw
-          if body["status"] != "OK"
-            raise "error in call to #{path} with #{params}"
-          end
-
-          Helpers::Result.new(body)
+          @client.request(path, params)
         end
       end
     end
