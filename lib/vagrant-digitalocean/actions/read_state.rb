@@ -14,7 +14,7 @@ module VagrantPlugins
         def call(env)
           if env[:machine].id
             result = @client.request("/droplets/#{env[:machine].id}")
-            env[:machine_state] = result["droplet"]["status"].to_sym
+            env[:machine_state] = result["droplet"]
           else
             env[:machine_state] = :not_created
           end

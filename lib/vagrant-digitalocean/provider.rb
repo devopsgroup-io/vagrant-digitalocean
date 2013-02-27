@@ -45,7 +45,7 @@ module VagrantPlugins
       #       :private_key_path => "/path/to/my/key"
       #     }
       #
-      # **Note:** Vagrant only supports private key based authentication,
+      # **Note:** Vagrant only supports private key based authenticatonion,
       # mainly for the reason that there is no easy way to exec into an
       # `ssh` prompt with a password, whereas we can pass a private key
       # via commandline.
@@ -53,8 +53,14 @@ module VagrantPlugins
       # @return [Hash] SSH information. For the structure of this hash
       #   read the accompanying documentation for this method.
       def ssh_info
+        ip = @machine.action("read_state")[:machine_state]["ip_address"]
 
-        nil
+        {
+          :host => ip,
+          :port => "22",
+          :username => "root",
+          :private_key_path => DigitalOcean.source_root + "keys/vagrant"
+        }
       end
 
       # This should return the state of the machine within this provider.
@@ -63,15 +69,13 @@ module VagrantPlugins
       #
       # @return [MachineState]
       def state
-        env = @machine.action("read_state")
-
-        state_id = env[:machine_state]
+        state_id = @machine.action("read_state")[:machine_state]["status"]
 
         # TODO provide an actual description
-        long = short = state_id.to_s
+        long = short = state_id
 
         # Return the MachineState object
-        Vagrant::MachineState.new(state_id, short, long)
+        Vagrant::MachineState.new(state_id.to_sym, short, long)
       end
     end
   end
