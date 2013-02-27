@@ -1,3 +1,4 @@
+require "vagrant-digitalocean/helpers/result"
 require "faraday"
 require "log4r"
 require "json"
@@ -16,66 +17,33 @@ module VagrantPlugins
         end
 
         def call(env)
-          result = wrap_request("/ssh_keys/")
-
-          # TODO check for ssh keys (foo || [])
-          ssh_key_id = nil
-
-          result["ssh_keys"].each do |key|
-            if key["name"] == "Vagrant Insecure"
-              ssh_key_id = key["id"]
-              break
-            end
-          end
+          ssh_key_id = request("/ssh_keys/").find_id(:ssh_keys, "Vagrant Insecure")
 
           # TODO move to settings file
-          if ssh_key_id
+          if !ssh_key_id
+            key = nil
             File.open(DigitalOcean.source_root + "keys/vagrant.pub") do |file|
-              puts (key = file.read)
-              puts key
-              result = wrap_request("/ssh_keys/new", {
-                :name => "Vagrant Insecure",
-                :ssh_pub_key => key
-              })
-
-              ssh_key_id = result["ssh_key"]["id"]
+              key = file.read
             end
+
+            result = request("/ssh_keys/new", {
+              :name => "Vagrant Insecure",
+              :ssh_pub_key => key
+            })
+
+            ssh_key_id = result["ssh_key"]["id"]
           end
 
-          image_id = nil
+          result = request("/images", { :filter => "global" })
+          image_id = result.find_id(:images, "Ubuntu 12.04 x32 Server")
 
-          result = wrap_request("/images/", { :filter => "global" })
+          result = request("/regions")
+          region_id = result.find_id(:regions, "New York 1")
 
-          result["images"].each do |image|
-            if image["name"] == "Ubuntu 12.04 x32 Server"
-              image_id = image["id"]
-              break
-            end
-          end
+          result = request("/sizes")
+          size_id = result.find_id(:sizes, "512MB")
 
-          region_id = nil
-
-          result = wrap_request("/regions/")
-
-          result["regions"].each do |region|
-            if region["name"] == "New York 1"
-              region_id = region["id"]
-              break
-            end
-          end
-
-          size_id = nil
-
-          result = wrap_request("/sizes/")
-
-          result["sizes"].each do |size|
-            if size["name"] == "512MB"
-              size_id = size["id"]
-              break
-            end
-          end
-
-          result = wrap_request("/droplets/new", {
+          result = request("/droplets/new", {
             :size_id => size_id,
             :region_id => region_id,
             :image_id => image_id,
@@ -86,7 +54,7 @@ module VagrantPlugins
           @app.call(env)
         end
 
-        def wrap_request(path, params = {})
+        def request(path, params = {})
           # create the key
           result = @client.get(path, params.merge({
             :client_id => ENV["DO_CLIENT_ID"],
@@ -98,12 +66,10 @@ module VagrantPlugins
 
           # TODO wrap all calls to api with this check and throw
           if body["status"] != "OK"
-            puts "FAIL"
-            puts body.inspect
             raise "error in call to #{path} with #{params}"
           end
 
-          JSON.parse(result.body)
+          Helpers::Result.new(body)
         end
       end
     end
