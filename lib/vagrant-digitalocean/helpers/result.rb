@@ -12,9 +12,24 @@ module VagrantPlugins
         end
 
         def find_id(sub_obj, name)
-          @result[sub_obj.to_s].inject(nil) do |id, obj|
-            obj["name"] == name ? obj["id"] : id
+          find(sub_obj, :name => name)
+        end
+
+        def find(sub_obj, search)
+          key = search.keys.first
+          value = search[key].to_s
+          key = key.to_s
+
+
+          id = @result[sub_obj.to_s].inject(nil) do |id, obj|
+            obj[key] == value ? obj["id"] : id
           end
+
+          id || error(sub_obj, key, value)
+        end
+
+        def error(sub_obj, key, value)
+          raise "No id matches the #{key} for '#{value}' for #{sub_obj}"
         end
       end
     end

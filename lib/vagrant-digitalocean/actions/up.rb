@@ -18,8 +18,9 @@ module VagrantPlugins
             return @app.call(env)
           end
 
-          result = @client.request("/ssh_keys/")
-          ssh_key_id = result.find_id(:ssh_keys, "Vagrant Insecure")
+          ssh_key_id = @client
+            .request("/ssh_keys/")
+            .find(:ssh_keys, :name => "Vagrant Insecure")
 
           if !ssh_key_id
             key = nil
@@ -35,17 +36,20 @@ module VagrantPlugins
             ssh_key_id = result["ssh_key"]["id"]
           end
 
+          # TODO check for nil size_id
+          size_id = @client
+            .request("/sizes")
+            .find(:sizes, :name => env[:machine].provider_config.size)
+
           # TODO check for nil image_id
-          result = @client.request("/images", { :filter => "global" })
-          image_id = result.find_id(:images, env[:machine].provider_config.image)
+          image_id = @client
+            .request("/images", { :filter => "global" })
+            .find(:images, :name => env[:machine].provider_config.image)
 
           # TODO check for nil region_id
-          result = @client.request("/regions")
-          region_id = result.find_id(:regions, env[:machine].provider_config.region)
-
-          # TODO check for nil size_id
-          result = @client.request("/sizes")
-          size_id = result.find_id(:sizes, env[:machine].provider_config.size)
+          region_id = @client
+            .request("/regions")
+            .find(:regions, :name => env[:machine].provider_config.region)
 
           result = @client.request("/droplets/new", {
             :size_id => size_id,
