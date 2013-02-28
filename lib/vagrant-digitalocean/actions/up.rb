@@ -12,19 +12,19 @@ module VagrantPlugins
         end
 
         def call(env)
-          # if the machine state is anything but created skip
+          # if the machine state is created skip
           if env[:machine].state == :active
             env[:ui].info "Droplet is active, skipping the `up` process"
             return @app.call(env)
           end
 
-          ssh_key_id = @client
-            .request("/ssh_keys/")
-            .find(:ssh_keys, :name => "Vagrant Insecure")
-
-          if !ssh_key_id
+          begin
+            ssh_key_id = @client
+              .request("/ssh_keys/")
+              .find_id(:ssh_keys, :name => "Vagrant Insecure")
+          rescue # TODO catch only the find exception
             key = nil
-            File.open(DigitalOcean.source_root + "keys/vagrant.pub") do |file|
+            File.open(Vagrant.source_root + "keys/vagrant.pub") do |file|
               key = file.read
             end
 
@@ -36,20 +36,17 @@ module VagrantPlugins
             ssh_key_id = result["ssh_key"]["id"]
           end
 
-          # TODO check for nil size_id
           size_id = @client
             .request("/sizes")
-            .find(:sizes, :name => env[:machine].provider_config.size)
+            .find_id(:sizes, :name => env[:machine].provider_config.size)
 
-          # TODO check for nil image_id
           image_id = @client
             .request("/images", { :filter => "global" })
-            .find(:images, :name => env[:machine].provider_config.image)
+            .find_id(:images, :name => env[:machine].provider_config.image)
 
-          # TODO check for nil region_id
           region_id = @client
             .request("/regions")
-            .find(:regions, :name => env[:machine].provider_config.region)
+            .find_id(:regions, :name => env[:machine].provider_config.region)
 
           result = @client.request("/droplets/new", {
             :size_id => size_id,

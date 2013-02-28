@@ -3,7 +3,6 @@ module VagrantPlugins
     module Helpers
       class Result
         def initialize(body)
-          # handle/raise exceptions
           @result = body
         end
 
@@ -11,8 +10,8 @@ module VagrantPlugins
           @result[key.to_s]
         end
 
-        def find_id(sub_obj, name)
-          find(sub_obj, :name => name)
+        def find_id(sub_obj, search)
+          find(sub_obj, search)["id"]
         end
 
         def find(sub_obj, search)
@@ -20,12 +19,11 @@ module VagrantPlugins
           value = search[key].to_s
           key = key.to_s
 
-
-          id = @result[sub_obj.to_s].inject(nil) do |id, obj|
-            obj[key] == value ? obj["id"] : id
+          result = @result[sub_obj.to_s].inject(nil) do |result, obj|
+            obj[key] == value ? obj : result
           end
 
-          id || error(sub_obj, key, value)
+          result || error(sub_obj, key, value)
         end
 
         def error(sub_obj, key, value)

@@ -12,7 +12,7 @@ module VagrantPlugins
         end
 
         def call(env)
-          if env[:machine].state.id == :active
+          if [:active, :new].include?(env[:machine].state.id)
             result = @client.request("/droplets/#{env[:machine].id}/destroy")
           else
             env[:ui].info "Droplet not created"
