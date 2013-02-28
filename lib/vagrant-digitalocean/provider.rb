@@ -1,4 +1,4 @@
-require "vagrant-digitalocean/action"
+require "vagrant-digitalocean/action_dispatch"
 
 module VagrantPlugins
   module DigitalOcean
@@ -9,7 +9,7 @@ module VagrantPlugins
       #   is responsible for.
       def initialize(machine)
         @machine = machine
-        @dispatch = Action.new(machine.config)
+        @dispatch = ActionDispatch.new
       end
 
       # This should return an action callable for the given name.

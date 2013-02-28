@@ -4,6 +4,8 @@ module VagrantPlugins
   module DigitalOcean
     module Actions
       class Up
+        include Vagrant::Util::Retryable
+
         def initialize(app, env)
           @app, @env = app, env
 
@@ -13,7 +15,7 @@ module VagrantPlugins
 
         def call(env)
           # if the machine state is created skip
-          if env[:machine].state == :active
+          if env[:machine].state.id == :active
             env[:ui].info "Droplet is active, skipping the `up` process"
             return @app.call(env)
           end
@@ -60,7 +62,33 @@ module VagrantPlugins
           # assign the machine id for reference in other commands
           env[:machine].id = result["droplet"]["id"]
 
+          retryable(:tries => 30, :sleep => 10) do
+            # If we're interrupted don't worry about waiting
+            next if env[:interrupted]
+
+            # Wait for the server to be ready
+            raise "not ready" if env[:machine].state.id != :active
+          end
+
           @app.call(env)
+        end
+
+        # Both the recover and terminate are stolen almost verbatim from
+        # the Vagrant AWS provider up action
+        def recover(env)
+          return if env["vagrant.error"].is_a?(Vagrant::Errors::VagrantError)
+
+          if env[:machine].state.id != :not_created
+            terminate(env)
+          end
+        end
+
+        def terminate(env)
+          destroy_env = env.dup
+          destroy_env.delete(:interrupted)
+          destroy_env[:config_validate] = false
+          destroy_env[:force_confirm_destroy] = true
+          env[:action_runner].run(ActionDispatch.new.destroy, destroy_env)
         end
       end
     end

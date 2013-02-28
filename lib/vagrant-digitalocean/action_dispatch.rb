@@ -1,16 +1,13 @@
 require "vagrant-digitalocean/actions/up"
 require "vagrant-digitalocean/actions/read_state"
 require "vagrant-digitalocean/actions/destroy"
+require "vagrant-digitalocean/actions/prepare_nfs"
 
 module VagrantPlugins
   module DigitalOcean
-    class Action
+    class ActionDispatch
       # Include the built-in callable actions, eg SSHExec
       include Vagrant::Action::Builtin
-
-      def initialize(config)
-        @config = config
-      end
 
       def action(name)
         send(name)
@@ -19,7 +16,15 @@ module VagrantPlugins
       def up
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
+
+          # build the vm if necessary
           builder.use Actions::Up
+
+          # set the host and remote ips for NFS
+          builder.use Actions::PrepareNFS
+
+          # mount the nfs folders
+          builder.use NFS
         end
       end
 

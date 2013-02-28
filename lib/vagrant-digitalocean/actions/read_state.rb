@@ -12,15 +12,16 @@ module VagrantPlugins
         end
 
         def call(env)
+          # If we have a machine id ask the api what the state is
           if env[:machine].id
             droplet = @client.request("/droplets/#{env[:machine].id}")["droplet"]
 
             env[:machine_state] = droplet
           end
 
+          # no id signals that the machine hasn't yet been created
           env[:machine_state] ||= {"status" => :not_created}
 
-          env[:ui].info "Droplet state: #{env[:machine_state]["status"]}"
           @app.call(env)
         end
       end
