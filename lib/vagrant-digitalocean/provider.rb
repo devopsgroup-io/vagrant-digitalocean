@@ -53,10 +53,12 @@ module VagrantPlugins
       # @return [Hash] SSH information. For the structure of this hash
       #   read the accompanying documentation for this method.
       def ssh_info
-        ip = @machine.action("read_state")[:machine_state]["ip_address"]
+        state = @machine.action("read_state")[:machine_state]
 
-        {
-          :host => ip,
+        return nil if state["status"] == :not_created
+
+        return {
+          :host => state["ip_address"],
           :port => "22",
           :username => "root",
           :private_key_path => DigitalOcean.source_root + "keys/vagrant"

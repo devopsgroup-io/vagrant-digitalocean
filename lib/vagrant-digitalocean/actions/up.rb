@@ -13,12 +13,13 @@ module VagrantPlugins
 
         def call(env)
           # if the machine state is anything but created skip
-          if env[:machine].state != :not_created
-            env[:ui].info "Droplet state is: #{env[:machine].state.short_description}, skipping the up"
+          if env[:machine].state == :active
+            env[:ui].info "Droplet is active, skipping the `up` process"
             return @app.call(env)
           end
 
-          ssh_key_id = request("/ssh_keys/").find_id(:ssh_keys, "Vagrant Insecure")
+          result = @client.request("/ssh_keys/")
+          ssh_key_id = result.find_id(:ssh_keys, "Vagrant Insecure")
 
           if !ssh_key_id
             key = nil
@@ -26,7 +27,7 @@ module VagrantPlugins
               key = file.read
             end
 
-            result = request("/ssh_keys/new", {
+            result = @client.request("/ssh_keys/new", {
               :name => "Vagrant Insecure",
               :ssh_pub_key => key
             })
@@ -34,20 +35,24 @@ module VagrantPlugins
             ssh_key_id = result["ssh_key"]["id"]
           end
 
-          result = request("/images", { :filter => "global" })
-          image_id = result.find_id(:images, "Ubuntu 12.04 x32 Server")
+          # TODO check for nil image_id
+          result = @client.request("/images", { :filter => "global" })
+          image_id = result.find_id(:images, env[:machine].provider_config.image)
 
-          result = request("/regions")
-          region_id = result.find_id(:regions, "New York 1")
+          # TODO check for nil region_id
+          result = @client.request("/regions")
+          region_id = result.find_id(:regions, env[:machine].provider_config.region)
 
-          result = request("/sizes")
-          size_id = result.find_id(:sizes, "512MB")
+          # TODO check for nil size_id
+          result = @client.request("/sizes")
+          size_id = result.find_id(:sizes, env[:machine].provider_config.size)
 
-          result = request("/droplets/new", {
+          result = @client.request("/droplets/new", {
             :size_id => size_id,
             :region_id => region_id,
             :image_id => image_id,
-            :name => "vagrantGUID",
+            # TODO use the current directory name as a post fix
+            :name => "vagrant",
             :ssh_key_ids => ssh_key_id
           })
 
@@ -55,10 +60,6 @@ module VagrantPlugins
           env[:machine].id = result["droplet"]["id"]
 
           @app.call(env)
-        end
-
-        def request(path, params = {})
-          @client.request(path, params)
         end
       end
     end

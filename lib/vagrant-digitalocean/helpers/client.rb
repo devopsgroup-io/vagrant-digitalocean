@@ -8,7 +8,7 @@ module VagrantPlugins
       class Client
         def initialize
           @client = Faraday.new(:url => "https://api.digitalocean.com/")
-          @client.response :logger
+          # @client.response :logger
         end
 
         def request(path, params = {})

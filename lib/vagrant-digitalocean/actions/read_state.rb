@@ -13,12 +13,14 @@ module VagrantPlugins
 
         def call(env)
           if env[:machine].id
-            result = @client.request("/droplets/#{env[:machine].id}")
-            env[:machine_state] = result["droplet"]
-          else
-            env[:machine_state] = :not_created
+            droplet = @client.request("/droplets/#{env[:machine].id}")["droplet"]
+
+            env[:machine_state] = droplet
           end
 
+          env[:machine_state] ||= {"status" => :not_created}
+
+          env[:ui].info "Droplet state: #{env[:machine_state]["status"]}"
           @app.call(env)
         end
       end
