@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # build the gem
 gem build *.gemspec
 
