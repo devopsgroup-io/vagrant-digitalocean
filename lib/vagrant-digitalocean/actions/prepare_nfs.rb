@@ -15,11 +15,13 @@ module VagrantPlugins
           # get the host ip from the local adapters
           env[:nfs_host_ip] = determine_host_ip.ip_address
 
+          env[:machine].communicate.sudo("apt-get install -y nfs-kernel-server")
+
           @app.call(env)
         end
 
         # http://stackoverflow.com/questions/5029427/ruby-get-local-ip-nix
-        # TODO this is currently *nix only accorindg to the above post
+        # TODO this is currently *nix only according to the above post
         def determine_host_ip
           Socket.ip_address_list.detect do |intf|
             intf.ipv4? &&

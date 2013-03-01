@@ -21,7 +21,6 @@ module VagrantPlugins
           # TODO catch parsing errors
           body = JSON.parse(result.body)
 
-          # TODO wrap all calls to api with this check and throw
           if body["status"] != "OK"
             raise "error in call to #{path} with #{params}"
           end
