@@ -1,7 +1,7 @@
 require "vagrant"
 require "vagrant-digitalocean/version"
 require "vagrant-digitalocean/plugin"
-
+require "vagrant-digitalocean/errors"
 
 module VagrantPlugins
   module DigitalOcean

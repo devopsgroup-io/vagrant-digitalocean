@@ -1,0 +1,22 @@
+en:
+  vagrant_digital_ocean:
+    errors:
+      api_status: |-
+        There was an issue with the request made to the Digital Ocean API at:
+
+        Path: %{path}
+        URI Params: %{params}
+
+        The response status from the API was:
+
+        Status: %{status}
+        Response: %{response}
+      :json: |-
+        There was an issue with the JSON response from the Digital Ocean API at:
+
+        Path: %{path}
+        URI Params: %{params}
+
+        The response JSON from the API was:
+
+        Response: %{response}

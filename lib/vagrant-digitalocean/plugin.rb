@@ -15,6 +15,10 @@ module VagrantPlugins
       provider(:digital_ocean) do
         # Return the provider
         require_relative "provider"
+
+        I18n.load_path << File.expand_path("locales/en.yml", DigitalOcean.source_root)
+        I18n.reload!
+
         Provider
       end
     end
