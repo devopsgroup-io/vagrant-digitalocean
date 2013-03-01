@@ -1,24 +1,52 @@
-# Vagrant::Digitalocean
+# Vagrant Digitalocean
 
-TODO: Write a gem description
+`vagrant-digitalocean` is a provider plugin for Vagrant that allows the management of [Digital Ocean](https://www.digitalocean.com/) droplets (instances).
+
+## Status
+
+As of this writing the provider implementation is geared entirely toward a development workflow. That is, Digital Ocean droplets are meant to be used ss a replacement for VirtualBox in a server developers workflow.
+
+## Tested Guests/Hosts
+
+So far testing has been performed on an Ubuntu 12.04 host with the assumption of a debian based guest. Currently the main limitation is the preperation of a vanilla droplet for NFS (which requires distro specific package installs/setup). It should be extremely simple to extend the guest support to accomodate other distributions.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Installation is performed in the prescribed manner for Vagrant 1.1 plugins.
 
-    gem 'vagrant-digitalocean'
+    vagrant plugin install vagrant-digitalocean
 
-And then execute:
+In addition to installing the plugin the default box associated with the provider needs to be installed.
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install vagrant-digitalocean
+    vagrant box add digital_ocean https://raw.github.com/johnbender/vagrant-digitalocean/master/box/digital_ocean.box
 
 ## Usage
 
-TODO: Write usage instructions here
+To use the Digital Ocean provider you will need to visit the [API access page](https://www.digitalocean.com/api_access) to retrieve the client identifier and API key associated with your account.
+
+### Commands
+
+TODO
+
+### Config
+
+Supported provider configuration options are as follows:
+
+```ruby
+Vagrant.configure("2") do |config|
+  config.vm.box = "digital_ocean"
+
+  config.vm.provider :digital_ocean do |vm|
+    vm.client_id = ENV["DO_CLIENT_ID"]
+    vm.api_key = ENV["DO_API_KEY"]
+    vm.image = "Ubuntu 12.04 x32 Server"
+    vm.region = "New York 1"
+    vm.size = "512MB"
+  end
+end
+
+Note that the example contains the default value. The client identifier and API key are pulled from the environment and the other values are the string representations of the droplet configuration options as provided by the [Digital Ocean API](https://www.digitalocean.com/api).
+```
 
 ## Contributing
 
