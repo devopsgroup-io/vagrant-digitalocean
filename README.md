@@ -47,7 +47,6 @@ end
 ```
 
 Note that the example contains the default value. The client identifier and API key are pulled from the environment and the other values are the string representations of the droplet configuration options as provided by the [Digital Ocean API](https://www.digitalocean.com/api).
-```
 
 ## Contributing
 
