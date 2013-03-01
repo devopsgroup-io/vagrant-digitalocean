@@ -1,14 +1,14 @@
-# Vagrant Digitalocean
+# Vagrant Digital Ocean
 
 `vagrant-digitalocean` is a provider plugin for Vagrant that allows the management of [Digital Ocean](https://www.digitalocean.com/) droplets (instances).
 
 ## Status
 
-As of this writing the provider implementation is geared entirely toward a development workflow. That is, Digital Ocean droplets are meant to be used ss a replacement for VirtualBox in a server developers workflow.
+As of this writing the provider implementation is geared entirely toward a development workflow. That is, Digital Ocean droplets are meant to be used as a replacement for VirtualBox in a server developers workflow.
 
 ## Tested Guests/Hosts
 
-So far testing has been performed on an Ubuntu 12.04 host with the assumption of a debian based guest. Currently the main limitation is the preperation of a vanilla droplet for NFS (which requires distro specific package installs/setup). It should be extremely simple to extend the guest support to accomodate other distributions.
+So far testing has been performed on an Ubuntu 12.04 host with the assumption of a Debian based guest. Currently the main limitation is the preparation of a vanilla droplet for NFS (which requires distro specific package installs/setup). It should be extremely simple to extend the guest support to accommodate other distributions.
 
 ## Installation
 
