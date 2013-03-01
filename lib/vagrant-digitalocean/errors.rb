@@ -14,6 +14,10 @@ module VagrantPlugins
       class JSONError < DigitalOceanError
         error_key(:json)
       end
+
+      class ResultMatchError < DigitalOceanError
+        error_key(:result_match)
+      end
     end
   end
 end

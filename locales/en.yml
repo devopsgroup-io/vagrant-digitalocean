@@ -20,3 +20,10 @@ en:
         The response JSON from the API was:
 
         Response: %{response}
+      :result_match: |-
+        The result collection for %{collection_name}:
+
+        %{sub_obj}
+
+        Contained no object with the value "%{value}" for the the key "%{key}".
+        Please ensure that the configured value exists in the collection.

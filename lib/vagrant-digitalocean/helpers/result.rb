@@ -27,7 +27,12 @@ module VagrantPlugins
         end
 
         def error(sub_obj, key, value)
-          raise "No id matches the #{key} for '#{value}' for #{sub_obj}"
+          raise(Errors::ResultMatchError, {
+           :key => key,
+           :value => value,
+           :collection_name => sub_obj.to_s,
+           :sub_obj => @result[sub_obj.to_s]
+          })
         end
       end
     end

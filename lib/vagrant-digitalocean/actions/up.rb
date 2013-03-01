@@ -24,7 +24,7 @@ module VagrantPlugins
             ssh_key_id = @client
               .request("/ssh_keys/")
               .find_id(:ssh_keys, :name => "Vagrant Insecure")
-          rescue # TODO catch only the find exception
+          rescue Errors::ResultMatchError
             key = nil
             File.open(Vagrant.source_root + "keys/vagrant.pub") do |file|
               key = file.read
