@@ -48,8 +48,16 @@ end
 
 Note that the example contains the default value. The client identifier and API key are pulled from the environment and the other values are the string representations of the droplet configuration options as provided by the [Digital Ocean API](https://www.digitalocean.com/api).
 
-## Contributing
+## TODO
 
+1. Provisioning (chef/puppet setup where necessary)
+2. Suspend by taking a snapsot
+3. Resume by restoring from snapshot
+4. Reload reboot and provision
+5. Permit custom ssh keys
+
+## Contributing
+course
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
