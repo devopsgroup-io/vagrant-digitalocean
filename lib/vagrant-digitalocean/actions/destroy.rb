@@ -6,12 +6,11 @@ module VagrantPlugins
       class Destroy
         def initialize(app, env)
           @app, @env = app, env
-
-          # TODO move urls to a settings file
           @client = Helpers::Client.new
         end
 
         def call(env)
+          # TODO remove the key associated with this machine
           if [:active, :new].include?(env[:machine].state.id)
             result = @client.request("/droplets/#{env[:machine].id}/destroy")
           else

@@ -1,7 +1,8 @@
-require "vagrant-digitalocean/actions/up"
-require "vagrant-digitalocean/actions/read_state"
 require "vagrant-digitalocean/actions/destroy"
 require "vagrant-digitalocean/actions/prepare_nfs"
+require "vagrant-digitalocean/actions/read_state"
+require "vagrant-digitalocean/actions/setup_user"
+require "vagrant-digitalocean/actions/up"
 
 module VagrantPlugins
   module DigitalOcean
@@ -19,6 +20,9 @@ module VagrantPlugins
 
           # build the vm if necessary
           builder.use Actions::Up
+
+          # make sure the configured user is setup
+          builder.use Actions::SetupUser
 
           # set the host and remote ips for NFS
           builder.use Actions::PrepareNFS

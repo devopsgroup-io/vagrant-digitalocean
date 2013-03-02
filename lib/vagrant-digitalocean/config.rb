@@ -4,11 +4,11 @@ module VagrantPlugins
       attr_accessor :client_id, :api_key, :image, :region, :size
 
       def initialize
-        @client_id = UNSET_VALUE
-        @api_key   = UNSET_VALUE
-        @image     = UNSET_VALUE
-        @region    = UNSET_VALUE
-        @size      = UNSET_VALUE
+        @client_id       = UNSET_VALUE
+        @api_key         = UNSET_VALUE
+        @image           = UNSET_VALUE
+        @region          = UNSET_VALUE
+        @size            = UNSET_VALUE
       end
 
       def finalize!

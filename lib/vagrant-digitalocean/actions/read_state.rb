@@ -6,8 +6,6 @@ module VagrantPlugins
       class ReadState
         def initialize(app, env)
           @app, @env = app, env
-
-          # TODO move urls to a settings file
           @client = Helpers::Client.new
         end
 
@@ -22,6 +20,9 @@ module VagrantPlugins
           # no id signals that the machine hasn't yet been created
           env[:machine_state] ||= {"status" => :not_created}
 
+          # TODO there has to be a better way, see UP for when
+          # :machine_just_created is set
+          env[:machine_state][:just_created] = env[:machine_just_created]
           @app.call(env)
         end
       end

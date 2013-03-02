@@ -8,8 +8,6 @@ module VagrantPlugins
 
         def initialize(app, env)
           @app, @env = app, env
-
-          # TODO move urls to a settings file
           @client = Helpers::Client.new
         end
 
@@ -20,15 +18,14 @@ module VagrantPlugins
             return @app.call(env)
           end
 
+          # TODO check the content of the key to see if it's changed
+          # TODO use the directory / vm name to qualify they
           begin
             ssh_key_id = @client
               .request("/ssh_keys/")
               .find_id(:ssh_keys, :name => "Vagrant Insecure")
           rescue Errors::ResultMatchError
-            key = nil
-            File.open(Vagrant.source_root + "keys/vagrant.pub") do |file|
-              key = file.read
-            end
+            key = DigitalOcean.vagrant_key
 
             result = @client.request("/ssh_keys/new", {
               :name => "Vagrant Insecure",
@@ -69,6 +66,9 @@ module VagrantPlugins
             # Wait for the server to be ready
             raise "not ready" if env[:machine].state.id != :active
           end
+
+          # signal that the machine has just been created, used in ReadState
+          env[:machine_just_created] = true
 
           @app.call(env)
         end
