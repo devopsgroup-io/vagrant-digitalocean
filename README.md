@@ -57,7 +57,7 @@ Note that the example contains the default value. The client identifier and API 
 5. Permit custom ssh keys
 
 ## Contributing
-course
+
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
