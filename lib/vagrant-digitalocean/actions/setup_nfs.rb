@@ -3,7 +3,7 @@ require "socket"
 module VagrantPlugins
   module DigitalOcean
     module Actions
-      class PrepareNFS
+      class SetupNFS
         def initialize(app, env)
           @app, @env = app, env
         end
@@ -24,7 +24,7 @@ module VagrantPlugins
 
           vm = env[:machine].config.vm
 
-          # force all shard folders to be to work through nfs
+          # force all shard folders to use nfs
           folders = vm.synced_folders.keys.each do |key|
             vm.synced_folders[key][:nfs] = true
           end
