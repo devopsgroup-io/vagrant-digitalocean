@@ -57,20 +57,10 @@ module VagrantPlugins
 
         return nil if state["status"] == :not_created
 
-        # If the machine was just created (eg, this is an up) and
-        # the machine user hasn't been created use root. Otherwise
-        # set the username to the user (most likely vagrant)
-        #
-        # TODO use a config option for alternate users
-        username = state[:just_created] && !state[:user] ? "root" : "vagrant"
-        username = "root"
-
         return {
           :host => state["ip_address"],
           :port => "22",
-          # if the SetupVagrantUser action has run the machine
-          # state will contain a user
-          :username => username,
+          :username => "root",
           :private_key_path => Vagrant.source_root + "keys/vagrant"
         }
       end
