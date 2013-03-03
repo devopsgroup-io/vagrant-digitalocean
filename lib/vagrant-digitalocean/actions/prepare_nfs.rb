@@ -15,7 +15,19 @@ module VagrantPlugins
           # get the host ip from the local adapters
           env[:nfs_host_ip] = determine_host_ip.ip_address
 
-          env[:machine].communicate.sudo("apt-get install -y nfs-kernel-server")
+          # make sure the nfs server is setup
+          env[:machine].communicate.sudo(<<-BASH)
+            if !(which nfsstat); then
+              apt-get install -y nfs-kernel-server;
+            fi
+          BASH
+
+          vm = env[:machine].config.vm
+
+          # force all shard folders to be to work through nfs
+          folders = vm.synced_folders.keys.each do |key|
+            vm.synced_folders[key][:nfs] = true
+          end
 
           @app.call(env)
         end
