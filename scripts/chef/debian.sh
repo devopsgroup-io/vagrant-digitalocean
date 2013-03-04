@@ -18,4 +18,3 @@ apt-get update;
 
 # avoid server url popup
 echo "chef chef/chef_server_url string https://api.opscode.com/organizations/vagrant" | debconf-set-selections && apt-get install chef -y;
-fi

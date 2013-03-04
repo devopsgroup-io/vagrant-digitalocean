@@ -15,8 +15,6 @@ module VagrantPlugins
           # TODO catch ssh failure and report back on install issues
           env[:machine].communicate.execute(chef_install(env[:machine].guest))
 
-          puts "!!! ssh username: #{ env[:machine].config.ssh.username }"
-
           @app.call(env)
         end
 
