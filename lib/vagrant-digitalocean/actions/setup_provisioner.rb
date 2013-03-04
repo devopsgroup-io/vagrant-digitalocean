@@ -19,16 +19,7 @@ module VagrantPlugins
         end
 
         def chef_install(guest)
-          script_dir = ::File.join("scripts", "chef")
-          guest_name = guest.class.to_s
-
-          if guest_name =~ /Debian/ || guest_name =~ /Ubuntu/
-            read_file(::File.join(script_dir, "debian.sh"))
-          elsif guest_name =~ /RedHat/
-            read_file(::File.join(script_dir, "redhat.sh"))
-          else
-            raise "unsupported guest operating system"
-          end
+          read_script("chef", guest)
         end
       end
     end
