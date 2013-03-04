@@ -6,9 +6,22 @@
 
 As of this writing the provider implementation is geared entirely toward a development workflow. That is, Digital Ocean droplets are meant to be used as a replacement for VirtualBox in a server developers workflow.
 
-## Tested Guests/Hosts
+## Supported Guests/Hosts
 
-So far testing has been performed on an Ubuntu 12.04 host with the assumption of a Debian based guest. Currently the main limitation is the preparation of a vanilla droplet for NFS (which requires distro specific package installs/setup). It should be extremely simple to extend the guest support to accommodate other distributions.
+This project is primarily to support my workflow wich currently only involves Ubuntu and CentOS. It's likely that any unix host will work but I've not tested it. Guests require porting of the nfs, chef, and sudo setup scripts.
+
+Hosts:
+
+* Ubuntu 12.04
+
+Guests:
+
+* Ubuntu 12.04
+* CentOS 6
+
+## Supported Provisioners
+
+The shell provisioner is supported by default but other provisioners require bootstrapping on the server. Chef is currently the only supported provisioner. Adding support for puppet and others requires adding the install scripts.
 
 ## Installation
 
@@ -23,10 +36,6 @@ In addition to installing the plugin the default box associated with the provide
 ## Usage
 
 To use the Digital Ocean provider you will need to visit the [API access page](https://www.digitalocean.com/api_access) to retrieve the client identifier and API key associated with your account.
-
-### Commands
-
-TODO
 
 ### Config
 
@@ -47,14 +56,6 @@ end
 ```
 
 Note that the example contains the default value. The client identifier and API key are pulled from the environment and the other values are the string representations of the droplet configuration options as provided by the [Digital Ocean API](https://www.digitalocean.com/api).
-
-## TODO
-
-1. Provisioning (chef/puppet setup where necessary)
-2. Suspend by taking a snapsot
-3. Resume by restoring from snapshot
-4. Reload reboot and provision
-5. Permit custom ssh keys
 
 ## Contributing
 
