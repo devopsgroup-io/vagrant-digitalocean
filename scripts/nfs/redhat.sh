@@ -1,4 +1,4 @@
-if (service --status-all | grep nfs); then echo "foo"; fi;
+if (service --status-all | grep nfs); then exit 0; fi;
 
 # install the nfs-kernel server
 yum install -y nfs-utils nfs-utils-lib;

@@ -47,10 +47,11 @@ module VagrantPlugins
         def nfs_install(guest)
           script_dir = ::File.join("scripts", "nfs")
           guest_name = guest.class.to_s
-          if guest_name =~ /Debian/
-            read_file(::File.join(script_dir, "apt_install.sh"))
+
+          if guest_name =~ /Debian/ || guest_name =~ /Ubuntu/
+            read_file(::File.join(script_dir, "debian.sh"))
           elsif guest_name =~ /RedHat/
-            read_file(::File.join(script_dir, "rpm_install.sh"))
+            read_file(::File.join(script_dir, "redhat.sh"))
           else
             raise "unsupported guest operating system"
           end

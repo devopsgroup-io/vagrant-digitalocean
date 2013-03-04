@@ -3,6 +3,7 @@ require "vagrant-digitalocean/actions/read_state"
 require "vagrant-digitalocean/actions/setup_provisioner"
 require "vagrant-digitalocean/actions/setup_nfs"
 require "vagrant-digitalocean/actions/setup_sudo"
+require "vagrant-digitalocean/actions/setup_user"
 require "vagrant-digitalocean/actions/up"
 
 module VagrantPlugins
@@ -24,6 +25,9 @@ module VagrantPlugins
 
           # sort out sudo for redhat, etc
           builder.use Actions::SetupSudo
+
+          # sort out sudo for redhat, etc
+          builder.use Actions::SetupUser
 
           # execute provisioners
           builder.use Provision

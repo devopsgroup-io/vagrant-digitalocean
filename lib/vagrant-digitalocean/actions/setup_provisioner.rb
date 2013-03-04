@@ -11,8 +11,11 @@ module VagrantPlugins
         end
 
         def call(env)
-          # TODO sort out tty requirement on centos so we can use sudo
+          # TODO prevent setup when no chef provisioner declared
+          # TODO catch ssh failure and report back on install issues
           env[:machine].communicate.execute(chef_install(env[:machine].guest))
+
+          puts "!!! ssh username: #{ env[:machine].config.ssh.username }"
 
           @app.call(env)
         end
@@ -21,10 +24,10 @@ module VagrantPlugins
           script_dir = ::File.join("scripts", "chef")
           guest_name = guest.class.to_s
 
-          if guest_name =~ /Debian/
-            read_file(::File.join(script_dir, "apt_install.sh"))
+          if guest_name =~ /Debian/ || guest_name =~ /Ubuntu/
+            read_file(::File.join(script_dir, "debian.sh"))
           elsif guest_name =~ /RedHat/
-            read_file(::File.join(script_dir, "rpm_install.sh"))
+            read_file(::File.join(script_dir, "redhat.sh"))
           else
             raise "unsupported guest operating system"
           end
