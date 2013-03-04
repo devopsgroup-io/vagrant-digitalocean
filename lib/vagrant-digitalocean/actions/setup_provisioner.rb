@@ -11,17 +11,23 @@ module VagrantPlugins
         end
 
         def call(env)
-          env[:machine].communicate.sudo(chef_repo)
-          env[:machine].communicate.sudo(chef_install)
+          # TODO sort out tty requirement on centos so we can use sudo
+          env[:machine].communicate.execute(chef_install(env[:machine].guest))
+
           @app.call(env)
         end
 
-        def chef_repo
-          read_file(::File.join("scripts", "chef", "apt_setup.sh"))
-        end
+        def chef_install(guest)
+          script_dir = ::File.join("scripts", "chef")
+          guest_name = guest.class.to_s
 
-        def chef_install
-          read_file(::File.join("scripts", "chef", "apt_install.sh"))
+          if guest_name =~ /Debian/
+            read_file(::File.join(script_dir, "apt_install.sh"))
+          elsif guest_name =~ /RedHat/
+            read_file(::File.join(script_dir, "rpm_install.sh"))
+          else
+            raise "unsupported guest operating system"
+          end
         end
       end
     end

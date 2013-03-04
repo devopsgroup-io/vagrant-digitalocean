@@ -4,6 +4,8 @@ module VagrantPlugins
   module DigitalOcean
     module Actions
       class SetupNFS
+        include Helpers::File
+
         def initialize(app, env)
           @app, @env = app, env
         end
@@ -15,12 +17,9 @@ module VagrantPlugins
           # get the host ip from the local adapters
           env[:nfs_host_ip] = determine_host_ip.ip_address
 
+          # TODO sort out tty requirement on centos so we can use sudo
           # make sure the nfs server is setup
-          env[:machine].communicate.sudo(<<-BASH)
-            if !(which nfsstat); then
-              apt-get install -y nfs-kernel-server;
-            fi
-          BASH
+          env[:machine].communicate.execute(nfs_install(env[:machine].guest))
 
           vm = env[:machine].config.vm
 
@@ -40,6 +39,20 @@ module VagrantPlugins
               !intf.ipv4_loopback? &&
               !intf.ipv4_multicast? &&
               !intf.ipv4_private?
+          end
+        end
+
+        # TODO this definitely sucks, hopefully we can extend the guest
+        #      at some point or just use subdirectories
+        def nfs_install(guest)
+          script_dir = ::File.join("scripts", "nfs")
+          guest_name = guest.class.to_s
+          if guest_name =~ /Debian/
+            read_file(::File.join(script_dir, "apt_install.sh"))
+          elsif guest_name =~ /RedHat/
+            read_file(::File.join(script_dir, "rpm_install.sh"))
+          else
+            raise "unsupported guest operating system"
           end
         end
       end
