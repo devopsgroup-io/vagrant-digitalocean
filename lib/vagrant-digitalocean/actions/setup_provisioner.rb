@@ -15,7 +15,7 @@ module VagrantPlugins
           # TODO prevent setup when no chef provisioner declared
           # TODO catch ssh failure and report back on install issues
           # TODO first check to see if it's installed and then skip the info
-          env[:ui].info @translator.t("install", :provisioner => "chef")
+          env[:ui].info @translator.t("install", :provisioner => "chef-solo")
           env[:machine].communicate.execute(chef_install(env[:machine].guest))
 
           @app.call(env)

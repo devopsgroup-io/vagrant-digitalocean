@@ -4,11 +4,13 @@ module VagrantPlugins
       class SetupUser
         def initialize(app, env)
           @app, @env = app, env
+          @translator = Helpers::Translator.new("actions.setup_user")
         end
 
         def call(env)
           # create the user, set the password to username, add to sudoers
           # NOTE assumes group with username is created with useradd
+          env[:ui].info @translator.t("create", :user => user)
           env[:machine].communicate.execute(<<-BASH)
             if ! (grep #{user} /etc/passwd); then
               useradd -m -s /bin/bash #{user};
@@ -16,6 +18,7 @@ module VagrantPlugins
             fi
           BASH
 
+          env[:ui].info @translator.t("sudo", :user => user)
           env[:machine].communicate.execute(<<-BASH)
             if ! (grep #{user} /etc/sudoers); then
               echo "#{user} ALL=(ALL:ALL) ALL" >> /etc/sudoers;
@@ -25,6 +28,7 @@ module VagrantPlugins
           # create the .ssh directory in the users home
           env[:machine].communicate.execute("su #{user} -c 'mkdir -p ~/.ssh'")
 
+          env[:ui].info @translator.t("key")
           # add the specified key to the authorized keys file
           env[:machine].communicate.execute(<<-BASH)
             if ! grep '#{pub_key}' /home/#{user}/.ssh/authorized_keys; then

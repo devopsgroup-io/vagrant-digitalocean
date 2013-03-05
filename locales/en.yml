@@ -35,8 +35,9 @@ en:
         wait_active: "Waiting for the droplet to become active (>= 1 min)"
       destroy:
         destroying: "Destroying droplet"
-        not_active_or_new: "Droplet not in the `active` or `new` state %{foo}"
+        not_active_or_new: "Droplet not in the `active` or `new` state"
         clean_nfs: "Cleaning up NFS exports, may require sudo password"
+        wait_off: "Waiting for the droplet to be destroyed"
       setup_sudo:
         exec: "Making alterations to the sudoers file where necessary"
       setup_nfs:
@@ -46,3 +47,7 @@ en:
         force_shared_folders: "Forcing shared folders to use NFS where necessary"
       setup_provisioner:
         install: "Installing provisioner: %{provisioner} (>= 2 min)"
+      setup_user:
+        create: "Creating user '%{user}' and setting password"
+        sudo: "Enabling sudo for user '%{user}'"
+        key: "Adding public key to authorized_keys"
