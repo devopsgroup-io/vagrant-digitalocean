@@ -16,37 +16,10 @@ module VagrantPlugins
         send(name)
       end
 
-      def up
+      def destroy
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
-
-          # build the vm if necessary
-          builder.use Actions::Up
-
-          # sort out sudo for redhat, etc
-          builder.use Actions::SetupSudo
-
-          # sort out sudo for redhat, etc
-          builder.use Actions::SetupUser
-
-          # execute provisioners
-          builder.use Provision
-
-          # set the host and remote ips for NFS
-          builder.use Actions::SetupNFS
-
-          # setup provisioners, comes after Provision to force nfs folders
-          builder.use Actions::SetupProvisioner
-
-          # mount the nfs folders which should be all shared folders
-          builder.use NFS
-        end
-      end
-
-      def ssh
-        return Vagrant::Action::Builder.new.tap do |builder|
-          builder.use ConfigValidate
-          builder.use SSHExec
+          builder.use Actions::Destroy
         end
       end
 
@@ -57,10 +30,48 @@ module VagrantPlugins
         end
       end
 
-      def destroy
+      def ssh
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
-          builder.use Actions::Destroy
+          builder.use SSHExec
+        end
+      end
+
+      def provision
+        # TODO figure out when to exit if the vm is created
+        return Vagrant::Action::Builder.new.tap do |builder|
+          builder.use ConfigValidate
+
+          # sort out sudo for redhat, etc
+          builder.use Actions::SetupSudo
+
+          # sort out sudo for redhat, etc
+          builder.use Actions::SetupUser
+
+          # execute provisioners
+          builder.use Provision
+
+          # setup provisioners, comes after Provision to force nfs folders
+          builder.use Actions::SetupProvisioner
+        end
+      end
+
+
+      def up
+        # TODO figure out when to exit if the vm is created
+        return Vagrant::Action::Builder.new.tap do |builder|
+          builder.use ConfigValidate
+
+          # build the vm if necessary
+          builder.use Actions::Up
+
+          builder.use provision
+
+          # set the host and remote ips for NFS
+          builder.use Actions::SetupNFS
+
+          # mount the nfs folders which should be all shared folders
+          builder.use NFS
         end
       end
     end
