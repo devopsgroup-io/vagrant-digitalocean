@@ -9,22 +9,25 @@ module VagrantPlugins
         def initialize(app, env)
           @app, @env = app, env
           @client = Helpers::Client.new
+          @translator = Helpers::Translator.new("actions.create")
         end
 
         def call(env)
           # if the machine state is created skip
           if env[:machine].state.id == :active
-            env[:ui].info "Droplet is active, skipping creation ..."
+            env[:ui].info @translator.t("skip")
             return @app.call(env)
           end
 
           # TODO check the content of the key to see if it's changed
-          # TODO use the directory / vm name to qualify they
+          # TODO use the directory / vm name to qualify the key name
           begin
             ssh_key_id = @client
               .request("/ssh_keys/")
               .find_id(:ssh_keys, :name => "Vagrant Insecure")
           rescue Errors::ResultMatchError
+            env[:ui].info @translator.t("create_key")
+
             key = DigitalOcean.vagrant_key
 
             result = @client.request("/ssh_keys/new", {
@@ -47,6 +50,8 @@ module VagrantPlugins
             .request("/regions")
             .find_id(:regions, :name => env[:machine].provider_config.region)
 
+          env[:ui].info @translator.t("create_droplet")
+
           result = @client.request("/droplets/new", {
             :size_id => size_id,
             :region_id => region_id,
@@ -58,6 +63,8 @@ module VagrantPlugins
 
           # assign the machine id for reference in other commands
           env[:machine].id = result["droplet"]["id"]
+
+          env[:ui].info @translator.t("wait_active")
 
           retryable(:tries => 30, :sleep => 10) do
             # If we're interrupted don't worry about waiting

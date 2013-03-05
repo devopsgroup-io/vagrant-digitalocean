@@ -27,3 +27,22 @@ en:
 
         Contained no object with the value "%{value}" for the the key "%{key}".
         Please ensure that the configured value exists in the collection.
+    actions:
+      create:
+        skip: "Droplet is active, skipping creation"
+        create_key: "Adding key client account"
+        create_droplet: "Creating the droplet"
+        wait_active: "Waiting for the droplet to become active (>= 1 min)"
+      destroy:
+        destroying: "Destroying droplet"
+        not_active_or_new: "Droplet not in the `active` or `new` state %{foo}"
+        clean_nfs: "Cleaning up NFS exports, may require sudo password"
+      setup_sudo:
+        exec: "Making alterations to the sudoers file where necessary"
+      setup_nfs:
+        machine_ip: "Droplet IP: %{ip}"
+        host_ip: "Host IP: %{ip}"
+        install: "Installing NFS on the droplet"
+        force_shared_folders: "Forcing shared folders to use NFS where necessary"
+      setup_provisioner:
+        install: "Installing provisioner: %{provisioner} (>= 2 min)"

@@ -8,10 +8,11 @@ module VagrantPlugins
 
         def initialize(app, env)
           @app, @env = app, env
+          @translator = Helpers::Translator.new("actions.setup_sudo")
         end
 
         def call(env)
-          script_dir = ::File.join("scripts", "sudo")
+          env[:ui].info @translator.t("exec")
           env[:machine].communicate.execute(fix_sudo(env[:machine].guest))
 
           @app.call(env)
