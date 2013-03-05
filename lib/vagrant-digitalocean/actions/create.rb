@@ -3,7 +3,7 @@ require "vagrant-digitalocean/helpers/client"
 module VagrantPlugins
   module DigitalOcean
     module Actions
-      class Up
+      class Create
         include Vagrant::Util::Retryable
 
         def initialize(app, env)
@@ -14,7 +14,7 @@ module VagrantPlugins
         def call(env)
           # if the machine state is created skip
           if env[:machine].state.id == :active
-            env[:ui].info "Droplet is active, skipping the `up` process"
+            env[:ui].info "Droplet is active, skipping creation ..."
             return @app.call(env)
           end
 

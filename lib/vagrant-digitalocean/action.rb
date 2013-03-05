@@ -4,11 +4,11 @@ require "vagrant-digitalocean/actions/setup_provisioner"
 require "vagrant-digitalocean/actions/setup_nfs"
 require "vagrant-digitalocean/actions/setup_sudo"
 require "vagrant-digitalocean/actions/setup_user"
-require "vagrant-digitalocean/actions/up"
+require "vagrant-digitalocean/actions/create"
 
 module VagrantPlugins
   module DigitalOcean
-    class ActionDispatch
+    class Action
       # Include the built-in callable actions, eg SSHExec
       include Vagrant::Action::Builtin
 
@@ -38,7 +38,6 @@ module VagrantPlugins
       end
 
       def provision
-        # TODO figure out when to exit if the vm is created
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
 
@@ -56,14 +55,13 @@ module VagrantPlugins
         end
       end
 
-
       def up
         # TODO figure out when to exit if the vm is created
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
 
           # build the vm if necessary
-          builder.use Actions::Up
+          builder.use Actions::Create
 
           builder.use provision
 
