@@ -2,6 +2,12 @@
 
 `vagrant-digitalocean` is a provider plugin for Vagrant that allows the management of [Digital Ocean](https://www.digitalocean.com/) droplets (instances).
 
+## INSECURE
+
+As of this writing there is no support for custom keys on the droplets created by this provider. That means anyone with the vagrant keys and the IP of your droplet has root on your machine.
+
+*Do not use this plugin with sensitive projects*
+
 ## Status
 
 As of this writing the provider implementation is geared entirely toward a development workflow. That is, Digital Ocean droplets are meant to be used as a replacement for VirtualBox in a server developers workflow.
