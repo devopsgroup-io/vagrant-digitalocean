@@ -6,8 +6,11 @@ module VagrantPlugins
   module DigitalOcean
     module Helpers
       class Client
-        def initialize
-          @client = Faraday.new(:url => "https://api.digitalocean.com/")
+        def initialize(ca_path)
+          @client = Faraday.new(:url => "https://api.digitalocean.com/",
+                    :ssl => {
+                      :ca_file => ca_path
+                    })
         end
 
         def request(path, params = {})
