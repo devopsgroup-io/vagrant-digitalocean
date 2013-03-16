@@ -83,8 +83,6 @@ module VagrantPlugins
         # Both the recover and terminate are stolen almost verbatim from
         # the Vagrant AWS provider up action
         def recover(env)
-          puts "RECOVERING FROM AN ERROR"
-          puts env["vagrant.error"]
           return if env["vagrant.error"].is_a?(Vagrant::Errors::VagrantError)
 
           if env[:machine].state.id != :not_created
