@@ -56,8 +56,10 @@ Vagrant.configure("2") do |config|
     vm.api_key = ENV["DO_API_KEY"]
     vm.image = "Ubuntu 12.04 x32 Server"
     vm.region = "New York 1"
-    vm.size = "512MB"
-    vm.ca_path = "/usr/local/etc/openssl/ca-bundle.crt" # optional config for SSL cert on OSX and others
+    vm.size = "512MB" 
+    
+    # optional config for SSL cert on OSX and others
+    vm.ca_path = "/usr/local/etc/openssl/ca-bundle.crt"
   end
 end
 ```
