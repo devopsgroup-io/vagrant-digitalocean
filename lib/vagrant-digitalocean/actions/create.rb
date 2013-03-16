@@ -83,6 +83,8 @@ module VagrantPlugins
         # Both the recover and terminate are stolen almost verbatim from
         # the Vagrant AWS provider up action
         def recover(env)
+          puts "RECOVERING FROM AN ERROR"
+          puts env["vagrant.error"]
           return if env["vagrant.error"].is_a?(Vagrant::Errors::VagrantError)
 
           if env[:machine].state.id != :not_created
@@ -95,7 +97,7 @@ module VagrantPlugins
           destroy_env.delete(:interrupted)
           destroy_env[:config_validate] = false
           destroy_env[:force_confirm_destroy] = true
-          env[:action_runner].run(ActionDispatch.new.destroy, destroy_env)
+          env[:action_runner].run(Action.new.destroy, destroy_env)
         end
       end
     end
