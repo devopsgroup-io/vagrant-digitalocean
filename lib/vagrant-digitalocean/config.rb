@@ -1,7 +1,7 @@
 module VagrantPlugins
   module DigitalOcean
     class Config < Vagrant.plugin("2", :config)
-      attr_accessor :client_id, :api_key, :image, :region, :size
+      attr_accessor :client_id, :api_key, :image, :region, :size, :ca_path
 
       def initialize
         @client_id       = UNSET_VALUE
@@ -9,6 +9,7 @@ module VagrantPlugins
         @image           = UNSET_VALUE
         @region          = UNSET_VALUE
         @size            = UNSET_VALUE
+        @ca_path         = UNSET_VALUE
       end
 
       def finalize!
@@ -17,6 +18,7 @@ module VagrantPlugins
         @image     = "Ubuntu 12.04 x32 Server" if @image == UNSET_VALUE
         @region    = "New York 1" if @region == UNSET_VALUE
         @size      = "512MB" if @size == UNSET_VALUE
+        @ca_path   = nil if @ca_path == UNSET_VALUE
       end
 
       def validate(machine)

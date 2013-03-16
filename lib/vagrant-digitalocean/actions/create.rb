@@ -8,7 +8,7 @@ module VagrantPlugins
 
         def initialize(app, env)
           @app, @env = app, env
-          @client = Helpers::Client.new
+          @client = Helpers::Client.new(env[:machine].provider_config.ca_path)
           @translator = Helpers::Translator.new("actions.create")
         end
 
@@ -95,7 +95,7 @@ module VagrantPlugins
           destroy_env.delete(:interrupted)
           destroy_env[:config_validate] = false
           destroy_env[:force_confirm_destroy] = true
-          env[:action_runner].run(ActionDispatch.new.destroy, destroy_env)
+          env[:action_runner].run(Action.new.destroy, destroy_env)
         end
       end
     end

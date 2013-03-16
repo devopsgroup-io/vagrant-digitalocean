@@ -6,7 +6,7 @@ module VagrantPlugins
       class ReadState
         def initialize(app, env)
           @app, @env = app, env
-          @client = Helpers::Client.new
+          @client = Helpers::Client.new(env[:machine].provider_config.ca_path)
         end
 
         def call(env)
