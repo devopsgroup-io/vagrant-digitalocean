@@ -34,7 +34,7 @@ module VagrantPlugins
           # make sure to remove the export when the machine is destroyed
           # private in some hosts and requires a send
           env[:ui].info @translator.t("clean_nfs")
-          env[:host].send(:nfs_cleanup, env[:machine].id)
+          env[:host].send(:nfs_cleanup, env[:machine].id.to_s)
 
           @app.call(env)
         end

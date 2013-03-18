@@ -6,31 +6,16 @@ module VagrantPlugins
   module DigitalOcean
     module Helpers
       class Client
-        def initialize(ca_path)
-          @client = Faraday.new({
-                      :url => "https://api.digitalocean.com/",
-                      :ssl => {
-                        :ca_file => ca_path
-                      }
-                    })
+        def initialize
+          @client = Faraday.new(:url => "https://api.digitalocean.com/")
         end
 
         def request(path, params = {})
-          begin
-            result = @client.get(path, params = params.merge({
-              :client_id => ENV["DO_CLIENT_ID"],
-              :api_key => ENV["DO_API_KEY"]
-            }))
-          rescue Faraday::Error::ConnectionFailed => e
-            # TODO this is suspect but because farady wraps the exception
-            #      in something generic there doesn't appear to be another
-            #      way to distinguish different connection errors :(
-            if e.message =~ /certificate verify failed/
-              raise Errors::CertificateError
-            end
-
-            raise e
-          end
+          # create the key
+          result = @client.get(path, params = params.merge({
+            :client_id => ENV["DO_CLIENT_ID"],
+            :api_key => ENV["DO_API_KEY"]
+          }))
 
           # remove the api key in case an error gets dumped to the console
           params[:api_key] = "REMOVED"

@@ -62,7 +62,7 @@ module VagrantPlugins
           })
 
           # assign the machine id for reference in other commands
-          env[:machine].id = result["droplet"]["id"]
+          env[:machine].id = result["droplet"]["id"].to_s
 
           env[:ui].info @translator.t("wait_active")
 

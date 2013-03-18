@@ -17,7 +17,10 @@ module VagrantPlugins
           env[:ui].info @translator.t("machine_ip", :ip => env[:nfs_machine_ip])
 
           # get the host ip from the local adapters
-          env[:nfs_host_ip] = determine_host_ip.ip_address
+          raise Errors::LocalIPError if !(host_ip = determine_host_ip)
+
+          env[:nfs_host_ip] = host_ip
+
           env[:ui].info @translator.t("host_ip", :ip => env[:nfs_host_ip])
 
           # make sure the nfs server is setup
@@ -35,15 +38,18 @@ module VagrantPlugins
           @app.call(env)
         end
 
-        # http://stackoverflow.com/questions/5029427/ruby-get-local-ip-nix
-        # TODO this is currently *nix only according to the above post
+        # TODO not thread safe :(
+        # TODO google ip seems like a bad idea
         def determine_host_ip
-          Socket.ip_address_list.detect do |intf|
-            intf.ipv4? &&
-              !intf.ipv4_loopback? &&
-              !intf.ipv4_multicast? &&
-              !intf.ipv4_private?
+          # turn off reverse DNS resolution temporarily
+          orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true
+
+          UDPSocket.open do |s|
+            s.connect '64.233.187.99', 1
+            s.addr.last
           end
+        ensure
+          Socket.do_not_reverse_lookup = orig
         end
 
         def nfs_install(guest)

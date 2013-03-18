@@ -18,6 +18,14 @@ module VagrantPlugins
       class ResultMatchError < DigitalOceanError
         error_key(:result_match)
       end
+
+      class CertificateError < DigitalOceanError
+        error_key(:certificate)
+      end
+
+      class LocalIPError < DigitalOceanError
+        error_key(:local_ip)
+      end
     end
   end
 end

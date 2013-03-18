@@ -2,7 +2,8 @@ en:
   vagrant_digital_ocean:
     errors:
       api_status: |-
-        There was an issue with the request made to the Digital Ocean API at:
+        There was an issue with the request made to the Digital Ocean
+        API at:
 
         Path: %{path}
         URI Params: %{params}
@@ -12,7 +13,8 @@ en:
         Status: %{status}
         Response: %{response}
       :json: |-
-        There was an issue with the JSON response from the Digital Ocean API at:
+        There was an issue with the JSON response from the Digital Ocean
+        API at:
 
         Path: %{path}
         URI Params: %{params}
@@ -25,8 +27,25 @@ en:
 
         %{sub_obj}
 
-        Contained no object with the value "%{value}" for the the key "%{key}".
+        Contained no object with the value "%{value}" for the the
+        key "%{key}".
+
         Please ensure that the configured value exists in the collection.
+      :certificate: |-
+        The secure connection to the Digital Ocean API has failed. Please
+        ensure that your local certificates directory is defined in the
+        provider config.
+
+            config.vm.provider :digital_ocean do |vm|
+              vm.ca_path = "/path/to/ssl/ca/cert.crt"
+            end
+
+        This is generally caused by the OpenSSL configuration associated
+        with the Ruby install being unaware of the system specific ca
+        certs.
+      :local_ip: |-
+        The Digital Ocean provider was unable to determine the host's IP.
+
     actions:
       create:
         skip: "Droplet is active, skipping creation"
