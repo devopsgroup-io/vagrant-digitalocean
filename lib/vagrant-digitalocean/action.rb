@@ -52,6 +52,12 @@ module VagrantPlugins
 
           # setup provisioners, comes after Provision to force nfs folders
           builder.use Actions::SetupProvisioner
+
+          # set the host and remote ips for NFS
+          builder.use Actions::SetupNFS
+
+          # mount the nfs folders which should be all shared folders
+          builder.use NFS
         end
       end
 
@@ -64,12 +70,6 @@ module VagrantPlugins
           builder.use Actions::Create
 
           builder.use provision
-
-          # set the host and remote ips for NFS
-          builder.use Actions::SetupNFS
-
-          # mount the nfs folders which should be all shared folders
-          builder.use NFS
         end
       end
     end

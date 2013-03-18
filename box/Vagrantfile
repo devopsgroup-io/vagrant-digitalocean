@@ -12,4 +12,9 @@ Vagrant.configure("2") do |config|
     vm.region = "New York 1"
     vm.size = "512MB"
   end
+
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = "cookbooks"
+    chef.add_recipe "foo"
+  end
 end
