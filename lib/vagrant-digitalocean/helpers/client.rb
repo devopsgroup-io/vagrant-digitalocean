@@ -7,25 +7,26 @@ module VagrantPlugins
     module Helpers
       module Client
         def client
-          @client ||= ApiClient.new(@env[:machine].provider_config.ca_path)
+          @client ||= ApiClient.new(@env[:machine].provider_config)
         end
       end
 
       class ApiClient
-        def initialize(ca_path)
+        def initialize(config)
+          @config = config
           @client = Faraday.new({
-                      :url => "https://api.digitalocean.com/",
-                      :ssl => {
-                        :ca_file => ca_path
-                      }
-                    })
+            :url => "https://api.digitalocean.com/",
+            :ssl => {
+              :ca_file => config.ca_path
+            }
+          })
         end
 
         def request(path, params = {})
           begin
             result = @client.get(path, params = params.merge({
-              :client_id => ENV["DO_CLIENT_ID"],
-              :api_key => ENV["DO_API_KEY"]
+              :client_id => @config.client_id,
+              :api_key => @config.api_key
             }))
           rescue Faraday::Error::ConnectionFailed => e
             # TODO this is suspect but because farady wraps the exception
