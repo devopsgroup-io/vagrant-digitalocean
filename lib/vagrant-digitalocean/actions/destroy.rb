@@ -5,10 +5,11 @@ module VagrantPlugins
     module Actions
       class Destroy
         include Vagrant::Util::Retryable
+        include Helpers::Client
 
         def initialize(app, env)
           @app, @env = app, env
-          @client = Helpers::Client.new(env[:machine].provider_config.ca_path)
+          @client = client
           @translator = Helpers::Translator.new("actions.destroy")
         end
 

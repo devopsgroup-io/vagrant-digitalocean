@@ -4,9 +4,11 @@ module VagrantPlugins
   module DigitalOcean
     module Actions
       class ReadState
+        include Helpers::Client
+
         def initialize(app, env)
           @app, @env = app, env
-          @client = Helpers::Client.new(env[:machine].provider_config.ca_path)
+          @client = client
         end
 
         def call(env)

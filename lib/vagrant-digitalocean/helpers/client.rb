@@ -5,7 +5,13 @@ require "json"
 module VagrantPlugins
   module DigitalOcean
     module Helpers
-      class Client
+      module Client
+        def client
+          @client ||= ApiClient.new(@env[:machine].provider_config.ca_path)
+        end
+      end
+
+      class ApiClient
         def initialize(ca_path)
           @client = Faraday.new({
                       :url => "https://api.digitalocean.com/",
