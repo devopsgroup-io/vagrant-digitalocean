@@ -14,7 +14,7 @@ As of this writing the provider implementation is geared entirely toward a devel
 
 ## Supported Guests/Hosts
 
-This project is primarily to support my workflow wich currently only involves Ubuntu and CentOS. It's likely that any unix host will work but I've not tested it. Guests require porting of the nfs, chef, and sudo setup scripts.
+This project is primarily to support my workflow which currently only involves Ubuntu and CentOS. It's likely that any unix host will work but I've not tested it. Guests require porting of the nfs, chef, and sudo setup scripts.
 
 Hosts:
 
@@ -56,8 +56,8 @@ Vagrant.configure("2") do |config|
     vm.api_key = ENV["DO_API_KEY"]
     vm.image = "Ubuntu 12.04 x32 Server"
     vm.region = "New York 1"
-    vm.size = "512MB" 
-    
+    vm.size = "512MB"
+
     # optional config for SSL cert on OSX and others
     vm.ca_path = "/usr/local/etc/openssl/ca-bundle.crt"
   end
@@ -65,6 +65,17 @@ end
 ```
 
 Note that the example contains the default value. The client identifier and API key are pulled from the environment and the other values are the string representations of the droplet configuration options as provided by the [Digital Ocean API](https://www.digitalocean.com/api). The ca_path configuration option may be necessary depending on your system setup.
+
+## Tests
+
+Testing is very simple initially. There is no guaranteed cleanup. That is, if you are testing using `rake test` *you* are responsible for making sure that there aren't large numbers of test machines left on you Digital Ocean account.
+
+```bash
+rake test # and wait ...
+
+```
+
+Cleanup will be added eventually but will have to be specified explicitly because of the risk of machine deletetion.
 
 ## Contributing
 
