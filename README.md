@@ -68,11 +68,10 @@ Note that the example contains the default value. The client identifier and API 
 
 ## Tests
 
-Testing is very simple initially. There is no guaranteed cleanup. That is, if you are testing using `rake test` *you* are responsible for making sure that there aren't large numbers of test machines left on you Digital Ocean account.
+Testing is very simple initially. There is no guaranteed cleanup. That is, if you are testing using `rake test` **you** are responsible for making sure that there aren't large numbers of test machines left on your Digital Ocean account.
 
 ```bash
 rake test # and wait ...
-
 ```
 
 Cleanup will be added eventually but will have to be specified explicitly because of the risk of machine deletetion.
