@@ -7,6 +7,8 @@ Vagrant.configure("2") do |config|
     vm.image = "Ubuntu 12.04 x32 Server"
     vm.region = "New York 1"
     vm.size = "512MB"
+    vm.ssh_key_name = "Test Key"
+    vm.pub_ssh_key_path = "test_id_rsa.pub"
   end
 
   config.vm.provision :shell, :path => "provision.sh"
