@@ -2,11 +2,20 @@
 
 `vagrant-digitalocean` is a provider plugin for Vagrant that allows the management of [Digital Ocean](https://www.digitalocean.com/) droplets (instances).
 
-## INSECURE
+## SSH Key Support
 
-As of this writing there is no support for custom keys on the droplets created by this provider. That means anyone with the vagrant keys and the IP of your droplet has root on your machine.
+By default the provider will use the *insecure* vagrant key for SSH access. That means anyone with the vagrant key and the IP of your droplet has root on your machine. To ovvrride this behavior, define your SSH key name and public key path within the provider configuration:
 
-*Do not use this plugin with sensitive projects*
+```ruby
+    config.vm.provider :digital_ocean do |provider|
+        provider.ssh_key_name = "My Laptop"
+        provider.pub_ssh_key_path = "~/.ssh/id_rsa.pub"
+
+        # additional configuration here
+    end
+```
+
+The provider will assume the private key path is identical to the public key path without the *.pub* extention. If this is not the case, define the private key path using `config.ssh.private_key_path`. If an SSH key name is not set, it will default to *Vagrant*.
 
 ## Status
 
@@ -57,6 +66,8 @@ Vagrant.configure("2") do |config|
     vm.image = "Ubuntu 12.04 x32 Server"
     vm.region = "New York 1"
     vm.size = "512MB"
+    vm.ssh_key_name = "My Key"
+    vm.pub_ssh_key_path = "~/.ssh/id_rsa"
 
     # optional config for SSL cert on OSX and others
     vm.ca_path = "/usr/local/etc/openssl/ca-bundle.crt"

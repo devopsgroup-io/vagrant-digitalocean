@@ -52,6 +52,7 @@ en:
         create_key: "Adding key client account"
         create_droplet: "Creating the droplet"
         wait_active: "Waiting for the droplet to become active (>= 1 min)"
+        key_not_found: "Public SSH key not provided, using insecure Vagrant key"
       destroy:
         destroying: "Destroying droplet"
         not_active_or_new: "Droplet not in the `active` or `new` state"
