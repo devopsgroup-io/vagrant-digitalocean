@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# uninstall existing versions
+gem uninstall -a vagrant-digitalocean
+
+# clean old gem builds
+rm *.gem
+
 # build the gem
 gem build *.gemspec
 
