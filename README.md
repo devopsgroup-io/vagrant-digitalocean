@@ -2,24 +2,20 @@
 
 `vagrant-digitalocean` is a provider plugin for Vagrant that allows the management of [Digital Ocean](https://www.digitalocean.com/) droplets (instances).
 
-## SSH Key Support
+## SSH Keys
 
-By default the provider will use the *insecure* vagrant key for SSH access. That means anyone with the vagrant key and the IP of your droplet has root on your machine. To ovvrride this behavior, define your SSH key name and public key path within the provider configuration:
+This provider does not support the use of Vagrant's insecure key for SSH access. You must specify your own SSH key. The key may be defined within the global config section, `config.ssh.private_key_path`, or within the provider config section, `provider.ssh_private_key_path`. The provider config will take precedence. Additionally, you may provide a name for the SSH key using the `ssh_key_name` attribute within the provider config section. This is useful for de-conflict SSH keys used by different individuals when creating machines on Digital Ocean.
 
 ```ruby
     config.vm.provider :digital_ocean do |provider|
         provider.ssh_key_name = "My Laptop"
-        provider.pub_ssh_key_path = "~/.ssh/id_rsa.pub"
+        provider.ssh_private_key_path = "~/.ssh/id_rsa.pub"
 
         # additional configuration here
     end
 ```
 
-The provider will assume the private key path is identical to the public key path without the *.pub* extention. If this is not the case, define the private key path using `config.ssh.private_key_path`. If an SSH key name is not set, it will default to *Vagrant*.
-
-## Status
-
-As of this writing the provider implementation is geared entirely toward a development workflow. That is, Digital Ocean droplets are meant to be used as a replacement for VirtualBox in a server developers workflow.
+The provider will assume the public key path is identical to the private key path with the *.pub* extention.
 
 ## Supported Guests/Hosts
 
@@ -67,7 +63,7 @@ Vagrant.configure("2") do |config|
     vm.region = "New York 1"
     vm.size = "512MB"
     vm.ssh_key_name = "My Key"
-    vm.pub_ssh_key_path = "~/.ssh/id_rsa"
+    vm.ssh_private_key_path = "~/.ssh/id_rsa"
 
     # optional config for SSL cert on OSX and others
     vm.ca_path = "/usr/local/etc/openssl/ca-bundle.crt"

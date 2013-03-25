@@ -26,7 +26,7 @@ module VagrantPlugins
               next if env[:interrupted]
 
               # Wait for the server to be ready
-              raise "not off" if env[:machine].state.id != :off
+              raise "not off" if env[:machine].state.id != :archive
             end
           else
             env[:ui].info @translator.t("not_active_or_new")

@@ -29,6 +29,9 @@ module VagrantPlugins
 
       class RsyncError < DigitalOceanError
         error_key(:rsync)
+
+      class PublicKeyError < DigitalOceanError
+        error_key(:public_key)
       end
     end
   end
