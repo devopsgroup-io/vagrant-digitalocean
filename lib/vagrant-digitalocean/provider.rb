@@ -57,19 +57,14 @@ module VagrantPlugins
 
         return nil if state["status"] == :not_created
 
-        if @machine.config.ssh.private_key_path
-          private_key_path = @machine.config.ssh.private_key_path
-        elsif @machine.provider_config.pub_ssh_key_path
-          private_key_path = @machine.provider_config.pub_ssh_key_path.chomp(".pub")
-        else
-          private_key_path = Vagrant.source_root + "keys/vagrant"
-        end
+        # TODO submit patch to chef provisioner to read ssh username from ssh_info
+        @machine.config.ssh.username = "root"
 
         return {
           :host => state["ip_address"],
           :port => "22",
           :username => "root",
-          :private_key_path => private_key_path
+          :private_key_path => @machine.provider_config.ssh_private_key_path
         }
       end
 

@@ -5,6 +5,7 @@ require "vagrant-digitalocean/actions/setup_nfs"
 require "vagrant-digitalocean/actions/setup_sudo"
 require "vagrant-digitalocean/actions/setup_user"
 require "vagrant-digitalocean/actions/create"
+require "vagrant-digitalocean/actions/setup_ssh_key"
 
 module VagrantPlugins
   module DigitalOcean
@@ -44,9 +45,6 @@ module VagrantPlugins
           # sort out sudo for redhat, etc
           builder.use Actions::SetupSudo
 
-          # sort out sudo for redhat, etc
-          builder.use Actions::SetupUser
-
           # execute provisioners
           builder.use Provision
 
@@ -65,6 +63,8 @@ module VagrantPlugins
         # TODO figure out when to exit if the vm is created
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
+
+          builder.use Actions::SetupSSHKey
 
           # build the vm if necessary
           builder.use Actions::Create

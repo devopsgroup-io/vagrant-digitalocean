@@ -20,22 +20,7 @@ module VagrantPlugins
             return @app.call(env)
           end
 
-          # TODO check the content of the key to see if it has changed
-          ssh_key_name = env[:machine].provider_config.ssh_key_name
-          begin
-            ssh_key_id = @client
-              .request("/ssh_keys/")
-              .find_id(:ssh_keys, :name => ssh_key_name)
-          rescue Errors::ResultMatchError
-            env[:ui].info @translator.t("create_key")
-
-            result = @client.request("/ssh_keys/new", {
-              :name => ssh_key_name,
-              :ssh_pub_key => pub_ssh_key(env)
-            })
-
-            ssh_key_id = result["ssh_key"]["id"]
-          end
+          ssh_key_id = env[:ssh_key_id]
 
           size_id = @client
             .request("/sizes")
@@ -96,19 +81,6 @@ module VagrantPlugins
           destroy_env[:force_confirm_destroy] = true
           env[:action_runner].run(Action.new.destroy, destroy_env)
         end
-
-        private
-
-        def pub_ssh_key(env)
-          path = env[:machine].provider_config.pub_ssh_key_path
-          file = File.open(File.expand_path(path))
-          key = file.read
-          file.close
-          key
-        rescue
-          env[:ui].info @translator.t("key_not_found")
-          DigitalOcean.vagrant_key
-        end 
       end
     end
   end
