@@ -26,6 +26,10 @@ module VagrantPlugins
       class LocalIPError < DigitalOceanError
         error_key(:local_ip)
       end
+
+      class PublicKeyError < DigitalOceanError
+        error_key(:public_key)
+      end
     end
   end
 end

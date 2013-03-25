@@ -1,6 +1,13 @@
 en:
   vagrant_digital_ocean:
+    config:
+      client_id_required: "Client ID required"
+      api_key_required: "API key required"
+      private_key_required: "SSH private key path required"
+      private_key_missing: "SSH private key is missing: %{key}"
+      public_key_missing: "SSH public key is missing: %{key}.pub"
     errors:
+      public_key: "Failed to read public key: %{path}"
       api_status: |-
         There was an issue with the request made to the Digital Ocean
         API at:
@@ -49,10 +56,8 @@ en:
     actions:
       create:
         skip: "Droplet is active, skipping creation"
-        create_key: "Adding key client account"
         create_droplet: "Creating the droplet"
         wait_active: "Waiting for the droplet to become active (>= 1 min)"
-        key_not_found: "Public SSH key not provided, using insecure Vagrant key"
       destroy:
         destroying: "Destroying droplet"
         not_active_or_new: "Droplet not in the `active` or `new` state"
@@ -71,3 +76,7 @@ en:
         create: "Creating user '%{user}' and setting password"
         sudo: "Enabling sudo for user '%{user}'"
         key: "Adding public key to authorized_keys"
+      setup_ssh_key:
+        existing_key: "Using existing SSH key: %{name}"
+        insecure_key: "Using default insecure vagrant SSH key"
+        new_key: "Creating new SSH key: %{name} (%{path})"
