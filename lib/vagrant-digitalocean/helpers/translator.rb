@@ -12,7 +12,7 @@ module VagrantPlugins
 
         def t(keys, opts = {})
           value = I18n.t("#{@@plugin_namespace}.#{@namespace}.#{keys}", opts)
-          opts[:progress] == false ? value : value + " ..."
+          opts[:progress] == false ? value : value + "..."
         end
       end
     end
