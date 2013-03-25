@@ -12,6 +12,15 @@ en:
 
         Status: %{status}
         Response: %{response}
+
+      rsync: |-
+        There was an error when attemping to rsync a share folder.
+        Please inspect the error message below for more info.
+
+        Host path: %{hostpath}
+        Guest path: %{guestpath}
+        Error: %{stderr}
+
       :json: |-
         There was an issue with the JSON response from the Digital Ocean
         API at:
@@ -71,3 +80,5 @@ en:
         create: "Creating user '%{user}' and setting password"
         sudo: "Enabling sudo for user '%{user}'"
         key: "Adding public key to authorized_keys"
+      sync_folders:
+          rsync_folder: "Rsyncing folder: %{hostpath} => %{guestpath}"
