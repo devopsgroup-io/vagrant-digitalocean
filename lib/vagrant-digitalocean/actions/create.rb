@@ -58,6 +58,14 @@ module VagrantPlugins
             raise "not ready" if env[:machine].state.id != :active
           end
 
+          retryable(:tries => 30, :sleep => 2) do
+            # If we're interrupted don't worry about waiting
+            next if env[:interrupted]
+
+            # Wait for the server to be ready for ssh
+            env[:machine].communicate.execute("echo");
+          end
+
           # signal that the machine has just been created, used in ReadState
           env[:machine_just_created] = true
 
