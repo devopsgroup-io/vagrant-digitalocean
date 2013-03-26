@@ -19,6 +19,15 @@ en:
 
         Status: %{status}
         Response: %{response}
+
+      rsync: |-
+        There was an error when attemping to rsync a share folder.
+        Please inspect the error message below for more info.
+
+        Host path: %{hostpath}
+        Guest path: %{guestpath}
+        Error: %{stderr}
+
       :json: |-
         There was an issue with the JSON response from the Digital Ocean
         API at:
@@ -80,3 +89,5 @@ en:
         existing_key: "Using existing SSH key: %{name}"
         insecure_key: "Using default insecure vagrant SSH key"
         new_key: "Creating new SSH key: %{name} (%{path})"
+      sync_folders:
+          rsync_folder: "Rsyncing folder: %{hostpath} => %{guestpath}"
