@@ -50,6 +50,7 @@ module VagrantPlugins
 
           env[:ui].info @translator.t("wait_active")
 
+          # TODO refactor to use wait_for_event method
           retryable(:tries => 30, :sleep => 10) do
             # If we're interrupted don't worry about waiting
             next if env[:interrupted]
