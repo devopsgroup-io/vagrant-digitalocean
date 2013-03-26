@@ -19,6 +19,15 @@ en:
 
         Status: %{status}
         Response: %{response}
+
+      rsync: |-
+        There was an error when attemping to rsync a share folder.
+        Please inspect the error message below for more info.
+
+        Host path: %{hostpath}
+        Guest path: %{guestpath}
+        Error: %{stderr}
+
       :json: |-
         There was an issue with the JSON response from the Digital Ocean
         API at:
@@ -58,6 +67,10 @@ en:
         skip: "Droplet is active, skipping creation"
         create_droplet: "Creating the droplet"
         wait_active: "Waiting for the droplet to become active (>= 1 min)"
+      rebuild:
+        skip: "Droplet is not active, skipping rebuild"
+        rebuild: "Rebuilding the droplet"
+        wait: "Waiting for the droplet to rebuild (>= 1 min)"
       destroy:
         destroying: "Destroying droplet"
         not_active_or_new: "Droplet not in the `active` or `new` state"
@@ -76,6 +89,8 @@ en:
         create: "Creating user '%{user}' and setting password"
         sudo: "Enabling sudo for user '%{user}'"
         key: "Adding public key to authorized_keys"
+      sync_folders:
+        rsync_folder: "Rsyncing folder: %{hostpath} => %{guestpath}"
       setup_ssh_key:
         existing_key: "Using existing SSH key: %{name}"
         insecure_key: "Using default insecure vagrant SSH key"

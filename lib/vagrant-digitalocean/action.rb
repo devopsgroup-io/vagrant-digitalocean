@@ -1,11 +1,12 @@
 require "vagrant-digitalocean/actions/destroy"
 require "vagrant-digitalocean/actions/read_state"
 require "vagrant-digitalocean/actions/setup_provisioner"
-require "vagrant-digitalocean/actions/setup_nfs"
 require "vagrant-digitalocean/actions/setup_sudo"
 require "vagrant-digitalocean/actions/setup_user"
 require "vagrant-digitalocean/actions/create"
+require "vagrant-digitalocean/actions/sync_folders"
 require "vagrant-digitalocean/actions/setup_ssh_key"
+require "vagrant-digitalocean/actions/rebuild"
 
 module VagrantPlugins
   module DigitalOcean
@@ -48,14 +49,9 @@ module VagrantPlugins
           # execute provisioners
           builder.use Provision
 
-          # setup provisioners, comes after Provision to force nfs folders
           builder.use Actions::SetupProvisioner
 
-          # set the host and remote ips for NFS
-          builder.use Actions::SetupNFS
-
-          # mount the nfs folders which should be all shared folders
-          builder.use NFS
+          builder.use Actions::SyncFolders
         end
       end
 
@@ -69,6 +65,14 @@ module VagrantPlugins
           # build the vm if necessary
           builder.use Actions::Create
 
+          builder.use provision
+        end
+      end
+
+      def rebuild
+        return Vagrant::Action::Builder.new.tap do |builder|
+          builder.use ConfigValidate
+          builder.use Actions::Rebuild
           builder.use provision
         end
       end

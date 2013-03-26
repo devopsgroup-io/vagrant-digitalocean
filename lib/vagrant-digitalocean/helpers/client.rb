@@ -7,17 +7,20 @@ module VagrantPlugins
     module Helpers
       module Client
         def client
-          @client ||= ApiClient.new(@env[:machine].provider_config)
+          @client ||= ApiClient.new(@env)
         end
       end
 
       class ApiClient
-        def initialize(config)
-          @config = config
+        include Vagrant::Util::Retryable
+
+        def initialize(env)
+          @env = env
+          @config = env[:machine].provider_config
           @client = Faraday.new({
             :url => "https://api.digitalocean.com/",
             :ssl => {
-              :ca_file => config.ca_path
+              :ca_file => @config.ca_path
             }
           })
         end
@@ -63,6 +66,17 @@ module VagrantPlugins
           end
 
           Result.new(body)
+        end
+
+        def wait_for_event(id)
+          retryable(:tries => 30, :sleep => 10) do
+            # stop waiting if interrupted
+            next if @env[:interrupted]
+
+            # check event status
+            result = self.request("/events/#{id}")
+            raise "not ready" if result["event"]["action_status"] != "done"
+          end
         end
       end
     end

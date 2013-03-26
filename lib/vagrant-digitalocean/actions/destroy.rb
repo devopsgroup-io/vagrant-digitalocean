@@ -14,28 +14,17 @@ module VagrantPlugins
         end
 
         def call(env)
-          # TODO remove the key associated with this machine
           if [:active, :new].include?(env[:machine].state.id)
+            # submit destroy droplet request
             env[:ui].info @translator.t("destroying")
             result = @client.request("/droplets/#{env[:machine].id}/destroy")
 
+            # wait for request to complete
             env[:ui].info @translator.t("wait_off")
-
-            retryable(:tries => 30, :sleep => 10) do
-              # If we're interrupted don't worry about waiting
-              next if env[:interrupted]
-
-              # Wait for the server to be ready
-              raise "not off" if env[:machine].state.id != :archive
-            end
+            @client.wait_for_event(result["event_id"])
           else
             env[:ui].info @translator.t("not_active_or_new")
           end
-
-          # make sure to remove the export when the machine is destroyed
-          # private in some hosts and requires a send
-          env[:ui].info @translator.t("clean_nfs")
-          env[:host].send(:nfs_cleanup, env[:machine].id.to_s)
 
           @app.call(env)
         end
