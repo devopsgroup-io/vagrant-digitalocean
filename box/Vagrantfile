@@ -3,7 +3,7 @@
 
 Vagrant.configure("2") do |config|
   config.vm.box = "digital_ocean"
-  config.vm.synced_folder ".", "/vagrant", :nfs => true
+  config.ssh.private_key_path = "../test/test_id_rsa"
 
   config.vm.provider :digital_ocean do |vm|
     vm.client_id = ENV["DO_CLIENT_ID"]
