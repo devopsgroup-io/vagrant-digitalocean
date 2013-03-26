@@ -25,6 +25,11 @@ module VagrantPlugins
 
         Provider
       end
+
+      command(:rebuild) do
+        require_relative "commands/rebuild"
+        Commands::Rebuild
+      end
     end
   end
 end

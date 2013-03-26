@@ -6,6 +6,7 @@ require "vagrant-digitalocean/actions/setup_user"
 require "vagrant-digitalocean/actions/create"
 require "vagrant-digitalocean/actions/sync_folders"
 require "vagrant-digitalocean/actions/setup_ssh_key"
+require "vagrant-digitalocean/actions/rebuild"
 
 module VagrantPlugins
   module DigitalOcean
@@ -64,6 +65,14 @@ module VagrantPlugins
           # build the vm if necessary
           builder.use Actions::Create
 
+          builder.use provision
+        end
+      end
+
+      def rebuild
+        return Vagrant::Action::Builder.new.tap do |builder|
+          builder.use ConfigValidate
+          builder.use Actions::Rebuild
           builder.use provision
         end
       end
