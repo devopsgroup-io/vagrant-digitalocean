@@ -2,17 +2,18 @@ module VagrantPlugins
   module DigitalOcean
     class Config < Vagrant.plugin("2", :config)
       attr_accessor :client_id, :api_key, :image, :region, :size, :ca_path,
-                    :ssh_key_name, :ssh_private_key_path
+                    :ssh_key_name, :ssh_private_key_path, :ssh_username
 
       def initialize
-        @client_id        = UNSET_VALUE
-        @api_key          = UNSET_VALUE
-        @image            = UNSET_VALUE
-        @region           = UNSET_VALUE
-        @size             = UNSET_VALUE
-        @ca_path          = UNSET_VALUE
-        @ssh_key_name     = UNSET_VALUE
-        @pub_ssh_key_path = UNSET_VALUE
+        @client_id            = UNSET_VALUE
+        @api_key              = UNSET_VALUE
+        @image                = UNSET_VALUE
+        @region               = UNSET_VALUE
+        @size                 = UNSET_VALUE
+        @ca_path              = UNSET_VALUE
+        @ssh_key_name         = UNSET_VALUE
+        @ssh_private_key_path = UNSET_VALUE
+        @ssh_username         = UNSET_VALUE
 
         @translator = Helpers::Translator.new("config")
       end
@@ -26,6 +27,7 @@ module VagrantPlugins
         @ca_path               = nil if @ca_path == UNSET_VALUE
         @ssh_key_name          = "Vagrant" if @ssh_key_name == UNSET_VALUE
         @ssh_private_key_path  = nil if @ssh_private_key_path == UNSET_VALUE
+        @ssh_username          = "root" if @ssh_username == UNSET_VALUE
       end
 
       def validate(machine)

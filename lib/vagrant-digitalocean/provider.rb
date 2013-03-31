@@ -57,13 +57,13 @@ module VagrantPlugins
 
         return nil if state["status"] == :not_created
 
-        # TODO submit patch to chef provisioner to read ssh username from ssh_info
-        @machine.config.ssh.username = "root"
+        # TODO remove when defect in vagrant chef provisioner is fixed
+        @machine.config.ssh.username = @machine.provider_config.ssh_username
 
         return {
           :host => state["ip_address"],
           :port => "22",
-          :username => "root",
+          :username => @machine.provider_config.ssh_username,
           :private_key_path => @machine.provider_config.ssh_private_key_path
         }
       end

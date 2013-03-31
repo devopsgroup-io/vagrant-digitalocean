@@ -1,10 +1,19 @@
 # Vagrant Digital Ocean
 
-`vagrant-digitalocean` is a provider plugin for Vagrant that allows the management of [Digital Ocean](https://www.digitalocean.com/) droplets (instances).
+`vagrant-digitalocean` is a provider plugin for Vagrant that allows the
+management of [Digital Ocean](https://www.digitalocean.com/) droplets
+(instances).
 
-## SSH Keys
+## SSH Authentication
 
-This provider does not support the use of Vagrant's insecure key for SSH access. You must specify your own SSH key. The key may be defined within the global config section, `config.ssh.private_key_path`, or within the provider config section, `provider.ssh_private_key_path`. The provider config will take precedence. Additionally, you may provide a name for the SSH key using the `ssh_key_name` attribute within the provider config section. This is useful for de-conflict SSH keys used by different individuals when creating machines on Digital Ocean.
+This provider does not support the use of Vagrant's insecure key for SSH
+access. You must specify your own SSH key. The key may be defined within
+the global config section, `config.ssh.private_key_path`, or within the
+provider config section, `provider.ssh_private_key_path`. The provider
+config will take precedence. Additionally, you may provide a name for
+the SSH key using the `ssh_key_name` attribute within the provider config
+section. This is useful for de-conflict SSH keys used by different
+individuals when creating machines on Digital Ocean.
 
 ```ruby
     config.vm.provider :digital_ocean do |provider|
@@ -15,15 +24,24 @@ This provider does not support the use of Vagrant's insecure key for SSH access.
     end
 ```
 
-The provider will assume the public key path is identical to the private key path with the *.pub* extention.
+The provider will assume the public key path is identical to the private
+key path with the *.pub* extention.
+
+By default, the provider uses the `root` account for SSH access. This is
+required for initial droplet creation and provisioning. You may specify
+an account that may be used for subsequent SSH access and provisioning
+by setting the `ssh_username` attribute within the provider config
+section.
 
 ## Supported Guests/Hosts
 
-This project is primarily to support my workflow which currently only involves Ubuntu and CentOS. It's likely that any unix host will work but I've not tested it. Guests require porting of the nfs, chef, and sudo setup scripts.
+The project is currently in alpha state and has been tested on the
+following hosts and guests:
 
 Hosts:
 
 * Ubuntu 12.04
+* Mac OS X
 
 Guests:
 
@@ -32,7 +50,9 @@ Guests:
 
 ## Supported Provisioners
 
-The shell provisioner is supported by default but other provisioners require bootstrapping on the server. Chef is currently the only supported provisioner. Adding support for puppet and others requires adding the install scripts.
+The shell provisioner is supported by default but other provisioners require
+bootstrapping on the server. Chef is currently the only supported provisioner.
+Adding support for puppet and others requires adding the install scripts.
 
 ## Installation
 
@@ -40,13 +60,16 @@ Installation is performed in the prescribed manner for Vagrant 1.1 plugins.
 
     vagrant plugin install vagrant-digitalocean
 
-In addition to installing the plugin the default box associated with the provider needs to be installed.
+In addition to installing the plugin the default box associated with the
+provider needs to be installed.
 
     vagrant box add digital_ocean https://raw.github.com/johnbender/vagrant-digitalocean/master/box/digital_ocean.box
 
 ## Usage
 
-To use the Digital Ocean provider you will need to visit the [API access page](https://www.digitalocean.com/api_access) to retrieve the client identifier and API key associated with your account.
+To use the Digital Ocean provider you will need to visit the
+[API access page](https://www.digitalocean.com/api_access) to retrieve
+the client identifier and API key associated with your account.
 
 ### Config
 
@@ -64,6 +87,7 @@ Vagrant.configure("2") do |config|
     vm.size = "512MB"
     vm.ssh_key_name = "My Key"
     vm.ssh_private_key_path = "~/.ssh/id_rsa"
+    vm.ssh_username = "test"
 
     # optional config for SSL cert on OSX and others
     vm.ca_path = "/usr/local/etc/openssl/ca-bundle.crt"

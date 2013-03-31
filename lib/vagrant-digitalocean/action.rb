@@ -2,16 +2,18 @@ require "vagrant-digitalocean/actions/destroy"
 require "vagrant-digitalocean/actions/read_state"
 require "vagrant-digitalocean/actions/setup_provisioner"
 require "vagrant-digitalocean/actions/setup_sudo"
-require "vagrant-digitalocean/actions/setup_user"
 require "vagrant-digitalocean/actions/create"
 require "vagrant-digitalocean/actions/setup_ssh_key"
 require "vagrant-digitalocean/actions/sync_folders"
 require "vagrant-digitalocean/actions/rebuild"
+require "vagrant-digitalocean/actions/is_active"
+require "vagrant-digitalocean/actions/message_is_active"
+require "vagrant-digitalocean/actions/check_ssh_user"
+require "vagrant-digitalocean/actions/modify_provision_path"
 
 module VagrantPlugins
   module DigitalOcean
     class Action
-      # Include the built-in callable actions, eg SSHExec
       include Vagrant::Action::Builtin
 
       def action(name)
@@ -21,7 +23,13 @@ module VagrantPlugins
       def destroy
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
-          builder.use Actions::Destroy
+          builder.use Call, Actions::IsActive do |env, b|
+            if !env[:is_active]
+              b.use Actions::MessageIsActive
+              next
+            end
+            b.use Actions::Destroy
+          end
         end
       end
 
@@ -35,45 +43,61 @@ module VagrantPlugins
       def ssh
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
-          builder.use SSHExec
+          builder.use Call, Actions::IsActive do |env, b|
+            if !env[:is_active]
+              b.use Actions::MessageIsActive
+              next
+            end
+            b.use Actions::CheckSSHUser
+            b.use SSHExec
+          end
         end
       end
 
       def provision
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
-
-          # sort out sudo for redhat, etc
-          builder.use Actions::SetupSudo
-
-          # execute provisioners
-          builder.use Provision
-
-          builder.use Actions::SetupProvisioner
-
-          builder.use Actions::SyncFolders
+          builder.use Call, Actions::IsActive do |env, b|
+            if !env[:is_active]
+              b.use Actions::MessageIsActive
+              next
+            end
+            b.use Actions::CheckSSHUser
+            b.use Actions::ModifyProvisionPath
+            b.use Provision
+            b.use Actions::SetupSudo
+            b.use Actions::SetupProvisioner
+            b.use Actions::SyncFolders
+          end
         end
       end
 
       def up
-        # TODO figure out when to exit if the vm is created
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
-
-          builder.use Actions::SetupSSHKey
-
-          # build the vm if necessary
-          builder.use Actions::Create
-
-          builder.use provision
+          builder.use Call, Actions::IsActive do |env, b|
+            if env[:is_active]
+              b.use Actions::MessageIsActive
+              next
+            end
+            b.use Actions::SetupSSHKey
+            b.use Actions::Create
+            b.use provision
+          end
         end
       end
 
       def rebuild
         return Vagrant::Action::Builder.new.tap do |builder|
           builder.use ConfigValidate
-          builder.use Actions::Rebuild
-          builder.use provision
+          builder.use Call, Actions::IsActive do |env, b|
+            if !env[:is_active]
+              b.use Actions::MessageIsActive
+              next
+            end
+            b.use Actions::Rebuild
+            b.use provision
+          end
         end
       end
     end

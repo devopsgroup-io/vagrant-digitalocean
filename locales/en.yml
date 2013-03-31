@@ -64,34 +64,28 @@ en:
 
     actions:
       create:
-        skip: "Droplet is active, skipping creation"
         create_droplet: "Creating the droplet"
         wait_active: "Waiting for the droplet to become active (>= 1 min)"
       rebuild:
-        skip: "Droplet is not active, skipping rebuild"
         rebuild: "Rebuilding the droplet"
         wait: "Waiting for the droplet to rebuild (>= 1 min)"
       destroy:
         destroying: "Destroying droplet"
-        not_active_or_new: "Droplet not in the `active` or `new` state"
-        clean_nfs: "Cleaning up NFS exports, may require sudo password"
         wait_off: "Waiting for the droplet to be destroyed"
       setup_sudo:
         exec: "Making alterations to the sudoers file where necessary"
-      setup_nfs:
-        machine_ip: "Droplet IP: %{ip}"
-        host_ip: "Host IP: %{ip}"
-        install: "Installing NFS on the droplet"
-        force_shared_folders: "Forcing shared folders to use NFS where necessary"
       setup_provisioner:
         install: "Installing provisioner: %{provisioner} (>= 2 min)"
-      setup_user:
-        create: "Creating user '%{user}' and setting password"
-        sudo: "Enabling sudo for user '%{user}'"
-        key: "Adding public key to authorized_keys"
       sync_folders:
         rsync_folder: "Rsyncing folder: %{hostpath} => %{guestpath}"
       setup_ssh_key:
         existing_key: "Using existing SSH key: %{name}"
         insecure_key: "Using default insecure vagrant SSH key"
         new_key: "Creating new SSH key: %{name} (%{path})"
+      message_is_active:
+        active: "Droplet is already active"
+        not_active: "Droplet is not active"
+      check_ssh_user:
+        fallback: "Failed to authenticate with '%{user}', falling back to 'root'"
+      modify_provision_path:
+        modify: "Modifying provisioning path to '/home/%{user}/tmp'"
