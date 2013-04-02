@@ -14,19 +14,13 @@ module VagrantPlugins
         end
 
         def call(env)
-          if [:active, :new].include?(env[:machine].state.id)
-            # submit destroy droplet request
-            env[:ui].info @translator.t("destroying")
-            result = @client.request("/droplets/#{env[:machine].id}/destroy")
+          # submit destroy droplet request
+          env[:ui].info @translator.t("destroying")
+          result = @client.request("/droplets/#{env[:machine].id}/destroy")
 
-            # wait for request to complete
-            env[:ui].info @translator.t("wait_off")
-
-            @client.wait_for_event(result["event_id"])
-          else
-
-            env[:ui].info @translator.t("not_active_or_new")
-          end
+          # wait for request to complete
+          env[:ui].info @translator.t("wait_off")
+          @client.wait_for_event(result["event_id"])
 
           @app.call(env)
         end

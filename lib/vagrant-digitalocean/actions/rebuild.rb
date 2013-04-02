@@ -13,12 +13,6 @@ module VagrantPlugins
         end
 
         def call(env)
-          # ensure the machine is in an active state
-          if env[:machine].state.id != :active
-            env[:ui].info @translator.t("skip")
-            return @app.call(env)
-          end
-
           # look up image id
           image_id = @client
             .request("/images", { :filter => "global" })

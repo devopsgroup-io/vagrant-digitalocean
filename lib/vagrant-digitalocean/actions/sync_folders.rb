@@ -30,9 +30,9 @@ module VagrantPlugins
                                         :guestpath => guestpath)
 
             # Create the guest path
-            env[:machine].communicate.sudo("mkdir -p '#{guestpath}'")
+            env[:machine].communicate.sudo("mkdir -p #{guestpath}")
             env[:machine].communicate.sudo(
-              "chown #{ssh_info[:username]} '#{guestpath}'")
+              "chown -R #{ssh_info[:username]} #{guestpath}")
 
             # Rsync over to the guest path using the SSH info
             command = [
