@@ -1,25 +1,20 @@
-#!/bin/bash
+function run_test_for {
+  cp Vagrantfile.$1 Vagrantfile
+  vagrant up --provider=digital_ocean
+  vagrant up
+  vagrant provision
+  vagrant rebuild
+  vagrant destroy
+  vagrant destroy
+}
 
-# uninstall existing versions
-gem uninstall -a vagrant-digitalocean
-
-# clean old gem builds
-rm *.gem
-
-# build the gem
-gem build *.gemspec
-
-# make the gem available for installation as a vagrant plugin
-gem install *.gem
+set -e
 
 # make sure bsdtar is installed
 if ! `which bsdtar > /dev/null`; then
   echo "!! Install bsdtar"
   exit 1
 fi
-
-# install the plugin
-vagrant plugin install vagrant-digitalocean
 
 # move into the dummy box dir
 cd box
@@ -35,5 +30,7 @@ fi
 # add the new version of the dummy box
 vagrant box add digital_ocean digital_ocean.box
 
-# back out of the box dir
-cd -
+cd ../test
+
+run_test_for centos
+run_test_for ubuntu

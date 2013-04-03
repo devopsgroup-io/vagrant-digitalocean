@@ -1,3 +1,5 @@
+Vagrant.require_plugin("vagrant-digitalocean")
+
 Vagrant.configure("2") do |config|
   config.vm.box = "digital_ocean"
 
