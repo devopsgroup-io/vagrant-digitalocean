@@ -1,28 +1,37 @@
-require "vagrant-digitalocean/helpers/file"
-
 module VagrantPlugins
   module DigitalOcean
     module Actions
       class SetupProvisioner
-        include Helpers::File
-
         def initialize(app, env)
-          @app, @env = app, env
+          @app = app
+          @machine = env[:machine]
           @translator = Helpers::Translator.new("actions.setup_provisioner")
         end
 
         def call(env)
-          # TODO prevent setup when no chef provisioner declared
-          # TODO catch ssh failure and report back on install issues
-          # TODO first check to see if it's installed and then skip the info
-          env[:ui].info @translator.t("install", :provisioner => "chef-solo")
-          env[:machine].communicate.execute(chef_install(env[:machine].guest))
+          # check if provisioning is enabled
+          enabled = true
+          enabled = env[:provision_enabled] if env.has_key?(:provision_enabled)
+          return @app.call(env) if !enabled
+
+          # check if a chef provisioner is configured
+          provisioners = @machine.config.vm.provisioners
+          configured = provisioners.reduce(false) do |c, provisioner|
+            provisioner.name =~ /chef/
+          end
+          return @app.call(env) if !configured
+
+          # check if chef is already installed
+          command = "which chef-solo"
+          code = @machine.communicate.execute(command, :error_check => false)
+          return @app.call(env) if code == 0
+
+          # install chef
+          env[:ui].info @translator.t("install", :provisioner => "chef")
+          command = "wget -O - http://www.opscode.com/chef/install.sh | bash"
+          env[:machine].communicate.sudo(command)
 
           @app.call(env)
-        end
-
-        def chef_install(guest)
-          read_script("chef", guest)
         end
       end
     end
