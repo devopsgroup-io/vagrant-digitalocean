@@ -12,6 +12,11 @@ module VagrantPlugins
         end
 
         def call(env)
+          # check if provisioning is enabled
+          enabled = true
+          enabled = env[:provision_enabled] if env.has_key?(:provision_enabled)
+          return @app.call(env) if !enabled
+
           username = @machine.ssh_info()[:username]
           env[:ui].info @translator.t("modify", { :user => username })
 
