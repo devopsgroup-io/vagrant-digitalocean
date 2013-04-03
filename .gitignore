@@ -15,4 +15,5 @@ spec/reports
 test/tmp
 test/version_tmp
 test/Vagrantfile
+test/.vagrant
 tmp

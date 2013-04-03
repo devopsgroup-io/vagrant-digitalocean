@@ -1,13 +1,7 @@
 require "bundler/gem_tasks"
 
-namespace "dev" do
-  task "build" do
-    system "bash bin/build.sh"
-  end
-end
-
 task "test" do
-  result = system("bash bin/test_run.sh")
+  result = system("bash test/test.sh")
 
   if result
     puts "Success!"
