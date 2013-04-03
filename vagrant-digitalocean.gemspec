@@ -5,7 +5,7 @@ require 'vagrant-digitalocean/version'
 
 Gem::Specification.new do |gem|
   gem.name          = "vagrant-digitalocean"
-  gem.version       = VagrantPlugins::Digitalocean::VERSION
+  gem.version       = VagrantPlugins::DigitalOcean::VERSION
   gem.authors       = ["John Bender"]
   gem.email         = ["john.m.bender@gmail.com"]
   gem.description   = %q{Enables Vagrant to manage Digital Ocean droplets}
