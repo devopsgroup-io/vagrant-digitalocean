@@ -95,17 +95,26 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-Note that the example contains the default value. The client identifier and API key are pulled from the environment and the other values are the string representations of the droplet configuration options as provided by the [Digital Ocean API](https://www.digitalocean.com/api). The ca_path configuration option may be necessary depending on your system setup.
+Note that the example contains the default value. The client identifier and
+API key are pulled from the environment and the other values are the string
+representations of the droplet configuration options as provided by the
+[Digital Ocean API](https://www.digitalocean.com/api). The ca_path
+configuration option may be necessary depending on your system setup.
 
-## Tests
+## Development
 
-Testing is very simple initially. There is no guaranteed cleanup. That is, if you are testing using `rake test` **you** are responsible for making sure that there aren't large numbers of test machines left on your Digital Ocean account.
+To contribute, clone the repository, and use [Bundler](http://gembundler.com)
+to install dependencies:
 
-```bash
-rake test # and wait ...
-```
+    $ bundle
 
-Cleanup will be added eventually but will have to be specified explicitly because of the risk of machine deletetion.
+To run the provider's tests:
+
+    $ bundle exec rake test
+
+You can now make modifications. Running `vagrant` within the Bundler
+environment will ensure that plugins installed in your Vagrant
+environment are not loaded.
 
 ## Contributing
 
