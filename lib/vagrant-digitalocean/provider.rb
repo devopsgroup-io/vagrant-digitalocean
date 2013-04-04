@@ -1,24 +1,57 @@
-require "vagrant-digitalocean/action"
+require "vagrant-digitalocean/actions"
 
 module VagrantPlugins
   module DigitalOcean
     class Provider < Vagrant.plugin("2", :provider)
+      include Actions
+
+      attr_reader :translator
+
+      # This class method caches status for all droplets within
+      # the Digital Ocean account. A specific droplet's status
+      # may be refreshed by passing :refresh => true as an option.
+      def self.droplet(machine, opts = {})
+        client = Helpers::ApiClient.new(machine)
+
+        # load status of droplets if it has not been done before
+        if !@droplets
+          result = client.request("/droplets")
+          @droplets = result["droplets"]
+        end
+
+        if opts[:refresh] && machine.id
+          # refresh the droplet status for the given machine
+          @droplets.delete_if { |d| d["id"].to_s == machine.id }
+          result = client.request("/droplets/#{machine.id}")
+          @droplets << droplet = result["droplet"]
+        else
+          # lookup droplet status for the given machine
+          droplet = @droplets.find { |d| d["id"].to_s == machine.id }
+        end
+
+        # if lookup by id failed, check for a droplet with a matching name
+        # and set the id to ensure vagrant stores locally
+        # TODO should this be moved into a seperate command?
+        # TODO should this be configurable by the user?
+        if !droplet
+          name = machine.config.vm.hostname || machine.name
+          droplet = @droplets.find { |d| d["name"] == name.to_s }
+          machine.id = droplet["id"].to_s if droplet
+        end
+
+        droplet ||= {"status" => "not_created"}
+      end
+
       # Initialize the provider to represent the given machine.
-      #
-      # @param [Vagrant::Machine] machine The machine that this provider
-      #   is responsible for.
       def initialize(machine)
         @machine = machine
-        @dispatch = Action.new
+        @translator = Helpers::Translator.new("provider")
       end
 
       # This should return an action callable for the given name.
-      #
-      # @param [Symbol] name Name of the action.
-      # @return [Object] A callable action sequence object, whether it
-      #   is a proc, object, etc.
       def action(name)
-        return @dispatch.action(name) if @dispatch.respond_to?(name)
+        action_method = "action_#{name}"
+        return send(action_method) if respond_to?(action_method)
         nil
       end
 
@@ -49,19 +82,16 @@ module VagrantPlugins
       # mainly for the reason that there is no easy way to exec into an
       # `ssh` prompt with a password, whereas we can pass a private key
       # via commandline.
-      #
-      # @return [Hash] SSH information. For the structure of this hash
-      #   read the accompanying documentation for this method.
       def ssh_info
-        state = @machine.action("read_state")[:machine_state]
+        droplet = Provider.droplet(@machine)
 
-        return nil if state["status"] == :not_created
+        return nil if droplet["status"].to_sym != :active
 
         # TODO remove when defect in vagrant chef provisioner is fixed
         @machine.config.ssh.username = @machine.provider_config.ssh_username
 
         return {
-          :host => state["ip_address"],
+          :host => droplet["ip_address"],
           :port => "22",
           :username => @machine.provider_config.ssh_username,
           :private_key_path => @machine.provider_config.ssh_private_key_path
@@ -71,16 +101,10 @@ module VagrantPlugins
       # This should return the state of the machine within this provider.
       # The state must be an instance of {MachineState}. Please read the
       # documentation of that class for more information.
-      #
-      # @return [MachineState]
       def state
-        state_id = @machine.action("read_state")[:machine_state]["status"].to_sym
-
-        # TODO provide an actual description
-        long = short = state_id.to_s
-
-        # Return the MachineState object
-        Vagrant::MachineState.new(state_id, short, long)
+        state = Provider.droplet(@machine)["status"].to_sym
+        long = short = state.to_s
+        Vagrant::MachineState.new(state, short, long)
       end
     end
   end

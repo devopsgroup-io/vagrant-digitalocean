@@ -4,11 +4,11 @@ module VagrantPlugins
   module DigitalOcean
     module Actions
       class Create
-        include Vagrant::Util::Retryable
         include Helpers::Client
 
         def initialize(app, env)
-          @app, @env = app, env
+          @app = app
+          @machine = env[:machine]
           @client = client
           @translator = Helpers::Translator.new("actions.create")
         end
@@ -18,32 +18,35 @@ module VagrantPlugins
 
           size_id = @client
             .request("/sizes")
-            .find_id(:sizes, :name => env[:machine].provider_config.size)
+            .find_id(:sizes, :name => @machine.provider_config.size)
 
           image_id = @client
             .request("/images", { :filter => "global" })
-            .find_id(:images, :name => env[:machine].provider_config.image)
+            .find_id(:images, :name => @machine.provider_config.image)
 
           region_id = @client
             .request("/regions")
-            .find_id(:regions, :name => env[:machine].provider_config.region)
+            .find_id(:regions, :name => @machine.provider_config.region)
 
-          env[:ui].info @translator.t("create_droplet")
-
+          # submit new droplet request
           result = @client.request("/droplets/new", {
             :size_id => size_id,
             :region_id => region_id,
             :image_id => image_id,
-            # TODO use the current directory name as a post fix
-            :name => "vagrant",
+            :name => @machine.config.vm.hostname || @machine.name,
             :ssh_key_ids => ssh_key_id
           })
 
-          env[:ui].info @translator.t("wait_active")
-          @client.wait_for_event(result["droplet"]["event_id"])
+          # wait for request to complete
+          env[:ui].info @translator.t("wait")
+          @client.wait_for_event(env, result["droplet"]["event_id"])
 
           # assign the machine id for reference in other commands
-          env[:machine].id = result["droplet"]["id"].to_s
+          @machine.id = result["droplet"]["id"].to_s
+
+          # refresh droplet state with provider and output ip address
+          droplet = Provider.droplet(@machine, :refresh => true)
+          env[:ui].info @translator.t("ip", { :ip => droplet["ip_address"] })
 
           @app.call(env)
         end
@@ -53,7 +56,7 @@ module VagrantPlugins
         def recover(env)
           return if env["vagrant.error"].is_a?(Vagrant::Errors::VagrantError)
 
-          if env[:machine].state.id != :not_created
+          if @machine.state.id != :not_created
             terminate(env)
           end
         end
