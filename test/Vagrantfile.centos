@@ -4,6 +4,8 @@ Vagrant.configure("2") do |config|
   config.vm.box = "digital_ocean"
   config.ssh.private_key_path = "test_id_rsa"
 
+  config.vm.synced_folder '/vagrant', '.', :id => 'vagrant-root', :disabled => true
+
   config.vm.provider :digital_ocean do |vm|
     vm.client_id = ENV["DO_CLIENT_ID"]
     vm.api_key = ENV["DO_API_KEY"]
