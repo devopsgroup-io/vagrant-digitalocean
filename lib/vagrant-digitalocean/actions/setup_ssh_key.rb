@@ -7,14 +7,15 @@ module VagrantPlugins
         include Helpers::Client
   
         def initialize(app, env)
-          @app, @env = app, env
+          @app = app
+          @machine = env[:machine]
           @client = client
           @translator = Helpers::Translator.new("actions.setup_ssh_key")
         end
 
         # TODO check the content of the key to see if it has changed
         def call(env)
-          ssh_key_name = env[:machine].provider_config.ssh_key_name
+          ssh_key_name = @machine.provider_config.ssh_key_name
 
           begin
             # assigns existing ssh key id to env for use by other commands
@@ -34,9 +35,9 @@ module VagrantPlugins
 
         def create_ssh_key(name, env)
           # assumes public key exists on the same path as private key with .pub ext
-          path = env[:machine].provider_config.ssh_private_key_path
-          path = env[:machine].config.ssh.private_key_path if !path
-          path = File.expand_path("#{path}.pub", env[:machine].env.root_path)
+          path = @machine.provider_config.ssh_private_key_path
+          path = @machine.config.ssh.private_key_path if !path
+          path = File.expand_path("#{path}.pub", @machine.env.root_path)
 
           env[:ui].info @translator.t("new_key", { :name => name, :path => path })
           begin

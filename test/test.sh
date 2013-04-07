@@ -4,7 +4,7 @@ function run_test_for {
   vagrant up
   vagrant provision
   vagrant rebuild
-  vagrant destroy
+  vagrant halt
   vagrant destroy
 }
 
