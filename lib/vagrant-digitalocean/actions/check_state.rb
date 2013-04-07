@@ -1,13 +1,14 @@
 module VagrantPlugins
   module DigitalOcean
     module Actions
-      class IsActive
+      class CheckState
         def initialize(app, env)
           @app = app
+          @machine = env[:machine]
         end
 
         def call(env)
-          env[:is_active] = env[:machine].state.id == :active
+          env[:machine_state] = @machine.state.id
           @app.call(env)
         end
       end

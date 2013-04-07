@@ -61,17 +61,21 @@ en:
         certs.
       :local_ip: |-
         The Digital Ocean provider was unable to determine the host's IP.
-
+    provider:
+      off: "Droplet is off"
+      not_created: "Droplet has not been created"
+      already_active: "Droplet is already active"
+      already_off: "Droplet is already off"
     actions:
       create:
-        create_droplet: "Creating the droplet"
-        wait_active: "Waiting for the droplet to become active (>= 1 min)"
+        wait: "Creating a new droplet (>= 1 min)"
+        ip: "Droplet IP address: %{ip}"
       rebuild:
-        rebuild: "Rebuilding the droplet"
-        wait: "Waiting for the droplet to rebuild (>= 1 min)"
+        wait: "Rebuiling the droplet (>= 1 min)"
+      rebuild:
+        wait: "Rebooting the droplet"
       destroy:
-        destroying: "Destroying droplet"
-        wait_off: "Waiting for the droplet to be destroyed"
+        wait: "Destroying the droplet"
       setup_sudo:
         exec: "Making alterations to the sudoers file where necessary"
       setup_provisioner:
@@ -79,13 +83,13 @@ en:
       sync_folders:
         rsync_folder: "Rsyncing folder: %{hostpath} => %{guestpath}"
       setup_ssh_key:
-        existing_key: "Using existing SSH key: %{name}"
-        insecure_key: "Using default insecure vagrant SSH key"
-        new_key: "Creating new SSH key: %{name} (%{path})"
-      message_is_active:
-        active: "Droplet is already active"
-        not_active: "Droplet is not active"
+        existing_key: "Using existing SSH key: '%{name}'"
+        new_key: "Creating new SSH key: '%{name}' (%{path})"
       check_ssh_user:
         fallback: "Failed to authenticate with '%{user}', falling back to 'root'"
       modify_provision_path:
         modify: "Modifying provisioning path to '/home/%{user}/tmp'"
+      power_off:
+        wait: "Powering off the droplet"
+      power_on:
+        wait: "Powering on the droplet"
