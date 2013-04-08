@@ -18,7 +18,7 @@ individuals when creating machines on Digital Ocean.
 ```ruby
     config.vm.provider :digital_ocean do |provider|
         provider.ssh_key_name = "My Laptop"
-        provider.ssh_private_key_path = "~/.ssh/id_rsa.pub"
+        provider.ssh_private_key_path = "~/.ssh/id_rsa"
 
         # additional configuration here
     end
