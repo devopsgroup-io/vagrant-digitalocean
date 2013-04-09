@@ -6,6 +6,8 @@ en:
       private_key_required: "SSH private key path required"
       private_key_missing: "SSH private key is missing: %{key}"
       public_key_missing: "SSH public key is missing: %{key}.pub"
+    provider:
+      fallback: "Failed to authenticate with '%{user}', falling back to 'root'"
     errors:
       public_key: "Failed to read public key: %{path}"
       api_status: |-
@@ -61,12 +63,11 @@ en:
         certs.
       :local_ip: |-
         The Digital Ocean provider was unable to determine the host's IP.
-    provider:
+    actions:
       off: "Droplet is off"
       not_created: "Droplet has not been created"
       already_active: "Droplet is already active"
       already_off: "Droplet is already off"
-    actions:
       create:
         wait: "Creating a new droplet (>= 1 min)"
         ip: "Droplet IP address: %{ip}"

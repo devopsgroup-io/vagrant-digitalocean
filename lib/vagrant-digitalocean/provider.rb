@@ -1,12 +1,9 @@
 require "vagrant-digitalocean/actions"
+require "vagrant-digitalocean/provider"
 
 module VagrantPlugins
   module DigitalOcean
     class Provider < Vagrant.plugin("2", :provider)
-      include Actions
-
-      attr_reader :translator
-
       # This class method caches status for all droplets within
       # the Digital Ocean account. A specific droplet's status
       # may be refreshed by passing :refresh => true as an option.
@@ -50,8 +47,7 @@ module VagrantPlugins
 
       # This should return an action callable for the given name.
       def action(name)
-        action_method = "action_#{name}"
-        return send(action_method) if respond_to?(action_method)
+        return Actions.send(name) if Actions.respond_to?(name)
         nil
       end
 
@@ -87,13 +83,10 @@ module VagrantPlugins
 
         return nil if droplet["status"].to_sym != :active
 
-        # TODO remove when defect in vagrant chef provisioner is fixed
-        @machine.config.ssh.username = @machine.provider_config.ssh_username
-
         return {
           :host => droplet["ip_address"],
           :port => "22",
-          :username => @machine.provider_config.ssh_username,
+          :username => ssh_username,
           :private_key_path => @machine.provider_config.ssh_private_key_path
         }
       end
@@ -105,6 +98,35 @@ module VagrantPlugins
         state = Provider.droplet(@machine)["status"].to_sym
         long = short = state.to_s
         Vagrant::MachineState.new(state, short, long)
+      end
+
+      protected
+
+      def ssh_username
+        # return if the username has already been set for this vagrant run
+        return @ssh_username if @ssh_username
+
+        # return root if the user has not configured the ssh username
+        @ssh_username = @machine.provider_config.ssh_username
+        @machine.config.ssh.username = @ssh_username
+        return @ssh_username if @ssh_username == "root"
+
+        begin
+          # attempt ssh communication with the configured ssh username
+          tries = @machine.config.ssh.max_tries
+          @machine.config.ssh.max_tries = 0
+          @machine.communicate.execute("echo")
+        rescue Vagrant::Errors::SSHAuthenticationFailed
+          # fallback to root username on authentication failure
+          @machine.env.ui.info @translator.t("fallback",
+            :user => @ssh_username, :progress => false)
+          @ssh_username = "root"
+          @machine.config.ssh.username = "root"
+        ensure
+          @machine.config.ssh.max_tries = tries
+        end
+
+        @ssh_username
       end
     end
   end

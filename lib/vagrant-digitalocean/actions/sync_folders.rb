@@ -13,8 +13,6 @@ module VagrantPlugins
         end
 
         def call(env)
-          @app.call(env)
-
           ssh_info = env[:machine].ssh_info
 
           env[:machine].config.vm.synced_folders.each do |id, data|
@@ -51,6 +49,8 @@ module VagrantPlugins
                 :stderr => r.stderr
             end
           end
+
+          @app.call(env)
         end
       end
     end

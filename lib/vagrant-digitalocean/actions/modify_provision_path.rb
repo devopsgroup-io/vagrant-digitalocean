@@ -2,8 +2,6 @@ module VagrantPlugins
   module DigitalOcean
     module Actions
       class ModifyProvisionPath
-        include Vagrant::Util::Counter
-
         def initialize(app, env)
           @app = app
           @machine = env[:machine]
@@ -18,23 +16,18 @@ module VagrantPlugins
           return @app.call(env) if !enabled
 
           username = @machine.ssh_info()[:username]
-          env[:ui].info @translator.t("modify", { :user => username })
 
-          # modify provisioning paths to enable different users to
-          # provision the same machine
+          # change ownership of the provisioning path recursively to the
+          # ssh user
           #
           # TODO submit patch to vagrant to set appropriate permissions
           # based on ssh username
-          @machine.communicate.execute("mkdir -p /home/#{username}/tmp")
-          env[:global_config].vm.provisioners.each do |prov|
-            if prov.name == :shell
-              prov.config.upload_path =
-                prov.config.upload_path.prepend("/home/#{username}")
-            else
-              counter = get_and_update_counter(:provisioning_path)
-              path = "/home/#{username}/tmp/vagrant-chef-#{counter}"
-              prov.config.provisioning_path = path
-            end
+          @machine.config.vm.provisioners.each do |provisioner|
+            cfg = provisioner.config
+            path = cfg.upload_path if cfg.respond_to? :upload_path
+            path = cfg.provisioning_path if cfg.respond_to? :provisioning_path
+            @machine.communicate.sudo("chown -R #{username} #{path}",
+              :error_check => false)
           end
 
           @app.call(env)
