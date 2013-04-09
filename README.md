@@ -98,8 +98,12 @@ end
 Note that the example contains the default value. The client identifier and
 API key are pulled from the environment and the other values are the string
 representations of the droplet configuration options as provided by the
-[Digital Ocean API](https://www.digitalocean.com/api). The ca_path
-configuration option may be necessary depending on your system setup.
+[Digital Ocean API](https://www.digitalocean.com/api). 
+
+If you do not have the client identifier and the API Key as environment variables 
+on your system then remove the ENV[] parts and leave the credentials surrounded by quotes only.
+
+The ca_path configuration option may be necessary depending on your system setup.
 
 ## Development
 
