@@ -63,7 +63,7 @@ Installation is performed in the prescribed manner for Vagrant 1.1 plugins.
 In addition to installing the plugin the default box associated with the
 provider needs to be installed.
 
-    vagrant box add digital_ocean https://raw.github.com/johnbender/vagrant-digitalocean/master/box/digital_ocean.box
+    vagrant box add digital_ocean https://raw.github.com/smdahlen/vagrant-digitalocean/master/box/digital_ocean.box
 
 ## Usage
 
