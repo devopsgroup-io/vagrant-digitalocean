@@ -1,17 +1,7 @@
-function run_test_for {
-  cp Vagrantfile.$1 Vagrantfile
-  vagrant up --provider=digital_ocean
-  vagrant up
-  vagrant provision
-  vagrant rebuild
-  vagrant halt
-  vagrant destroy
-}
-
 set -e
 
 # make sure bsdtar is installed
-if ! `which bsdtar > /dev/null`; then
+if ! (which bsdtar > /dev/null); then
   echo "!! Install bsdtar"
   exit 1
 fi
@@ -32,5 +22,9 @@ vagrant box add digital_ocean digital_ocean.box
 
 cd ../test
 
-run_test_for centos
-run_test_for ubuntu
+vagrant up --provider=digital_ocean
+vagrant up
+vagrant provision
+vagrant rebuild
+vagrant halt
+vagrant destroy

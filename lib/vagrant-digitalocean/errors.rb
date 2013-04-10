@@ -1,5 +1,3 @@
-require "vagrant"
-
 module VagrantPlugins
   module DigitalOcean
     module Errors

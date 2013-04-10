@@ -1,25 +1,32 @@
-require "vagrant-digitalocean/helpers/file"
-
 module VagrantPlugins
   module DigitalOcean
     module Actions
       class SetupSudo
-        include Helpers::File
-
         def initialize(app, env)
-          @app, @env = app, env
-          @translator = Helpers::Translator.new("actions.setup_sudo")
+          @app = app
+          @machine = env[:machine]
+          @logger = Log4r::Logger.new('vagrant::digitalocean::setup_sudo')
         end
 
         def call(env)
-          env[:ui].info @translator.t("exec")
-          env[:machine].communicate.execute(fix_sudo(env[:machine].guest))
+          # override ssh username to root temporarily
+          user = @machine.config.ssh.username
+          @machine.config.ssh.username = 'root'
+
+          case @machine.guest.to_s
+          when /RedHat/
+            env[:ui].info I18n.t('vagrant_digital_ocean.info.modifying_sudo')
+
+            # disable tty requirement for sudo
+            @machine.communicate.execute(<<-'BASH')
+              sed -i'.bk' -e 's/\(Defaults\s\+requiretty\)/# \1/' /etc/sudoers
+            BASH
+          end
+
+          # reset ssh username
+          @machine.config.ssh.username = user
 
           @app.call(env)
-        end
-
-        def fix_sudo(guest)
-          read_script("sudo", guest, false)
         end
       end
     end

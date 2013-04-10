@@ -1,6 +1,6 @@
-require "vagrant-digitalocean/helpers/result"
-require "faraday"
-require "json"
+require 'vagrant-digitalocean/helpers/result'
+require 'faraday'
+require 'json'
 
 module VagrantPlugins
   module DigitalOcean
@@ -17,7 +17,7 @@ module VagrantPlugins
         def initialize(machine)
           @config = machine.provider_config
           @client = Faraday.new({
-            :url => "https://api.digitalocean.com/",
+            :url => 'https://api.digitalocean.com/',
             :ssl => {
               :ca_file => @config.ca_path
             }
@@ -42,7 +42,7 @@ module VagrantPlugins
           end
 
           # remove the api key in case an error gets dumped to the console
-          params[:api_key] = "REMOVED"
+          params[:api_key] = 'REMOVED'
 
           begin
             body = JSON.parse(result.body)
@@ -55,11 +55,11 @@ module VagrantPlugins
             })
           end
 
-          if body["status"] != "OK"
+          if body['status'] != 'OK'
             raise(Errors::APIStatusError, {
               :path => path,
               :params => params,
-              :status => body["status"],
+              :status => body['status'],
               :response => body.inspect
             })
           end
@@ -76,7 +76,7 @@ module VagrantPlugins
             result = self.request("/events/#{id}")
 
             yield result if block_given?
-            raise "not ready" if result["event"]["action_status"] != "done"
+            raise 'not ready' if result['event']['action_status'] != 'done'
           end
         end
       end

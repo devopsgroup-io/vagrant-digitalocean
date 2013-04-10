@@ -1,4 +1,4 @@
-require "vagrant-digitalocean/helpers/client"
+require 'vagrant-digitalocean/helpers/client'
 
 module VagrantPlugins
   module DigitalOcean
@@ -10,13 +10,13 @@ module VagrantPlugins
           @app = app
           @machine = env[:machine]
           @client = client
-          @translator = Helpers::Translator.new("actions.rebuild")
+          @logger = Log4r::Logger.new('vagrant::digitalocean::rebuild')
         end
 
         def call(env)
           # look up image id
           image_id = @client
-            .request("/images", { :filter => "global" })
+            .request('/images', { :filter => 'global' })
             .find_id(:images, :name => @machine.provider_config.image)
 
           # submit rebuild request
@@ -25,8 +25,8 @@ module VagrantPlugins
           })
 
           # wait for request to complete
-          env[:ui].info @translator.t("wait")
-          @client.wait_for_event(env, result["event_id"])
+          env[:ui].info I18n.t('vagrant_digital_ocean.info.rebuilding')
+          @client.wait_for_event(env, result['event_id'])
 
           @app.call(env)
         end

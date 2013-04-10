@@ -1,4 +1,4 @@
-require "vagrant-digitalocean/helpers/client"
+require 'vagrant-digitalocean/helpers/client'
 
 module VagrantPlugins
   module DigitalOcean
@@ -10,7 +10,7 @@ module VagrantPlugins
           @app = app
           @machine = env[:machine]
           @client = client
-          @translator = Helpers::Translator.new("actions.power_on")
+          @logger = Log4r::Logger.new('vagrant::digitalocean::power_on')
         end
 
         def call(env)
@@ -18,8 +18,8 @@ module VagrantPlugins
           result = @client.request("/droplets/#{@machine.id}/power_on")
 
           # wait for request to complete
-          env[:ui].info @translator.t("wait")
-          @client.wait_for_event(env, result["event_id"])
+          env[:ui].info I18n.t('vagrant_digital_ocean.info.powering_on') 
+          @client.wait_for_event(env, result['event_id'])
 
           # refresh droplet state with provider
           Provider.droplet(@machine, :refresh => true)

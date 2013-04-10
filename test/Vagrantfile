@@ -1,0 +1,37 @@
+Vagrant.require_plugin('vagrant-digitalocean')
+
+Vagrant.configure('2') do |config|
+  config.vm.box = 'digital_ocean'
+
+  config.ssh.username = 'tester'
+  config.ssh.private_key_path = 'test_id_rsa'
+
+  config.vm.synced_folder '/vagrant', '.', :id => 'vagrant-root', :disabled => true
+
+  config.vm.provider :digital_ocean do |provider|
+    provider.client_id = ENV['DO_CLIENT_ID']
+    provider.api_key = ENV['DO_API_KEY']
+    provider.region = 'New York 1'
+    provider.size = '512MB'
+    provider.ssh_key_name = 'Test Key'
+  end
+
+  config.vm.provision :shell, :path => 'scripts/provision.sh'
+
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = 'cookbooks'
+    chef.add_recipe 'test'
+  end
+
+  config.vm.define :ubuntu do |ubuntu|
+    ubuntu.vm.provider :digital_ocean do |provider|
+      provider.image = 'Ubuntu 12.04 x64 Server'
+    end
+  end
+
+  config.vm.define :centos do |centos|
+    centos.vm.provider :digital_ocean do |provider|
+      provider.image = 'CentOS 6.3 x64'
+    end
+  end
+end

@@ -1,15 +1,35 @@
 en:
   vagrant_digital_ocean:
+    info:
+      off: "Droplet is off"
+      not_created: "Droplet has not been created"
+      already_active: "Droplet is already active"
+      already_off: "Droplet is already off"
+      creating: "Creating a new droplet..."
+      droplet_ip: "Assigned IP address: %{ip}"
+      destroying: "Destroying the droplet..."
+      powering_off: "Powering off the droplet..."
+      powering_on: "Powering on the droplet..."
+      rebuilding: "Rebuilding the droplet..."
+      reloading: "Rebooting the droplet..."
+      creating_user: "Creating user account: %{user}..."
+      modifying_sudo: "Modifying sudoers file to remove tty requirement..."
+      installing_provisioner: "Installing provisioner: %{provisioner}..."
+      using_key: "Using existing SSH key: %{name}"
+      creating_key: "Creating new SSH key: %{name}..."
+      rsyncing: "Rsyncing folder: %{hostpath} => %{guestpath}..."
     config:
-      client_id_required: "Client ID required"
-      api_key_required: "API key required"
-      private_key_required: "SSH private key path required"
-      private_key_missing: "SSH private key is missing: %{key}"
-      public_key_missing: "SSH public key is missing: %{key}.pub"
-    provider:
-      fallback: "Failed to authenticate with '%{user}', falling back to 'root'"
+      client_id: "Client ID is required"
+      api_key: "API key is required"
+      private_key: "SSH private key path is required"
+      public_key: "SSH public key not found: %{key}"
     errors:
-      public_key: "Failed to read public key: %{path}"
+      public_key: |-
+        There was an issue reading the public key at:
+
+        Path: %{path}
+
+        Please check the file's permissions.
       api_status: |-
         There was an issue with the request made to the Digital Ocean
         API at:
@@ -21,7 +41,6 @@ en:
 
         Status: %{status}
         Response: %{response}
-
       rsync: |-
         There was an error when attemping to rsync a share folder.
         Please inspect the error message below for more info.
@@ -29,8 +48,7 @@ en:
         Host path: %{hostpath}
         Guest path: %{guestpath}
         Error: %{stderr}
-
-      :json: |-
+      json: |-
         There was an issue with the JSON response from the Digital Ocean
         API at:
 
@@ -40,7 +58,7 @@ en:
         The response JSON from the API was:
 
         Response: %{response}
-      :result_match: |-
+      result_match: |-
         The result collection for %{collection_name}:
 
         %{sub_obj}
@@ -49,7 +67,7 @@ en:
         key "%{key}".
 
         Please ensure that the configured value exists in the collection.
-      :certificate: |-
+      certificate: |-
         The secure connection to the Digital Ocean API has failed. Please
         ensure that your local certificates directory is defined in the
         provider config.
@@ -61,36 +79,5 @@ en:
         This is generally caused by the OpenSSL configuration associated
         with the Ruby install being unaware of the system specific ca
         certs.
-      :local_ip: |-
+      local_ip: |-
         The Digital Ocean provider was unable to determine the host's IP.
-    actions:
-      off: "Droplet is off"
-      not_created: "Droplet has not been created"
-      already_active: "Droplet is already active"
-      already_off: "Droplet is already off"
-      create:
-        wait: "Creating a new droplet (>= 1 min)"
-        ip: "Droplet IP address: %{ip}"
-      rebuild:
-        wait: "Rebuiling the droplet (>= 1 min)"
-      rebuild:
-        wait: "Rebooting the droplet"
-      destroy:
-        wait: "Destroying the droplet"
-      setup_sudo:
-        exec: "Making alterations to the sudoers file where necessary"
-      setup_provisioner:
-        install: "Installing provisioner: %{provisioner} (>= 2 min)"
-      sync_folders:
-        rsync_folder: "Rsyncing folder: %{hostpath} => %{guestpath}"
-      setup_ssh_key:
-        existing_key: "Using existing SSH key: '%{name}'"
-        new_key: "Creating new SSH key: '%{name}' (%{path})"
-      check_ssh_user:
-        fallback: "Failed to authenticate with '%{user}', falling back to 'root'"
-      modify_provision_path:
-        modify: "Modifying provisioning path to '/home/%{user}/tmp'"
-      power_off:
-        wait: "Powering off the droplet"
-      power_on:
-        wait: "Powering on the droplet"

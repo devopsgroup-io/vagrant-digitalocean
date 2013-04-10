@@ -1,16 +1,16 @@
-require "vagrant-digitalocean/helpers/client"
+require 'vagrant-digitalocean/helpers/client'
 
 module VagrantPlugins
   module DigitalOcean
     module Actions
-      class SetupSSHKey
+      class SetupKey
         include Helpers::Client
   
         def initialize(app, env)
           @app = app
           @machine = env[:machine]
           @client = client
-          @translator = Helpers::Translator.new("actions.setup_ssh_key")
+          @logger = Log4r::Logger.new('vagrant::digitalocean::setup_key')
         end
 
         # TODO check the content of the key to see if it has changed
@@ -20,10 +20,12 @@ module VagrantPlugins
           begin
             # assigns existing ssh key id to env for use by other commands
             env[:ssh_key_id] = @client
-              .request("/ssh_keys/")
+              .request('/ssh_keys/')
               .find_id(:ssh_keys, :name => ssh_key_name)
 
-            env[:ui].info @translator.t("existing_key", { :name => ssh_key_name })
+            env[:ui].info I18n.t('vagrant_digital_ocean.info.using_key', {
+              :name => ssh_key_name
+            })
           rescue Errors::ResultMatchError
             env[:ssh_key_id] = create_ssh_key(ssh_key_name, env)
           end
@@ -35,25 +37,18 @@ module VagrantPlugins
 
         def create_ssh_key(name, env)
           # assumes public key exists on the same path as private key with .pub ext
-          path = @machine.provider_config.ssh_private_key_path
-          path = @machine.config.ssh.private_key_path if !path
-          path = File.expand_path("#{path}.pub", @machine.env.root_path)
+          private_key_path = @machine.config.ssh.private_key_path
+          pub_key = DigitalOcean.public_key(private_key_path)
 
-          env[:ui].info @translator.t("new_key", { :name => name, :path => path })
-          begin
-            file = File.open(path)
-            key = file.read
-            file.close
-          rescue
-            raise Errors::PublicKeyError,
-              :path => path
-          end
+          env[:ui].info I18n.t('vagrant_digital_ocean.info.creating_key', {
+            :name => name
+          }) 
 
-          result = @client.request("/ssh_keys/new", {
+          result = @client.request('/ssh_keys/new', {
             :name => name,
-            :ssh_pub_key => key
+            :ssh_pub_key => pub_key
           })
-          result["ssh_key"]["id"]
+          result['ssh_key']['id']
         end
       end
     end

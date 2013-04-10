@@ -1,40 +1,39 @@
-require "vagrant/util/subprocess"
+require 'vagrant/util/subprocess'
 
 module VagrantPlugins
   module DigitalOcean
     module Actions
-      # This middleware uses `rsync` to sync the folders over to the
-      # Digital Ocean instance. The implementation was lifted from the
-      # vagrant-aws provider plugin.
       class SyncFolders
         def initialize(app, env)
-          @app, @env = app, env
-          @translator = Helpers::Translator.new("actions.sync_folders")
+          @app = app
+          @machine = env[:machine]
+          @logger = Log4r::Logger.new('vagrant::digitalocean::sync_folders')
         end
 
         def call(env)
-          ssh_info = env[:machine].ssh_info
+          ssh_info = @machine.ssh_info
 
-          env[:machine].config.vm.synced_folders.each do |id, data|
+          @machine.config.vm.synced_folders.each do |id, data|
             next if data[:disabled]
 
             hostpath  = File.expand_path(data[:hostpath], env[:root_path])
             guestpath = data[:guestpath]
 
-            # Make sure there is a trailing slash on the host path to
+            # make sure there is a trailing slash on the host path to
             # avoid creating an additional directory with rsync
             hostpath = "#{hostpath}/" if hostpath !~ /\/$/
 
-            env[:ui].info @translator.t("rsync_folder",
-                                        :hostpath => hostpath,
-                                        :guestpath => guestpath)
+            env[:ui].info I18n.t('vagrant_digital_ocean.info.rsyncing', {
+              :hostpath => hostpath,
+              :guestpath => guestpath
+            })
 
-            # Create the guest path
-            env[:machine].communicate.sudo("mkdir -p #{guestpath}")
-            env[:machine].communicate.sudo(
+            # create the guest path
+            @machine.communicate.sudo("mkdir -p #{guestpath}")
+            @machine.communicate.sudo(
               "chown -R #{ssh_info[:username]} #{guestpath}")
 
-            # Rsync over to the guest path using the SSH info
+            # rsync over to the guest path using the ssh info
             command = [
               "rsync", "--verbose", "--archive", "-z",
               "-e", "ssh -p #{ssh_info[:port]} -o StrictHostKeyChecking=no -i '#{ssh_info[:private_key_path]}'",

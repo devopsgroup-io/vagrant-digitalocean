@@ -1,4 +1,4 @@
-require "vagrant-digitalocean/helpers/client"
+require 'vagrant-digitalocean/helpers/client'
 
 module VagrantPlugins
   module DigitalOcean
@@ -10,26 +10,26 @@ module VagrantPlugins
           @app = app
           @machine = env[:machine]
           @client = client
-          @translator = Helpers::Translator.new("actions.create")
+          @logger = Log4r::Logger.new('vagrant::digitalocean::create')
         end
 
         def call(env)
           ssh_key_id = env[:ssh_key_id]
 
           size_id = @client
-            .request("/sizes")
+            .request('/sizes')
             .find_id(:sizes, :name => @machine.provider_config.size)
 
           image_id = @client
-            .request("/images", { :filter => "global" })
+            .request('/images', { :filter => 'global' })
             .find_id(:images, :name => @machine.provider_config.image)
 
           region_id = @client
-            .request("/regions")
+            .request('/regions')
             .find_id(:regions, :name => @machine.provider_config.region)
 
           # submit new droplet request
-          result = @client.request("/droplets/new", {
+          result = @client.request('/droplets/new', {
             :size_id => size_id,
             :region_id => region_id,
             :image_id => image_id,
@@ -38,15 +38,17 @@ module VagrantPlugins
           })
 
           # wait for request to complete
-          env[:ui].info @translator.t("wait")
-          @client.wait_for_event(env, result["droplet"]["event_id"])
+          env[:ui].info I18n.t('vagrant_digital_ocean.info.creating') 
+          @client.wait_for_event(env, result['droplet']['event_id'])
 
           # assign the machine id for reference in other commands
-          @machine.id = result["droplet"]["id"].to_s
+          @machine.id = result['droplet']['id'].to_s
 
           # refresh droplet state with provider and output ip address
           droplet = Provider.droplet(@machine, :refresh => true)
-          env[:ui].info @translator.t("ip", { :ip => droplet["ip_address"] })
+          env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_ip', {
+            :ip => droplet['ip_address']
+          })
 
           @app.call(env)
         end
@@ -54,7 +56,7 @@ module VagrantPlugins
         # Both the recover and terminate are stolen almost verbatim from
         # the Vagrant AWS provider up action
         def recover(env)
-          return if env["vagrant.error"].is_a?(Vagrant::Errors::VagrantError)
+          return if env['vagrant.error'].is_a?(Vagrant::Errors::VagrantError)
 
           if @machine.state.id != :not_created
             terminate(env)

@@ -5,8 +5,8 @@ module VagrantPlugins
         def initialize(app, env)
           @app = app
           @machine = env[:machine]
-          @translator =
-            Helpers::Translator.new("actions.modify_provision_path")
+          @logger =
+            Log4r::Logger.new('vagrant::digitalocean::modify_provision_path')
         end
 
         def call(env)

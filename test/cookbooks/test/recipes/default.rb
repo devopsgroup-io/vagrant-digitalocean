@@ -1,1 +1,1 @@
-log "Testing 1 2 3!"
+log 'Testing 1 2 3!'

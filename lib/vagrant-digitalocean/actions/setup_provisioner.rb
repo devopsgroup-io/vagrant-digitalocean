@@ -5,7 +5,8 @@ module VagrantPlugins
         def initialize(app, env)
           @app = app
           @machine = env[:machine]
-          @translator = Helpers::Translator.new("actions.setup_provisioner")
+          @logger = 
+            Log4r::Logger.new('vagrant::digitalocean::setup_provisioner')
         end
 
         def call(env)
@@ -22,14 +23,15 @@ module VagrantPlugins
           return @app.call(env) if !configured
 
           # check if chef is already installed
-          command = "which chef-solo"
+          command = 'which chef-solo'
           code = @machine.communicate.execute(command, :error_check => false)
           return @app.call(env) if code == 0
 
           # install chef
-          env[:ui].info @translator.t("install", :provisioner => "chef")
-          command = "wget -O - http://www.opscode.com/chef/install.sh | bash"
-          env[:machine].communicate.sudo(command)
+          key = 'vagrant_digital_ocean.info.installing_provisioner'
+          env[:ui].info I18n.t(key, { :provisioner => 'chef' })
+          command = 'wget -O - http://www.opscode.com/chef/install.sh | bash'
+          @machine.communicate.sudo(command)
 
           @app.call(env)
         end

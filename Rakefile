@@ -1,18 +1,22 @@
-require "bundler/gem_tasks"
+require 'bundler/gem_helper'
 
-task "test" do
-  result = system("bash test/test.sh")
+namespace :gem do
+  Bundler::GemHelper.install_tasks
+end
+
+task :test do
+  result = sh 'bash test/test.sh'
 
   if result
-    puts "Success!"
+    puts 'Success!'
   else
-    puts "Failure!"
+    puts 'Failure!'
     exit 1
   end
 end
 
 def env
-  ['DO_CLIENT_ID', 'DO_API_KEY', 'VAGRANT_LOG'].inject("") do |acc, key|
+  ['DO_CLIENT_ID', 'DO_API_KEY', 'VAGRANT_LOG'].inject('') do |acc, key|
     acc += "#{key}=#{ENV[key] || 'error'} "
   end
 end
