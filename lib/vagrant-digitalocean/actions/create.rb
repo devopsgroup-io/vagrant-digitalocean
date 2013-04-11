@@ -5,6 +5,7 @@ module VagrantPlugins
     module Actions
       class Create
         include Helpers::Client
+        include Vagrant::Util::Retryable
 
         def initialize(app, env)
           @app = app
@@ -49,6 +50,15 @@ module VagrantPlugins
           env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_ip', {
             :ip => droplet['ip_address']
           })
+
+          # wait for ssh to be ready using the root user account
+          user = @machine.config.ssh.username
+          @machine.config.ssh.username = 'root'
+          retryable(:tries => 30, :sleep => 10) do
+            next if env[:interrupted]
+            raise 'not ready' if !@machine.communicate.ready?
+          end
+          @machine.config.ssh.username = user
 
           @app.call(env)
         end
