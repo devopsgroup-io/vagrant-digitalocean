@@ -1,108 +1,125 @@
-# Vagrant Digital Ocean
-
-`vagrant-digitalocean` is a provider plugin for Vagrant that allows the
+Digital Ocean Vagrant Provider
+==============================
+`vagrant-digitalocean` is a provider plugin for Vagrant that supports the
 management of [Digital Ocean](https://www.digitalocean.com/) droplets
 (instances).
 
-## SSH Authentication
+Current features include:
+- create and destroy droplets
+- power on and off droplets
+- rebuild a droplet
+- provision a droplet with the shell or Chef provisioners
+- setup a SSH public key for authentication
+- create a new user account during droplet creation
 
-This provider does not support the use of Vagrant's insecure key for SSH
-access. You must specify your own SSH key. The key may be defined within
-the global config section, `config.ssh.private_key_path`, or within the
-provider config section, `provider.ssh_private_key_path`. The provider
-config will take precedence. Additionally, you may provide a name for
-the SSH key using the `ssh_key_name` attribute within the provider config
-section. This is useful for de-conflict SSH keys used by different
-individuals when creating machines on Digital Ocean.
+The provider has been tested with Vagrant 1.1.5 using Ubuntu 12.04 and
+CentOS 6.3 guest operating systems.
 
-```ruby
-    config.vm.provider :digital_ocean do |provider|
-        provider.ssh_key_name = "My Laptop"
-        provider.ssh_private_key_path = "~/.ssh/id_rsa"
+Install
+-------
+Installation of the provider requires two steps:
 
-        # additional configuration here
-    end
+1. Install the provider plugin using the Vagrant command-line interface:
+
+        $ vagrant plugin install vagrant-digitalocean
+
+2. Install the default provider box:
+
+        $ vagrant box add digital_ocean https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box
+
+**NOTE:** If you are using a Mac, you may need to install a CA bundle to enable SSL
+communication with the Digital Ocean API. It is recommended to first install
+[Homebrew](http://mxcl.github.io/homebrew/). With Homebrew installed, run
+the following command to install the bundle:
+
+    $ brew install curl-ca-bundle
+
+Once the bundle is installed, add the following environment variable to your
+`.bash_profile` script and `source` it:
+
+```bash
+export SSL_CERT_FILE=/usr/local/opt/curl-ca-bundle/share/ca-bundle.crt
 ```
 
-The provider will assume the public key path is identical to the private
-key path with the *.pub* extention.
-
-By default, the provider uses the `root` account for SSH access. This is
-required for initial droplet creation and provisioning. You may specify
-an account that may be used for subsequent SSH access and provisioning
-by setting the `ssh_username` attribute within the provider config
-section.
-
-## Supported Guests/Hosts
-
-The project is currently in alpha state and has been tested on the
-following hosts and guests:
-
-Hosts:
-
-* Ubuntu 12.04
-* Mac OS X
-
-Guests:
-
-* Ubuntu 12.04
-* CentOS 6
-
-## Supported Provisioners
-
-The shell provisioner is supported by default but other provisioners require
-bootstrapping on the server. Chef is currently the only supported provisioner.
-Adding support for puppet and others requires adding the install scripts.
-
-## Installation
-
-Installation is performed in the prescribed manner for Vagrant 1.1 plugins.
-
-    vagrant plugin install vagrant-digitalocean
-
-In addition to installing the plugin the default box associated with the
-provider needs to be installed.
-
-    vagrant box add digital_ocean https://raw.github.com/smdahlen/vagrant-digitalocean/master/box/digital_ocean.box
-
-## Usage
-
-To use the Digital Ocean provider you will need to visit the
-[API access page](https://www.digitalocean.com/api_access) to retrieve
-the client identifier and API key associated with your account.
-
-### Config
-
-Supported provider configuration options are as follows:
+Configure
+---------
+Once the provider has been installed, you will need to configure your project
+to use it. The most basic `Vagrantfile` to create a droplet on Digital Ocean
+is shown below:
 
 ```ruby
-Vagrant.configure("2") do |config|
-  config.vm.box = "digital_ocean"
-
-  config.vm.provider :digital_ocean do |vm|
-    vm.client_id = ENV["DO_CLIENT_ID"]
-    vm.api_key = ENV["DO_API_KEY"]
-    vm.image = "Ubuntu 12.04 x32 Server"
-    vm.region = "New York 1"
-    vm.size = "512MB"
-    vm.ssh_key_name = "My Key"
-    vm.ssh_private_key_path = "~/.ssh/id_rsa"
-    vm.ssh_username = "test"
-
-    # optional config for SSL cert on OSX and others
-    vm.ca_path = "/usr/local/etc/openssl/ca-bundle.crt"
+Vagrant.configure('2') do
+  config.ssh.private_key_path = '~/.ssh/id_rsa'
+  config.vm.box = 'digital_ocean'
+  config.vm.provider :digital_ocean do |provider|
+    provider.client_id = 'YOUR CLIENT ID'
+    provider.api_key = 'YOUR API KEY'
   end
 end
 ```
 
-Note that the example contains the default value. The client identifier and
-API key are pulled from the environment and the other values are the string
-representations of the droplet configuration options as provided by the
-[Digital Ocean API](https://www.digitalocean.com/api). The ca_path
-configuration option may be necessary depending on your system setup.
+Please note the following:
+- You *must* specify the `config.ssh.private_key_path` to enable authentication
+  with the droplet. The provider will create a new Digital Ocean SSH key using
+  your public key which is assumed to be the `private_key_path` with a *.pub*
+  extension.
+- You *must* specify your Digital Ocean Client and API keys. These may be
+  found on the control panel within the *My Settings > API Access* section.
 
-## Development
+**Supported Configuration Attributes**
 
+The following attributes are available to further configure the provider:
+- `provider.image` - A string representing the image to use when creating a
+   new droplet (e.g. `Debian 6.0 x64`). The available options may
+   be found on Digital Ocean's new droplet [form](https://www.digitalocean.com/droplets/new).
+   It defaults to `Ubuntu 12.04 x64 Server`.
+- `provider.region` - A string representing the region to create the new
+   droplet in. The available options are `New York 1` and `Amsterdam 1`. It
+   defaults to `New York 1`.
+- `provider.size` - A string representing the size to use when creating a
+  new droplet (e.g. `1GB`). It defaults to `512MB`.
+- `provider.ssh_key_name` - A String representing the name to use when creating
+  a Digital Ocean SSH key for droplet authentication. It defaults to `Vagrant`.
+
+By default, the provider will create a new user account, `vagrant`, and setup
+the specified SSH key for authentication. To change the user, set
+`config.ssh.username` to the name of the account to create. When Vagrant 1.2 is
+released, a new user account will only be created if `config.ssh.username` is
+set.
+
+*NOTE:* For those using a 0.0.x version of the provider,
+`provider.ssh_username` and `provider.ssh_private_key_path` have been removed
+in favor of the configuration options above. This approach better aligns the
+provider with upcoming changes in Vagrant 1.2.
+
+Run
+---
+After creating your project's `Vagrantfile` with the required configuration
+attributes described above, you may create a new droplet with the following
+command:
+
+    $ vagrant up --provider=digital_ocean
+
+This command will create a new droplet, setup your SSH key for authentication,
+create a new user account, and run the provisioners you have configured.
+
+**Supported Commands**
+
+The provider supports the following Vagrant sub-commands:
+- `vagrant destroy` - Destroys the droplet instance.
+- `vagrant ssh` - Logs into the droplet instance using the configured user
+  account.
+- `vagrant halt` - Powers off the droplet instance.
+- `vagrant provision` - Runs the configured provisioners and rsyncs any
+  specified `config.vm.synced_folder`.
+- `vagrant reload` - Reboots the droplet instance.
+- `vagrant rebuild` - Destroys the droplet instance and recreates it with the
+  same IP address is was assigned to previously.
+- `vagrant status` - Outputs the status (active, off, not created) for the
+  droplet instance.
+
+Contribute
+----------
 To contribute, clone the repository, and use [Bundler](http://gembundler.com)
 to install dependencies:
 
@@ -115,11 +132,3 @@ To run the provider's tests:
 You can now make modifications. Running `vagrant` within the Bundler
 environment will ensure that plugins installed in your Vagrant
 environment are not loaded.
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
