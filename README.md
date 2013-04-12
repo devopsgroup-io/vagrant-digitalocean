@@ -48,7 +48,7 @@ to use it. The most basic `Vagrantfile` to create a droplet on Digital Ocean
 is shown below:
 
 ```ruby
-Vagrant.configure('2') do
+Vagrant.configure('2') do |config|
   config.ssh.private_key_path = '~/.ssh/id_rsa'
   config.vm.box = 'digital_ocean'
   config.vm.provider :digital_ocean do |provider|
