@@ -13,8 +13,12 @@ module VagrantPlugins
           user = @machine.config.ssh.username
           @machine.config.ssh.username = 'root'
 
-          case @machine.guest.to_s
-          when /RedHat/
+          # check for guest name available in Vagrant 1.2 first
+          guest_name = @machine.guest.name if @machine.guest.respond_to?(:name)
+          guest_name ||= @machine.guest.to_s.downcase
+
+          case guest_name
+          when /redhat/
             env[:ui].info I18n.t('vagrant_digital_ocean.info.modifying_sudo')
 
             # disable tty requirement for sudo
