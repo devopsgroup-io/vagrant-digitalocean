@@ -5,7 +5,7 @@ module VagrantPlugins
     module Actions
       class SetupKey
         include Helpers::Client
-  
+
         def initialize(app, env)
           @app = app
           @machine = env[:machine]
@@ -37,8 +37,9 @@ module VagrantPlugins
 
         def create_ssh_key(name, env)
           # assumes public key exists on the same path as private key with .pub ext
-          private_key_path = @machine.config.ssh.private_key_path
-          pub_key = DigitalOcean.public_key(private_key_path)
+          path = @machine.config.ssh.private_key_path
+          path = File.expand_path(path, @machine.env.root_path)
+          pub_key = DigitalOcean.public_key(path)
 
           env[:ui].info I18n.t('vagrant_digital_ocean.info.creating_key', {
             :name => name
