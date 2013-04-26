@@ -6,7 +6,7 @@ Vagrant.configure('2') do |config|
   config.ssh.username = 'tester'
   config.ssh.private_key_path = 'test_id_rsa'
 
-  config.vm.synced_folder '/vagrant', '.', :id => 'vagrant-root', :disabled => true
+  config.vm.synced_folder '.', '/vagrant', :disabled => true
 
   config.vm.provider :digital_ocean do |provider|
     provider.client_id = ENV['DO_CLIENT_ID']
