@@ -22,6 +22,7 @@ Installation of the provider requires two steps:
 1. Install the provider plugin using the Vagrant command-line interface:
 
         $ vagrant plugin install vagrant-digitalocean
+        $ vagrant plugin install vagrant-omnibus
 
 2. Install the default provider box:
 
@@ -49,6 +50,8 @@ is shown below:
 
 ```ruby
 Vagrant.configure('2') do |config|
+  config.omnibus.chef_version = :latest
+
   config.ssh.private_key_path = '~/.ssh/id_rsa'
   config.vm.box = 'digital_ocean'
   config.vm.provider :digital_ocean do |provider|
@@ -65,6 +68,9 @@ Please note the following:
   extension.
 - You *must* specify your Digital Ocean Client and API keys. These may be
   found on the control panel within the *My Settings > API Access* section.
+- The Chef provisioner is installed via the
+  [`vagrant-omnibus` plugin](https://github.com/schisamo/vagrant-omnibus).
+  Please see its documentation for details. 
 
 **Supported Configuration Attributes**
 
