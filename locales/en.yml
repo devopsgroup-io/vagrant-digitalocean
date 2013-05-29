@@ -14,7 +14,6 @@ en:
       reloading: "Rebooting the droplet..."
       creating_user: "Creating user account: %{user}..."
       modifying_sudo: "Modifying sudoers file to remove tty requirement..."
-      installing_provisioner: "Installing provisioner: %{provisioner}..."
       using_key: "Using existing SSH key: %{name}"
       creating_key: "Creating new SSH key: %{name}..."
       rsyncing: "Rsyncing folder: %{hostpath} => %{guestpath}..."
