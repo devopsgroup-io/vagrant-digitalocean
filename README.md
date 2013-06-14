@@ -7,7 +7,8 @@ management of [Digital Ocean](https://www.digitalocean.com/) droplets
 **NOTE:** The Chef provisioner is no longer supported by default (as of 0.2.0).
 Please use the `vagrant-omnibus` plugin to install Chef on Vagrant-managed
 machines. This plugin provides control over the specific version of Chef
-to install. The custom `rebuild` command will not work until a pull request
+to install. The custom `rebuild` command will not work until a
+[pull request](https://github.com/schisamo/vagrant-omnibus/pull/21)
 is accepted within the `vagrant-omnibus` project. I will update the README
 when this is completed.
 
