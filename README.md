@@ -4,6 +4,13 @@ Digital Ocean Vagrant Provider
 management of [Digital Ocean](https://www.digitalocean.com/) droplets
 (instances).
 
+**NOTE:** The Chef provisioner is no longer supported by default (as of 0.2.0).
+Please use the `vagrant-omnibus` plugin to install Chef on Vagrant-managed
+machines. This plugin provides control over the specific version of Chef
+to install. The custom `rebuild` command will not work until a pull request
+is accepted within the `vagrant-omnibus` project. I will update the README
+when this is completed.
+
 Current features include:
 - create and destroy droplets
 - power on and off droplets
@@ -22,7 +29,6 @@ Installation of the provider requires two steps:
 1. Install the provider plugin using the Vagrant command-line interface:
 
         $ vagrant plugin install vagrant-digitalocean
-        $ vagrant plugin install vagrant-omnibus
 
 2. Install the default provider box:
 
@@ -50,8 +56,6 @@ is shown below:
 
 ```ruby
 Vagrant.configure('2') do |config|
-  config.omnibus.chef_version = :latest
-
   config.ssh.private_key_path = '~/.ssh/id_rsa'
   config.vm.box = 'digital_ocean'
   config.vm.provider :digital_ocean do |provider|
@@ -95,8 +99,7 @@ set.
 
 *NOTE:* For those using a 0.0.x version of the provider,
 `provider.ssh_username` and `provider.ssh_private_key_path` have been removed
-in favor of the configuration options above. This approach better aligns the
-provider with upcoming changes in Vagrant 1.2.
+in favor of the configuration options above.
 
 Run
 ---

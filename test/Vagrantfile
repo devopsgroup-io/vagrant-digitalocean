@@ -1,6 +1,9 @@
 Vagrant.require_plugin('vagrant-digitalocean')
+Vagrant.require_plugin('vagrant-omnibus')
 
 Vagrant.configure('2') do |config|
+  config.omnibus.chef_version = :latest
+
   config.vm.box = 'digital_ocean'
 
   config.ssh.username = 'tester'
@@ -31,7 +34,7 @@ Vagrant.configure('2') do |config|
 
   config.vm.define :centos do |centos|
     centos.vm.provider :digital_ocean do |provider|
-      provider.image = 'CentOS 6.3 x64'
+      provider.image = 'CentOS 6.4 x64'
     end
   end
 end
