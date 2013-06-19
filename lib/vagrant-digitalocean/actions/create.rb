@@ -54,7 +54,7 @@ module VagrantPlugins
           # wait for ssh to be ready using the root user account
           user = @machine.config.ssh.username
           @machine.config.ssh.username = 'root'
-          retryable(:tries => 30, :sleep => 10) do
+          retryable(:tries => 120, :sleep => 10) do
             next if env[:interrupted]
             raise 'not ready' if !@machine.communicate.ready?
           end

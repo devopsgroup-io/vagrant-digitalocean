@@ -68,7 +68,7 @@ module VagrantPlugins
         end
 
         def wait_for_event(env, id)
-          retryable(:tries => 30, :sleep => 10) do
+          retryable(:tries => 120, :sleep => 10) do
             # stop waiting if interrupted
             next if env[:interrupted]
 
