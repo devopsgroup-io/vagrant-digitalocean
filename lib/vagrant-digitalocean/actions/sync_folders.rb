@@ -33,6 +33,8 @@ module VagrantPlugins
             @machine.communicate.sudo(
               "chown -R #{ssh_info[:username]} #{guestpath}")
 
+            verify_rsync
+
             # rsync over to the guest path using the ssh info
             command = [
               "rsync", "--verbose", "--archive", "-z",
@@ -50,6 +52,16 @@ module VagrantPlugins
           end
 
           @app.call(env)
+        end
+
+        def verify_rsync
+          begin
+            @machine.communicate.execute("rsync")
+          rescue
+            @logger.debug("Rsync binary not found. Installing.")
+            @machine.communicate.sudo("apt-get update")
+            @machine.communicate.sudo("apt-get install rsync")
+          end
         end
       end
     end
