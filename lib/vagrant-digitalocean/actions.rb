@@ -139,13 +139,11 @@ module VagrantPlugins
           builder.use ConfigValidate
           builder.use Call, CheckState do |env, b|
             case env[:machine_state]
-            when :active
+            when :active, :off
               b.use Rebuild
               b.use SetupSudo
               b.use SetupUser
               b.use provision
-            when :off
-              env[:ui].info I18n.t('vagrant_digital_ocean.info.off')
             when :not_created
               env[:ui].info I18n.t('vagrant_digital_ocean.info.not_created')
             end
