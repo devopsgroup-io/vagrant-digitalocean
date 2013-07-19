@@ -28,6 +28,9 @@ module VagrantPlugins
           env[:ui].info I18n.t('vagrant_digital_ocean.info.rebuilding')
           @client.wait_for_event(env, result['event_id'])
 
+          # refresh droplet state with provider
+          Provider.droplet(@machine, :refresh => true)
+
           @app.call(env)
         end
       end
