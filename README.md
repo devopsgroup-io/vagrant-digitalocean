@@ -31,9 +31,6 @@ Installation of the provider requires two steps:
 
         $ vagrant plugin install vagrant-digitalocean
 
-2. Install the default provider box:
-
-        $ vagrant box add digital_ocean https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box
 
 **NOTE:** If you are using a Mac, you may need to install a CA bundle to enable SSL
 communication with the Digital Ocean API. It is recommended to first install
@@ -57,9 +54,12 @@ is shown below:
 
 ```ruby
 Vagrant.configure('2') do |config|
-  config.ssh.private_key_path = '~/.ssh/id_rsa'
-  config.vm.box = 'digital_ocean'
-  config.vm.provider :digital_ocean do |provider|
+
+  config.vm.provider :digital_ocean do |provider, override|
+    override.ssh.private_key_path = '~/.ssh/id_rsa'
+    override.vm.box = 'digital_ocean'
+    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+    
     provider.client_id = 'YOUR CLIENT ID'
     provider.api_key = 'YOUR API KEY'
   end
