@@ -22,7 +22,7 @@ module VagrantPlugins
             .find_id(:sizes, :name => @machine.provider_config.size)
 
           image_id = @client
-            .request('/images', { :filter => 'global' })
+            .request('/images')
             .find_id(:images, :name => @machine.provider_config.image)
 
           region_id = @client
