@@ -16,7 +16,7 @@ module VagrantPlugins
         def call(env)
           # look up image id
           image_id = @client
-            .request('/images', { :filter => 'global' })
+            .request('/images')
             .find_id(:images, :name => @machine.provider_config.image)
 
           # submit rebuild request
