@@ -51,13 +51,16 @@ module VagrantPlugins
             :ip => droplet['ip_address']
           })
 
-          # wait for ssh to be ready using the root user account
+          # wait for ssh to be ready
+          switch_user = @machine.provider_config.setup?
           user = @machine.config.ssh.username
-          @machine.config.ssh.username = 'root' if @machine.provider_config.setup_user = false
+          @machine.config.ssh.username = 'root' if switch_user
+
           retryable(:tries => 120, :sleep => 10) do
             next if env[:interrupted]
             raise 'not ready' if !@machine.communicate.ready?
           end
+
           @machine.config.ssh.username = user
 
           @app.call(env)

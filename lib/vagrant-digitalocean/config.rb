@@ -8,9 +8,9 @@ module VagrantPlugins
       attr_accessor :size
       attr_accessor :ca_path
       attr_accessor :ssh_key_name
-      attr_accessor :setup_user
+      attr_accessor :setup
 
-      alias_method :setup_user?, :setup_user
+      alias_method :setup?, :setup
 
       def initialize
         @client_id    = UNSET_VALUE
@@ -20,7 +20,7 @@ module VagrantPlugins
         @size         = UNSET_VALUE
         @ca_path      = UNSET_VALUE
         @ssh_key_name = UNSET_VALUE
-        @setup_user   = UNSET_VALUE
+        @setup        = UNSET_VALUE
       end
 
       def finalize!
@@ -31,7 +31,7 @@ module VagrantPlugins
         @size         = '512MB' if @size == UNSET_VALUE
         @ca_path      = nil if @ca_path == UNSET_VALUE
         @ssh_key_name = 'Vagrant' if @ssh_key_name == UNSET_VALUE
-        @setup_user   = true if @setup_user == UNSET_VALUE
+        @setup        = true if @setup == UNSET_VALUE
       end
 
       def validate(machine)

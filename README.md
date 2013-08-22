@@ -7,10 +7,7 @@ management of [Digital Ocean](https://www.digitalocean.com/) droplets
 **NOTE:** The Chef provisioner is no longer supported by default (as of 0.2.0).
 Please use the `vagrant-omnibus` plugin to install Chef on Vagrant-managed
 machines. This plugin provides control over the specific version of Chef
-to install. The custom `rebuild` command will not work until a
-[pull request](https://github.com/schisamo/vagrant-omnibus/pull/21)
-is accepted within the `vagrant-omnibus` project. I will update the README
-when this is completed.
+to install.
 
 Current features include:
 - create and destroy droplets
@@ -20,7 +17,7 @@ Current features include:
 - setup a SSH public key for authentication
 - create a new user account during droplet creation
 
-The provider has been tested with Vagrant 1.1.5 using Ubuntu 12.04 and
+The provider has been tested with Vagrant 1.1.5+ using Ubuntu 12.04 and
 CentOS 6.3 guest operating systems.
 
 Install
@@ -73,9 +70,6 @@ Please note the following:
   extension.
 - You *must* specify your Digital Ocean Client and API keys. These may be
   found on the control panel within the *My Settings > API Access* section.
-- The Chef provisioner is installed via the
-  [`vagrant-omnibus` plugin](https://github.com/schisamo/vagrant-omnibus).
-  Please see its documentation for details. 
 
 **Supported Configuration Attributes**
 
@@ -83,24 +77,21 @@ The following attributes are available to further configure the provider:
 - `provider.image` - A string representing the image to use when creating a
    new droplet (e.g. `Debian 6.0 x64`). The available options may
    be found on Digital Ocean's new droplet [form](https://www.digitalocean.com/droplets/new).
-   It defaults to `Ubuntu 12.04 x64 Server`.
+   It defaults to `Ubuntu 12.04 x64`.
 - `provider.region` - A string representing the region to create the new
-   droplet in. The available options are `New York 1` and `Amsterdam 1`. It
-   defaults to `New York 1`.
+   droplet in. It defaults to `New York 2`.
 - `provider.size` - A string representing the size to use when creating a
   new droplet (e.g. `1GB`). It defaults to `512MB`.
-- `provider.ssh_key_name` - A String representing the name to use when creating
+- `provider.ssh_key_name` - A string representing the name to use when creating
   a Digital Ocean SSH key for droplet authentication. It defaults to `Vagrant`.
+- `provider.setup` - A boolean flag indicating whether to setup a new user
+  account and modify sudo to disable tty requirement. It defaults to `true`.
+  If you are using a tool like [packer](https://packer.io) to create
+  reusable snapshots with user accounts already provisioned, set to `false`.
 
-By default, the provider will create a new user account, `vagrant`, and setup
-the specified SSH key for authentication. To change the user, set
-`config.ssh.username` to the name of the account to create. When Vagrant 1.2 is
-released, a new user account will only be created if `config.ssh.username` is
-set.
-
-*NOTE:* For those using a 0.0.x version of the provider,
-`provider.ssh_username` and `provider.ssh_private_key_path` have been removed
-in favor of the configuration options above.
+The provider will create a new user account with the specified SSH key for
+authorization if `config.ssh.username` is set and the `provider.setup`
+attribute is `true`.
 
 Run
 ---
