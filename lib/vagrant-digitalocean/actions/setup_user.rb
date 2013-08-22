@@ -10,7 +10,10 @@ module VagrantPlugins
 
         def call(env)
           # check if a username has been specified
-          return @app.call(env) if !@machine.config.ssh.username
+          return @app.call(env) unless @machine.config.ssh.username && @machine.provider_config.setup_user
+          return @app.call(env) unless @machine.provider_config.setup_user
+
+          env[:ui].info "setup_user: #{@machine.provider_config.setup_user}"
 
           # override ssh username to root temporarily
           user = @machine.config.ssh.username

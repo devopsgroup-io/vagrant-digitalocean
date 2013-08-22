@@ -79,11 +79,10 @@ module VagrantPlugins
 
         return nil if droplet['status'].to_sym != :active
 
-        # TODO remove config.ssh.username reference when Vagrant 1.2 is released
         return {
           :host => droplet['ip_address'],
           :port => '22',
-          :username => @machine.config.ssh.username || 'root',
+          :username => 'root',
           :private_key_path => nil
         }
       end

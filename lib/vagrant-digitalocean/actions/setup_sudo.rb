@@ -9,6 +9,11 @@ module VagrantPlugins
         end
 
         def call(env)
+          # TEMP
+          return @app.call(env) unless @machine.config.ssh.username
+          return @app.call(env) unless @machine.provider_config.setup_user
+          @logger.debug 'Setting up sudo!'
+
           # override ssh username to root temporarily
           user = @machine.config.ssh.username
           @machine.config.ssh.username = 'root'
