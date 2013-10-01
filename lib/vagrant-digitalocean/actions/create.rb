@@ -35,7 +35,8 @@ module VagrantPlugins
             :region_id => region_id,
             :image_id => image_id,
             :name => @machine.config.vm.hostname || @machine.name,
-            :ssh_key_ids => ssh_key_id
+            :ssh_key_ids => ssh_key_id,
+            :private_networking => @machine.provider_config.private_networking
           })
 
           # wait for request to complete
@@ -50,6 +51,11 @@ module VagrantPlugins
           env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_ip', {
             :ip => droplet['ip_address']
           })
+          if droplet['private_ip_address']
+            env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_private_ip', {
+              :ip => droplet['private_ip_address']
+            })
+          end
 
           # wait for ssh to be ready
           switch_user = @machine.provider_config.setup?
