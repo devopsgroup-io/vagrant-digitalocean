@@ -82,6 +82,9 @@ The following attributes are available to further configure the provider:
    droplet in. It defaults to `New York 2`.
 - `provider.size` - A string representing the size to use when creating a
   new droplet (e.g. `1GB`). It defaults to `512MB`.
+- `provider.private_networking` - A boolean flag indicating whether to enable
+  a private network interface (if the region supports private networking). It
+  defaults to `false`.
 - `provider.ssh_key_name` - A string representing the name to use when creating
   a Digital Ocean SSH key for droplet authentication. It defaults to `Vagrant`.
 - `provider.setup` - A boolean flag indicating whether to setup a new user

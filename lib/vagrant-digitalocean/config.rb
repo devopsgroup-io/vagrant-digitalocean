@@ -6,6 +6,7 @@ module VagrantPlugins
       attr_accessor :image
       attr_accessor :region
       attr_accessor :size
+      attr_accessor :private_networking
       attr_accessor :ca_path
       attr_accessor :ssh_key_name
       attr_accessor :setup
@@ -13,25 +14,27 @@ module VagrantPlugins
       alias_method :setup?, :setup
 
       def initialize
-        @client_id    = UNSET_VALUE
-        @api_key      = UNSET_VALUE
-        @image        = UNSET_VALUE
-        @region       = UNSET_VALUE
-        @size         = UNSET_VALUE
-        @ca_path      = UNSET_VALUE
-        @ssh_key_name = UNSET_VALUE
-        @setup        = UNSET_VALUE
+        @client_id          = UNSET_VALUE
+        @api_key            = UNSET_VALUE
+        @image              = UNSET_VALUE
+        @region             = UNSET_VALUE
+        @size               = UNSET_VALUE
+        @private_networking = UNSET_VALUE
+        @ca_path            = UNSET_VALUE
+        @ssh_key_name       = UNSET_VALUE
+        @setup              = UNSET_VALUE
       end
 
       def finalize!
-        @client_id    = ENV['DO_CLIENT_ID'] if @client_id == UNSET_VALUE
-        @api_key      = ENV['DO_API_KEY'] if @api_key == UNSET_VALUE
-        @image        = 'Ubuntu 12.04 x64' if @image == UNSET_VALUE
-        @region       = 'New York 2' if @region == UNSET_VALUE
-        @size         = '512MB' if @size == UNSET_VALUE
-        @ca_path      = nil if @ca_path == UNSET_VALUE
-        @ssh_key_name = 'Vagrant' if @ssh_key_name == UNSET_VALUE
-        @setup        = true if @setup == UNSET_VALUE
+        @client_id          = ENV['DO_CLIENT_ID'] if @client_id == UNSET_VALUE
+        @api_key            = ENV['DO_API_KEY'] if @api_key == UNSET_VALUE
+        @image              = 'Ubuntu 12.04 x64' if @image == UNSET_VALUE
+        @region             = 'New York 2' if @region == UNSET_VALUE
+        @size               = '512MB' if @size == UNSET_VALUE
+        @private_networking = false if @private_networking == UNSET_VALUE
+        @ca_path            = nil if @ca_path == UNSET_VALUE
+        @ssh_key_name       = 'Vagrant' if @ssh_key_name == UNSET_VALUE
+        @setup              = true if @setup == UNSET_VALUE
       end
 
       def validate(machine)
