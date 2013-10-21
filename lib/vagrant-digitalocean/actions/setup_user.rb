@@ -34,6 +34,8 @@ module VagrantPlugins
           @machine.communicate.execute(<<-BASH)
             if ! (grep #{user} /etc/sudoers); then
               echo "#{user} ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers;
+            else
+              sed -i -e "/#{user}/ s/=.*/=(ALL:ALL) NOPASSWD: ALL/" /etc/sudoers;
             fi
           BASH
 
