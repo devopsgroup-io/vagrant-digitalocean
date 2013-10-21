@@ -25,7 +25,7 @@ module VagrantPlugins
 
           # create user account
           @machine.communicate.execute(<<-BASH)
-            if ! (grep #{user} /etc/passwd); then
+            if ! (grep ^#{user}: /etc/passwd); then
               useradd -m -s /bin/bash #{user};
             fi
           BASH
