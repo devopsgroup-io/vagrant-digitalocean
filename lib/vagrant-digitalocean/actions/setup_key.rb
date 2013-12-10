@@ -37,7 +37,7 @@ module VagrantPlugins
 
         def create_ssh_key(name, env)
           # assumes public key exists on the same path as private key with .pub ext
-          path = @machine.config.ssh.private_key_path
+          path = @machine.config.ssh.private_key_path[0]
           path = File.expand_path(path, @machine.env.root_path)
           pub_key = DigitalOcean.public_key(path)
 

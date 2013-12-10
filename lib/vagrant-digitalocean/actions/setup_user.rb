@@ -41,7 +41,7 @@ module VagrantPlugins
           @machine.communicate.execute("su #{user} -c 'mkdir -p ~/.ssh'")
 
           # add the specified key to the authorized keys file
-          path = @machine.config.ssh.private_key_path
+          path = @machine.config.ssh.private_key_path[0]
           path = File.expand_path(path, @machine.env.root_path)
           pub_key = DigitalOcean.public_key(path)
           @machine.communicate.execute(<<-BASH)

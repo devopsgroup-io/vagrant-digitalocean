@@ -9,9 +9,9 @@ module VagrantPlugins
     end
 
     def self.public_key(private_key_path)
-      File.read("#{private_key_path}.pub") 
+      File.read("#{private_key_path[0]}.pub") 
     rescue
-      raise Errors::PublicKeyError, :path => "#{private_key_path}.pub"
+      raise Errors::PublicKeyError, :path => "#{private_key_path[0]}.pub"
     end
 
     I18n.load_path << File.expand_path('locales/en.yml', source_root)
