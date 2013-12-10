@@ -8,7 +8,7 @@ en:
       creating: "Creating a new droplet..."
       droplet_ip: "Assigned IP address: %{ip}"
       droplet_private_ip: "Private IP address: %{ip}"
-      destroying: "Request submitted to destroy droplet"
+      destroying: "Destroying the droplet..."
       powering_off: "Powering off the droplet..."
       powering_on: "Powering on the droplet..."
       rebuilding: "Rebuilding the droplet..."

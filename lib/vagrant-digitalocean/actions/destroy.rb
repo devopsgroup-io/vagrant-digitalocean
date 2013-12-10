@@ -17,10 +17,11 @@ module VagrantPlugins
           # submit destroy droplet request
           result = @client.request("/droplets/#{@machine.id}/destroy")
 
+					env[:ui].info I18n.t('vagrant_digital_ocean.info.destroying')
+
           # wait for destroy request to make progress before exiting 
           @client.wait_for_event(env, result['event_id']) do |response|
 						if response['event']['percentage'] != nil
-							env[:ui].info I18n.t('vagrant_digital_ocean.info.destroying')
 							return
 						end
 					end
