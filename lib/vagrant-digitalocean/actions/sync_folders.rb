@@ -44,10 +44,13 @@ module VagrantPlugins
             @machine.communicate.sudo(
               "chown -R #{ssh_info[:username]} #{guestpath}")
 
+						key = ssh_info[:private_key_path]
+						key = key[0] if key.is_a?(Array)
+
             # rsync over to the guest path using the ssh info
             command = [
               "rsync", "--verbose", "--archive", "-z", "--delete",
-              "-e", "ssh -p #{ssh_info[:port]} -o StrictHostKeyChecking=no -i '#{ssh_info[:private_key_path]}'",
+              "-e", "ssh -p #{ssh_info[:port]} -o StrictHostKeyChecking=no -i '#{key}'",
               hostpath,
               "#{ssh_info[:username]}@#{ssh_info[:host]}:#{guestpath}"]
 

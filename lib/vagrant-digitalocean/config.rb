@@ -43,6 +43,7 @@ module VagrantPlugins
         errors << I18n.t('vagrant_digital_ocean.config.api_key') if !@api_key
 
         key = machine.config.ssh.private_key_path
+				key = key[0] if key.is_a?(Array)
         if !key
           errors << I18n.t('vagrant_digital_ocean.config.private_key')
         elsif !File.file?(File.expand_path("#{key}.pub", machine.env.root_path))
