@@ -24,8 +24,12 @@ module VagrantPlugins
             when :not_created
               env[:ui].info I18n.t('vagrant_digital_ocean.info.not_created')
             else
-              b.use Destroy
-              b.use ProvisionerCleanup if defined?(ProvisionerCleanup)
+              b.use Call, DestroyConfirm do |env2, b2|
+                if env2[:result]
+                  b2.use Destroy
+                  b2.use ProvisionerCleanup if defined?(ProvisionerCleanup)
+                end
+              end
             end
           end
         end
