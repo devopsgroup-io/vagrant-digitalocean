@@ -28,7 +28,7 @@ module VagrantPlugins
       def finalize!
         @client_id          = ENV['DO_CLIENT_ID'] if @client_id == UNSET_VALUE
         @api_key            = ENV['DO_API_KEY'] if @api_key == UNSET_VALUE
-        @image              = 'Ubuntu 12.04 x64' if @image == UNSET_VALUE
+        @image              = 'Ubuntu 12.04.3 x64' if @image == UNSET_VALUE
         @region             = 'New York 2' if @region == UNSET_VALUE
         @size               = '512MB' if @size == UNSET_VALUE
         @private_networking = false if @private_networking == UNSET_VALUE
