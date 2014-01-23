@@ -14,6 +14,13 @@ module VagrantPlugins
         def call(env)
           ssh_info = @machine.ssh_info
 
+          # for CentOS machines that don't have rsync installed
+          # attempt to install with yum before giving up
+          if (Vagrant::Util::Which.which('rsync') && !Vagrant::Util::Which.which('yum'))
+            env[:ui].warn I18n.t('vagrant_digital_ocean.info.trying_rsync_install')
+            @machine.communicate.sudo("yum -y install rsync")
+          end
+
           @machine.config.vm.synced_folders.each do |id, data|
             next if data[:disabled]
 
