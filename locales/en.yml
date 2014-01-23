@@ -17,6 +17,7 @@ en:
       modifying_sudo: "Modifying sudoers file to remove tty requirement..."
       using_key: "Using existing SSH key: %{name}"
       creating_key: "Creating new SSH key: %{name}..."
+      trying_rsync_install: "Rsync not found, attempting to install with yum..."
       rsyncing: "Rsyncing folder: %{hostpath} => %{guestpath}..."
     config:
       client_id: "Client ID is required"
