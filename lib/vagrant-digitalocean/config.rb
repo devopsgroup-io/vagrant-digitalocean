@@ -7,6 +7,7 @@ module VagrantPlugins
       attr_accessor :region
       attr_accessor :size
       attr_accessor :private_networking
+      attr_accessor :backups_enabled
       attr_accessor :ca_path
       attr_accessor :ssh_key_name
       attr_accessor :setup
@@ -20,6 +21,7 @@ module VagrantPlugins
         @region             = UNSET_VALUE
         @size               = UNSET_VALUE
         @private_networking = UNSET_VALUE
+        @backups_enable     = UNSET_VALUE
         @ca_path            = UNSET_VALUE
         @ssh_key_name       = UNSET_VALUE
         @setup              = UNSET_VALUE
@@ -32,6 +34,7 @@ module VagrantPlugins
         @region             = 'New York 2' if @region == UNSET_VALUE
         @size               = '512MB' if @size == UNSET_VALUE
         @private_networking = false if @private_networking == UNSET_VALUE
+        @backups_enabled    = false if @backups_enabled == UNSET_VALUE
         @ca_path            = nil if @ca_path == UNSET_VALUE
         @ssh_key_name       = 'Vagrant' if @ssh_key_name == UNSET_VALUE
         @setup              = true if @setup == UNSET_VALUE

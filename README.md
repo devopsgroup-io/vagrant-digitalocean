@@ -85,6 +85,8 @@ The following attributes are available to further configure the provider:
 - `provider.private_networking` - A boolean flag indicating whether to enable
   a private network interface (if the region supports private networking). It
   defaults to `false`.
+- `provider.backups_enabled` - A boolean flag indicating whether to enable backups for
+   the droplet. It defaults to `false`.
 - `provider.ssh_key_name` - A string representing the name to use when creating
   a Digital Ocean SSH key for droplet authentication. It defaults to `Vagrant`.
 - `provider.setup` - A boolean flag indicating whether to setup a new user

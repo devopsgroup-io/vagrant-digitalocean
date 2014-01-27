@@ -36,7 +36,8 @@ module VagrantPlugins
             :image_id => image_id,
             :name => @machine.config.vm.hostname || @machine.name,
             :ssh_key_ids => ssh_key_id,
-            :private_networking => @machine.provider_config.private_networking
+            :private_networking => @machine.provider_config.private_networking,
+            :backups_enabled => @machine.provider_config.backups_enabled
           })
 
           # wait for request to complete
