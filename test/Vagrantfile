@@ -34,6 +34,11 @@ Vagrant.configure('2') do |config|
       end
     end
 
+    if ENV['EXCLUDE'].to_s !~ /file/
+      config.vm.provision :shell, :inline => 'mkdir -p /tmp/folder ; chmod 0777 /tmp/folder'
+      config.vm.provision :file, :source => 'Vagrantfile', :destination => '/tmp/folder/file_from_file'
+    end
+
     if ENV['EXCLUDE'].to_s !~ /salt/
       ## For masterless, mount your salt file root
       config.vm.synced_folder "salt/roots/", "/srv/"
