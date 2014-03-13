@@ -34,6 +34,13 @@ check_provisioners_ran()
       ;;
     esac
     case "$EXCLUDE" in
+    *file*)
+      ;;
+    *)
+      test_cmd="$test_cmd -a -s /tmp/folder/file_from_file"
+      ;;
+    esac
+    case "$EXCLUDE" in
     *puppet*)
       ;;
     *)
