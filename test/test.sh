@@ -65,11 +65,13 @@ case "$INSTALL_RSYNC" in
   bootstrap_rsync='env BOOTSTRAP_RSYNC=true'
   ;;
 esac
+export PROVIDER=${PROVIDER:-digital_ocean}
 for dist in $distributions; do
 
+  export DISTRIBUTION=$dist
   echo TESTING $dist DISTRIBUTION
   if date &&
-      $bootstrap_rsync vagrant up --provider=digital_ocean $dist &&
+      $bootstrap_rsync vagrant up --provider=$PROVIDER $dist &&
       date &&
       vagrant ssh-config $dist &&
       date &&
