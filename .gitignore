@@ -12,7 +12,9 @@ lib/bundler/man
 pkg
 rdoc
 spec/reports
-test/tmp
-test/version_tmp
-test/.vagrant
-tmp
+/test/tmp/*
+/test/version_tmp
+/test/.vagrant
+/tmp
+/Vagrantfile
+/bin
