@@ -6,7 +6,7 @@ Vagrant.require_plugin('vagrant-omnibus') if ENV['EXCLUDE'].to_s !~ /chef/
 
 Vagrant.configure('2') do |config|
 
-  config.ssh.username = 'tester'
+  #config.ssh.username = 'tester'
   config.ssh.private_key_path = 'test_id_rsa'
 
   config.vm.synced_folder '.', '/vagrant', :disabled => true
@@ -26,6 +26,16 @@ Vagrant.configure('2') do |config|
   if ENV['BOOTSTRAP_RSYNC']
     config.vm.provision :shell, :path => 'scripts/bootstrap-rsync.sh'
   else
+
+    if ENV['EXCLUDE'].to_s !~ /ansible/
+      config.vm.provision :shell, :path => 'scripts/bootstrap-ansible.sh'
+      config.vm.provision :ansible do |ansible|
+        ansible.playbook = "ansible/playbook.yml"
+        # host key changes after rebuild!
+        ansible.host_key_checking = false
+      end
+    end
+
     if ENV['EXCLUDE'].to_s !~ /chef/
       config.omnibus.chef_version = :latest
       config.vm.provision :chef_solo do |chef|
@@ -63,7 +73,8 @@ Vagrant.configure('2') do |config|
     end
   end
 
-  hostname_suffix = (ENV['TRAVIS_JOB_NUMBER'] ? ENV['TRAVIS_JOB_NUMBER'].sub(/\d+\./, '') : '') << '.vagrant.test'
+  # replace initial number in job_number with the number modulus 2 so we can have two consecutive tests running at the same time 
+  hostname_suffix = (ENV['TRAVIS_JOB_NUMBER'] ? ENV['TRAVIS_JOB_NUMBER'].sub(/(\d+)\./) {|s| s.to_i % 2} : '') << '.vagrant.test'
 
   # x32 saves some memory, but may run a bit slower
   config.vm.define :ubuntu32 do |vm_config|

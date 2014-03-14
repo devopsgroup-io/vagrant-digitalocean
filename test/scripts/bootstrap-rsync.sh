@@ -76,3 +76,4 @@ else
   echo 'Unable to determine distribution!'
   exit 1
 fi
+rsync --version

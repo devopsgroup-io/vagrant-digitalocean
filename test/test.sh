@@ -27,6 +27,13 @@ check_provisioners_ran()
   case "$shell_only" in
   '')
     case "$EXCLUDE" in
+    *ansible*)
+      ;;
+    *)
+      test_cmd="$test_cmd -a -s /tmp/folder/file_from_ansible"
+      ;;
+    esac
+    case "$EXCLUDE" in
     *chef*)
       ;;
     *)
@@ -73,9 +80,11 @@ case "$INSTALL_RSYNC" in
   ;;
 esac
 export PROVIDER=${PROVIDER:-digital_ocean}
+orig_EXCLUDE=$EXCLUDE
 for dist in $distributions; do
 
   export DISTRIBUTION=$dist
+  export EXCLUDE=$orig_EXCLUDE
   echo TESTING $dist DISTRIBUTION
   if date &&
       $bootstrap_rsync vagrant up --provider=$PROVIDER $dist &&
@@ -90,8 +99,14 @@ for dist in $distributions; do
       date &&
       check_provisioners_ran &&
       clear_provision_results &&
-      date &&
-      $bootstrap_rsync vagrant rebuild $dist &&
+      date
+  then
+    echo "Passed initial tests for $dist"
+    if [ -n "$EXCLUDE_ANSIBLE_AFTER_REBUILD" ]; then
+      echo "Excluding ansible because it doesn't work after a rebuild"
+      export EXCLUDE=$orig_EXCLUDE,ansible
+    fi
+    if $bootstrap_rsync vagrant rebuild $dist &&
       date && 
       ( [ -z "$bootstrap_rsync" ] || vagrant provision $dist && date ) &&
       date && 
@@ -99,8 +114,15 @@ for dist in $distributions; do
       date &&
       vagrant halt $dist &&
       date &&
-      vagrant destroy $dist --force ; then
-    echo Passed tests for $dist
+      vagrant destroy $dist --force
+    then
+      echo Passed rebuild tests for $dist
+    else
+      echo "Failed initial tests for $dist, destroying VM"
+      # Have to specify VMs otherwise vagrant complains if VirtualBox is missing
+      vagrant destroy $dist --force
+      exit 1
+    fi
   else
     echo "Failed tests for $dist, destroying VM"
     # Have to specify VMs otherwise vagrant complains if VirtualBox is missing

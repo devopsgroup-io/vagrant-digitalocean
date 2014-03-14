@@ -55,4 +55,4 @@ read_url()
   echo Failed to bootstrap salt! 
   exit 1 
 )
-
+salt-call --version
