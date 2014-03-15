@@ -17,8 +17,6 @@ rvm:
 - 1.9.3
 env:
   global:
-    # ansible fails after rebuild with ssh errors
-    #- EXCLUDE_ANSIBLE_AFTER_REBUILD=true
     # DO_CLIENT_ID and DO_API_KEY
     - secure: "Pb4owwkDXhdO8uzKw4rRgvyTpUZI+DE7QbEQ01rVdUD7D0eala4Unzvx6mWRIoxMHVbz1N+h9VbEi4yHaUbVU2jXrqEzfyo/SgfaJckoc51g9zhTblZXDvRp2zs18JdkwzFUcgJt/wucYOdZhcsKMIofgw4srurlPSpL+Igcin4="
   matrix:
@@ -30,9 +28,6 @@ env:
     - DISTRIBUTIONS=fedora REGION='New York 2' INSTALL_RSYNC=true
     - DISTRIBUTIONS=ubuntu32 REGION='Singapore 1'
     - DISTRIBUTIONS=ubuntu REGION='Amsterdam 2'
-    # test if ansible is working after rebuild now
-    #- EXCLUDE_ANSIBLE_AFTER_REBUILD= DISTRIBUTIONS=ubuntu REGION='New York 1' EXCLUDE=chef,salt,puppet,file
 matrix:
   allow_failures:
-    - env: EXCLUDE_ANSIBLE_AFTER_REBUILD= DISTRIBUTIONS=ubuntu REGION='New York 1' EXCLUDE=chef,salt,puppet,file
 
