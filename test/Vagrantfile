@@ -6,7 +6,7 @@ Vagrant.require_plugin('vagrant-omnibus') if ENV['EXCLUDE'].to_s !~ /chef/
 
 Vagrant.configure('2') do |config|
 
-  #config.ssh.username = 'tester'
+  config.ssh.username = 'tester'
   config.ssh.private_key_path = 'test_id_rsa'
 
   config.vm.synced_folder '.', '/vagrant', :disabled => true
