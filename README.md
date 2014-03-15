@@ -138,3 +138,15 @@ To run the provider's tests:
 You can now make modifications. Running `vagrant` within the Bundler
 environment will ensure that plugins installed in your Vagrant
 environment are not loaded.
+
+Testing your changes with travis-ci.org
+---------------------------------------
+
+Travis-ci tests require a digital ocean user id and api_key to run - the secure variables lock it to the user running the tests,
+so you will need to use your own credentials to test your own fork.
+
+Please comment out the existing secure env vars in .travis.yml and add your own so travis-ci.org in a separate commit.
+DO_CLIENT_ID must be set to your client id and DO_API_KEY to your api_key -
+see [Secure Environment Variables](http://docs.travis-ci.com/user/build-configuration/#Secure-environment-variables)
+for further details.
+ 
