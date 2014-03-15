@@ -72,8 +72,8 @@ Vagrant.configure('2') do |config|
     end
   end
 
-  # replace initial number in job_number with the number modulus 2 so we can have two consecutive tests running at the same time 
-  hostname_suffix = (ENV['TRAVIS_JOB_NUMBER'] ? ENV['TRAVIS_JOB_NUMBER'].sub(/(\d+)\./) {|s| s.to_i % 2} : '') << '.vagrant.test'
+  # replace initial number in job_number with the number modulus 4 so we can have four consecutive tests running at the same time 
+  hostname_suffix = (ENV['TRAVIS_JOB_NUMBER'] ? ENV['TRAVIS_JOB_NUMBER'].sub(/(\d+)\./) {|s| "#{s.to_i % 4}_"} : '') << '.vagrant.test'
 
   config.vm.define :arch do |vm_config|
     vm_config.vm.hostname = 'arch' << hostname_suffix
