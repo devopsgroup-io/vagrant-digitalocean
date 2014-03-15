@@ -1,8 +1,10 @@
+require 'open-uri'
+require 'fileutils'
+
 Vagrant.require_plugin('vagrant-digitalocean')
-Vagrant.require_plugin('vagrant-omnibus')
+Vagrant.require_plugin('vagrant-omnibus') if ENV['EXCLUDE'].to_s !~ /chef/
 
 Vagrant.configure('2') do |config|
-  config.omnibus.chef_version = :latest
 
   config.ssh.username = 'tester'
   config.ssh.private_key_path = 'test_id_rsa'
@@ -12,27 +14,139 @@ Vagrant.configure('2') do |config|
   config.vm.provider :digital_ocean do |provider, override|
     override.vm.box = 'digital_ocean'
     override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
-    provider.client_id = ENV['DO_CLIENT_ID']
-    provider.api_key = ENV['DO_API_KEY']
-    provider.ssh_key_name = 'Test Key'
+    provider.client_id = ENV['DO_CLIENT_ID'] if ENV['DO_CLIENT_ID']
+    provider.api_key = ENV['DO_API_KEY'] if ENV['DO_API_KEY']
+    provider.ssh_key_name = 'vagrant-digitalocean Test Key'
+    # Random region so we make sure it works anywhere
+    provider.region = ENV['REGION'] if ENV['REGION']
   end
 
   config.vm.provision :shell, :path => 'scripts/provision.sh'
 
-  config.vm.provision :chef_solo do |chef|
-    chef.cookbooks_path = 'cookbooks'
-    chef.add_recipe 'test'
-  end
+  if ENV['BOOTSTRAP_RSYNC']
+    config.vm.provision :shell, :path => 'scripts/bootstrap-rsync.sh'
+  else
 
-  config.vm.define :ubuntu do |ubuntu|
-    ubuntu.vm.provider :digital_ocean do |provider|
-      provider.image = 'Ubuntu 12.04.3 x64'
+    if ENV['EXCLUDE'].to_s !~ /ansible/
+      config.vm.provision :shell, :path => 'scripts/bootstrap-ansible.sh'
+      config.vm.provision :ansible do |ansible|
+        ansible.playbook = "ansible/playbook.yml"
+        # host key changes after rebuild!
+        ansible.host_key_checking = false
+      end
+    end
+
+    if ENV['EXCLUDE'].to_s !~ /chef/
+      config.omnibus.chef_version = :latest
+      config.vm.provision :chef_solo do |chef|
+        chef.cookbooks_path = 'cookbooks'
+        chef.add_recipe 'test'
+      end
+    end
+
+    if ENV['EXCLUDE'].to_s !~ /file/
+      config.vm.provision :shell, :inline => 'mkdir -p /tmp/folder ; chmod 0777 /tmp/folder'
+      config.vm.provision :file, :source => 'Vagrantfile', :destination => '/tmp/folder/file_from_file'
+    end
+
+    if ENV['EXCLUDE'].to_s !~ /salt/
+      ## For masterless, mount your salt file root
+      config.vm.synced_folder "salt/roots/", "/srv/"
+
+      config.vm.provision :salt do |salt|
+        salt.minion_config = "salt/minion.conf"
+        salt.run_highstate = true
+        salt.bootstrap_script = File.expand_path('scripts/bootstrap-salt.sh', File.dirname(__FILE__))
+        if ENV['SALT_VERSION']
+          salt.install_type = 'git'
+          salt.install_args = ENV['SALT_VERSION']
+        end
+      end
+    end
+
+    if ENV['EXCLUDE'].to_s !~ /puppet/
+      config.vm.provision :shell, :path => 'scripts/bootstrap-puppet.sh'
+      config.vm.provision :puppet do |puppet|
+        puppet.manifests_path = "manifests"
+        puppet.manifest_file = "default.pp"
+      end
     end
   end
 
-  config.vm.define :centos do |centos|
-    centos.vm.provider :digital_ocean do |provider|
+  # replace initial number in job_number with the number modulus 2 so we can have two consecutive tests running at the same time 
+  hostname_suffix = (ENV['TRAVIS_JOB_NUMBER'] ? ENV['TRAVIS_JOB_NUMBER'].sub(/(\d+)\./) {|s| s.to_i % 2} : '') << '.vagrant.test'
+
+  # x32 saves some memory, but may run a bit slower
+  config.vm.define :ubuntu32 do |vm_config|
+    vm_config.vm.hostname = 'ubuntu' << hostname_suffix
+    vm_config.vm.provider :digital_ocean do |provider|
+      provider.image = 'Ubuntu 12.04.3 x32'
+    end
+    vm_config.vm.provider :virtualbox do |provider, override|
+      provider.memory = 512
+      override.vm.box = 'Ubuntu 12.04 cloud x32'
+      override.vm.box_url = 'http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-i386-vagrant-disk1.box'
+    end
+  end
+
+  # x64 uses more memory but generally runs a bit faster
+  config.vm.define :ubuntu do |vm_config|
+    vm_config.vm.hostname = 'ubuntu' << hostname_suffix
+    vm_config.vm.provider :digital_ocean do |provider|
+      provider.image = 'Ubuntu 12.04.3 x64'
+    end
+    vm_config.vm.provider :virtualbox do |provider, override|
+      provider.memory = 512
+      override.vm.box = 'Ubuntu 12.04 cloud x64'
+      override.vm.box_url = 'http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box'
+    end
+  end
+
+  config.vm.define :debian do |vm_config|
+    vm_config.vm.hostname = 'debian' << hostname_suffix
+    vm_config.vm.provider :digital_ocean do |provider|
+      provider.image = 'Debian 7.0 x64'
+    end
+    vm_config.vm.provider :virtualbox do |provider, override|
+      provider.memory = 512
+      override.vm.box = 'Debian 7.0 x64'
+      override.vm.box_url = 'http://puppet-vagrant-boxes.puppetlabs.com/debian-70rc1-x64-vbox4210-nocm.box'
+    end
+  end
+
+  config.vm.define :centos do |vm_config|
+    vm_config.vm.hostname = 'centos' << hostname_suffix
+    vm_config.vm.provider :digital_ocean do |provider|
       provider.image = 'CentOS 6.4 x64'
+    end
+    vm_config.vm.provider :virtualbox do |provider, override|
+      provider.memory = 512
+      override.vm.box = 'CentOS 6.4 x64'
+      override.vm.box_url = 'http://puppet-vagrant-boxes.puppetlabs.com/debian-70rc1-x64-vbox4210-nocm.box'
+    end
+  end
+
+  config.vm.define :arch do |vm_config|
+    vm_config.vm.hostname = 'arch' << hostname_suffix
+    vm_config.vm.provider :digital_ocean do |provider|
+      provider.image = 'Arch Linux 2013.05 x64'
+    end
+    vm_config.vm.provider :virtualbox do |provider, override|
+      provider.memory = 512
+      override.vm.box = 'Arch Linux x86_64 (2013-08)'
+      override.vm.box_url = 'https://googledrive.com/host/0B_BLFE4aPn5zUVpyaHdLanVnMTg/vagrant-archlinux-2013-8.box'
+    end
+  end
+
+  config.vm.define :fedora do |vm_config|
+    vm_config.vm.hostname = 'fedora' << hostname_suffix
+    vm_config.vm.provider :digital_ocean do |provider|
+      provider.image = 'Fedora 19 x64'
+    end
+    vm_config.vm.provider :virtualbox do |provider, override|
+      provider.memory = 512
+      override.vm.box = 'Fedora 19 x64'
+      override.vm.box_url = 'https://dl.dropboxusercontent.com/u/86066173/fedora-19.box'
     end
   end
 end

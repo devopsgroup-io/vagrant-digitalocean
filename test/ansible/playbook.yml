@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+    - name: make directory
+      file: name=/tmp/folder mode=0777 state=directory
+    - name: make file
+      copy: content='Some text from ansible' dest=/tmp/folder/file_from_ansible mode=0666
