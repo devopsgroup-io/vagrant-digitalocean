@@ -1,0 +1,33 @@
+language: ruby
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+before_install:
+- gem update --system $RUBYGEMS_VERSION
+- gem --version
+- gem install bundler
+- bundle --version
+- env | egrep TRAVIS
+# ansible has to be loaded on local machine
+- bash test/scripts/bootstrap-ansible-server.sh
+bundler_args: --binstubs
+script: bin/rake test
+rvm:
+- 1.9.3
+env:
+  global:
+    # DO_CLIENT_ID and DO_API_KEY
+    - secure: "Pb4owwkDXhdO8uzKw4rRgvyTpUZI+DE7QbEQ01rVdUD7D0eala4Unzvx6mWRIoxMHVbz1N+h9VbEi4yHaUbVU2jXrqEzfyo/SgfaJckoc51g9zhTblZXDvRp2zs18JdkwzFUcgJt/wucYOdZhcsKMIofgw4srurlPSpL+Igcin4="
+  matrix:
+    # chef doesn't know about arch distribution
+    - DISTRIBUTIONS=arch REGION='New York 1' EXCLUDE=chef
+    - DISTRIBUTIONS=centos REGION='San Francisco 1'
+    - DISTRIBUTIONS=debian REGION='Amsterdam 1'
+    # needs rsync
+    - DISTRIBUTIONS=fedora REGION='New York 2' INSTALL_RSYNC=true
+    - DISTRIBUTIONS=ubuntu32 REGION='Singapore 1'
+    - DISTRIBUTIONS=ubuntu REGION='Amsterdam 2'
+matrix:
+  allow_failures:
+
