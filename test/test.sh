@@ -18,8 +18,8 @@ distributions=${DISTRIBUTIONS:-ubuntu centos}
 
 clear_provision_results()
 {
-  vagrant ssh $dist -c 'rm -f /tmp/folder/*' -- -n &&
-  vagrant ssh $dist -c 'ls -la /tmp/folder' -- -n &&
+  vagrant ssh $dist -c 'rm -rf /tmp/folder' -- -n
+  vagrant ssh $dist -c 'ls -la /tmp/folder' -- -n
   echo 'removed /tmp/folder/file file from VM'
 }
 
@@ -90,7 +90,7 @@ check_provisioners_ran()
   esac
 
   echo "Files make by provisioners with EXCLUDE=$EXCLUDE"
-  vagrant ssh $dist -c 'ls -la /tmp/folder' -- -n &&
+  vagrant ssh $dist -c 'ls -la /tmp/folder' -- -n
   vagrant ssh $dist -c "$test_cmd" -- -n &&
   echo "$dist passed file checks" &&
   ! vagrant ssh $dist -c 'test -s /tmp/no-such-file' -- -n &&
