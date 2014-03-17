@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# help debugging salt 
+
+sudo=
+if [ 0 != `id -u` ]; then
+  sudo=sudo
+fi
+
+no_check=false
+case "$1" in
+--no-check)
+        no_check=true
+        shift
+        ;;
+esac
+runit()
+{
+	case "$#" in
+	0)
+		echo "Running all states ..."
+		$sudo salt-call saltutil.sync_all
+		$sudo salt-call --retcode-passthrough state.highstate 
+		ret=$?
+		echo "exit status: $ret"
+		;;
+	*)
+		for file; do
+			echo "Running $file ..."
+			$sudo salt-call --retcode-passthrough state.sls "$file"
+			ret=$?
+			echo "exit status: $ret"
+		done
+		;;
+	esac
+}
+case "$1" in
+run)
+        ret=
+	shift
+        if $no_check; then
+                # Color is used when there is no checking (piped output)
+                runit "$@"
+                exit $ret
+        fi
+        runit "$@" 2>&1 | tee /tmp/t$$
+        echo
+        echo Checking results log:
+        if egrep '^\[ERROR *\]' /tmp/t$$; then
+                echo ERROR: `egrep '^\[ERROR *\]' /tmp/t$$ | wc -l` ERRORS FOUND IN LOG
+                ret=1
+        fi
+        if egrep '^ *Result: *False' /tmp/t$$ > /dev/null; then
+                echo 'WARNING (' `egrep '^ *Result: *False' /tmp/t$$ | wc -l` 'Results where False in log)'
+                ret=${ret:-2}
+        fi
+        if [ -z "$ret" ] ; then
+                echo SUCCESS
+        fi
+        rm -f /tmp/t$$
+        exit $ret
+
+	;;
+grains)
+	$sudo salt-call grains.items
+	;;
+pillar)
+	$sudo salt-call pillar.items
+	;;
+packages)
+        # ubuntu / debian
+	dpkg --get-selections | sed -n 's/\s\s*install//p'
+	;;
+search)
+        # ubuntu / debian
+        aptitude search "$@"
+        #apt-cache search "$@"
+        ;;
+install|remove|purge|update|upgrade|clean|autoremove)
+        # ubuntu / debian
+	$sudo apt-get "$@"
+	;;
+*)
+	echo "usage: $0 grains|pillar|run [state]|packages|search|install package|remove package|purge package|autoclean|autoremove\n"
+	;;
+esac

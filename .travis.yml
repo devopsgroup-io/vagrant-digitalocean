@@ -1,0 +1,34 @@
+language: ruby
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+before_install:
+- gem update --system $RUBYGEMS_VERSION
+- gem --version
+- gem install bundler
+- bundle --version
+- env | egrep TRAVIS
+# ansible has to be loaded on local machine
+- bash test/scripts/bootstrap-ansible-server.sh
+bundler_args: --binstubs
+script: bin/rake test
+rvm:
+- 2.0.0
+env:
+  global:
+    # DO_CLIENT_ID and DO_API_KEY
+    - secure: "Pb4owwkDXhdO8uzKw4rRgvyTpUZI+DE7QbEQ01rVdUD7D0eala4Unzvx6mWRIoxMHVbz1N+h9VbEi4yHaUbVU2jXrqEzfyo/SgfaJckoc51g9zhTblZXDvRp2zs18JdkwzFUcgJt/wucYOdZhcsKMIofgw4srurlPSpL+Igcin4="
+  matrix:
+    # chef doesn't know about arch distribution
+    - DISTRIBUTIONS=arch REGION='New York 1' EXCLUDE=chef
+    - DISTRIBUTIONS=centos REGION='San Francisco 1'
+    - DISTRIBUTIONS=debian REGION='Amsterdam 1'
+    # needs rsync, needs pty so you don't get sudo complaints, but then fails file provider or other stuff!
+    - DISTRIBUTIONS=fedora REGION='New York 2' INSTALL_RSYNC=true EXCLUDE=file SSH_PTY=true
+    - DISTRIBUTIONS=ubuntu32 REGION='Singapore 1'
+    - DISTRIBUTIONS=ubuntu REGION='Amsterdam 2'
+    - DISTRIBUTIONS=fedora REGION='New York 2' INSTALL_RSYNC=true EXCLUDE=ansible,chef,puppet,salt,shell SSH_PTY=true VAGRANT_LOG=info
+matrix:
+  allow_failures:
+    - env: DISTRIBUTIONS=fedora REGION='New York 2' INSTALL_RSYNC=true EXCLUDE=ansible,chef,puppet,salt,shell SSH_PTY=true VAGRANT_LOG=info
