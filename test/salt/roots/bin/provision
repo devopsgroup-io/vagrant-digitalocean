@@ -2,6 +2,11 @@
 
 # help debugging salt 
 
+sudo=
+if [ 0 != `id -u` ]; then
+  sudo=sudo
+fi
+
 no_check=false
 case "$1" in
 --no-check)
@@ -14,15 +19,15 @@ runit()
 	case "$#" in
 	0)
 		echo "Running all states ..."
-		sudo salt-call saltutil.sync_all
-		sudo salt-call --retcode-passthrough state.highstate 
+		$sudo salt-call saltutil.sync_all
+		$sudo salt-call --retcode-passthrough state.highstate 
 		ret=$?
 		echo "exit status: $ret"
 		;;
 	*)
 		for file; do
 			echo "Running $file ..."
-			sudo salt-call --retcode-passthrough state.sls "$file"
+			$sudo salt-call --retcode-passthrough state.sls "$file"
 			ret=$?
 			echo "exit status: $ret"
 		done
@@ -57,10 +62,10 @@ run)
 
 	;;
 grains)
-	sudo salt-call grains.items
+	$sudo salt-call grains.items
 	;;
 pillar)
-	sudo salt-call pillar.items
+	$sudo salt-call pillar.items
 	;;
 packages)
         # ubuntu / debian
@@ -73,7 +78,7 @@ search)
         ;;
 install|remove|purge|update|upgrade|clean|autoremove)
         # ubuntu / debian
-	sudo apt-get "$@"
+	$sudo apt-get "$@"
 	;;
 *)
 	echo "usage: $0 grains|pillar|run [state]|packages|search|install package|remove package|purge package|autoclean|autoremove\n"

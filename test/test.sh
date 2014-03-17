@@ -11,7 +11,7 @@ if [ digital_ocean = "$PROVIDER" -a '(' -z "$DO_CLIENT_ID" -o -z "$DO_API_KEY" '
   echo "[these tests will fail if the client_id and api_key are not set in the global Vagrantfile]"
 fi
 
-cd test
+[ -d test ] && cd test
 set -x
 
 distributions=${DISTRIBUTIONS:-ubuntu centos}
@@ -39,44 +39,51 @@ fail()
 
 check_provisioners_ran()
 {
-  shell_only=$1
-  # shell MUST be able to run!
-  test_cmd='test -s /tmp/folder/file_from_shell'
-  case "$shell_only" in
+  rsync_only=$1
+  test_cmd="which rsync"
+  case "$rsync_only" in
   '')
+    test_cmd="$test_cmd && cd /tmp/folder && echo /tmp/folder/ exists"
     case "$EXCLUDE" in
     *ansible*)
       ;;
     *)
-      test_cmd="$test_cmd -a -s /tmp/folder/file_from_ansible"
+      test_cmd="$test_cmd && [ -s file_from_ansible ] && echo ansible works"
       ;;
     esac
     case "$EXCLUDE" in
     *chef*)
       ;;
     *)
-      test_cmd="$test_cmd -a -s /tmp/folder/file_from_chef"
+      test_cmd="$test_cmd && [ -s file_from_chef ] && echo chef works"
       ;;
     esac
     case "$EXCLUDE" in
     *file*)
       ;;
     *)
-      test_cmd="$test_cmd -a -s /tmp/folder/file_from_file"
+      test_cmd="$test_cmd && [ -s file_from_file ] && echo file works"
       ;;
     esac
     case "$EXCLUDE" in
     *puppet*)
       ;;
     *)
-      test_cmd="$test_cmd -a -s /tmp/folder/file_from_puppet"
+      test_cmd="$test_cmd && [ -s file_from_puppet ] && echo puppet works"
       ;;
     esac
     case "$EXCLUDE" in
     *salt*)
       ;;
     *)
-      test_cmd="$test_cmd -a -s /tmp/folder/file_from_salt"
+      test_cmd="$test_cmd && [ -s file_from_salt ] && echo salt works"
+      ;;
+    esac
+    case "$EXCLUDE" in
+    *shell*)
+      ;;
+    *)
+      test_cmd="$test_cmd && [ -s file_from_shell ] && echo shell works"
       ;;
     esac
     ;;
@@ -85,9 +92,9 @@ check_provisioners_ran()
   echo "Files make by provisioners with EXCLUDE=$EXCLUDE"
   vagrant ssh $dist -c 'ls -la /tmp/folder' -- -n &&
   vagrant ssh $dist -c "$test_cmd" -- -n &&
-  echo "$dist has /tmp/folder files" &&
+  echo "$dist passed file checks" &&
   ! vagrant ssh $dist -c 'test -s /tmp/no-such-file' -- -n &&
-  echo 'vagrant ssh is returning exit status'
+  echo 'vagrant ssh test is returning correct exit status'
 }
 
 bootstrap_rsync=
@@ -116,6 +123,7 @@ for dist in $distributions; do
     fail initial tests
   fi
   if [ -n "$RELOAD_BEFORE_PROVISION" ]; then
+    # Needed by vagrant-vbguest
     if echo "Reloading before running provision" &&
       vagrant reload $dist
     then
@@ -155,6 +163,6 @@ for dist in $distributions; do
   else
     fail halt and destroy
   fi
+  rm -f "vagrant_ansible_inventory_$dist"
 done
 
-cd ..

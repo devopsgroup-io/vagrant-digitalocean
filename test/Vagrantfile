@@ -1,11 +1,7 @@
 require 'open-uri'
 require 'fileutils'
 
-Vagrant.require_plugin('vagrant-digitalocean')
-Vagrant.require_plugin('vagrant-omnibus') if ENV['EXCLUDE'].to_s !~ /chef/
-
 Vagrant.configure('2') do |config|
-
 
   config.vm.synced_folder '.', '/vagrant', :disabled => true
 
@@ -21,7 +17,6 @@ Vagrant.configure('2') do |config|
     provider.region = ENV['REGION'] if ENV['REGION']
   end
 
-  config.vm.provision :shell, :path => 'scripts/provision.sh'
 
   if ENV['BOOTSTRAP_RSYNC']
     config.vm.provision :shell, :path => 'scripts/bootstrap-rsync.sh'
@@ -44,8 +39,16 @@ Vagrant.configure('2') do |config|
     end
 
     if ENV['EXCLUDE'].to_s !~ /file/
-      config.vm.provision :shell, :inline => 'mkdir -p /tmp/folder ; chmod 0777 /tmp/folder'
+      config.vm.provision :shell, :inline => 'mkdir -p /tmp/folder ; chmod 0777 /tmp/folder ; ls -ld /tmp/folder'
       config.vm.provision :file, :source => 'Vagrantfile', :destination => '/tmp/folder/file_from_file'
+    end
+
+    if ENV['EXCLUDE'].to_s !~ /puppet/
+      config.vm.provision :shell, :path => 'scripts/bootstrap-puppet.sh'
+      config.vm.provision :puppet do |puppet|
+        puppet.manifests_path = "manifests"
+        puppet.manifest_file = "default.pp"
+      end
     end
 
     if ENV['EXCLUDE'].to_s !~ /salt/
@@ -63,22 +66,19 @@ Vagrant.configure('2') do |config|
       end
     end
 
-    if ENV['EXCLUDE'].to_s !~ /puppet/
-      config.vm.provision :shell, :path => 'scripts/bootstrap-puppet.sh'
-      config.vm.provision :puppet do |puppet|
-        puppet.manifests_path = "manifests"
-        puppet.manifest_file = "default.pp"
-      end
-    end
+    config.vm.provision :shell, :path => 'scripts/provision.sh' if ENV['EXCLUDE'].to_s !~ /shell/
   end
 
   # replace initial number in job_number with the number modulus 4 so we can have four consecutive tests running at the same time 
-  hostname_suffix = (ENV['TRAVIS_JOB_NUMBER'] ? ENV['TRAVIS_JOB_NUMBER'].sub(/(\d+)\./) {|s| "#{s.to_i % 4}-"} : '') << '.vagrant.test'
+  hostname_suffix = ENV['TRAVIS_JOB_NUMBER'].to_s.sub(/(\d+)\./){|s| "-#{s.to_i % 4}-"} <<
+                    '.' <<
+                    (ENV['DOMAIN'] || 'vagrant.test')
 
   config.vm.define :arch do |vm_config|
     vm_config.vm.hostname = 'arch' << hostname_suffix
-    vm_config.vm.provider :digital_ocean do |provider|
+    vm_config.vm.provider :digital_ocean do |provider, override|
       provider.image = 'Arch Linux 2013.05 x64'
+      override.ssh.pty = true if ENV['SSH_PTY']
     end
     vm_config.vm.provider :virtualbox do |provider, override|
       provider.memory = 512
@@ -89,8 +89,9 @@ Vagrant.configure('2') do |config|
 
   config.vm.define :centos do |vm_config|
     vm_config.vm.hostname = 'centos' << hostname_suffix
-    vm_config.vm.provider :digital_ocean do |provider|
+    vm_config.vm.provider :digital_ocean do |provider, override|
       provider.image = 'CentOS 6.4 x64'
+      override.ssh.pty = true if ENV['SSH_PTY']
     end
     vm_config.vm.provider :virtualbox do |provider, override|
       provider.memory = 512
@@ -101,8 +102,9 @@ Vagrant.configure('2') do |config|
 
   config.vm.define :debian do |vm_config|
     vm_config.vm.hostname = 'debian' << hostname_suffix
-    vm_config.vm.provider :digital_ocean do |provider|
+    vm_config.vm.provider :digital_ocean do |provider, override|
       provider.image = 'Debian 7.0 x64'
+      override.ssh.pty = true if ENV['SSH_PTY']
     end
     vm_config.vm.provider :virtualbox do |provider, override|
       provider.memory = 512
@@ -113,8 +115,10 @@ Vagrant.configure('2') do |config|
 
   config.vm.define :fedora do |vm_config|
     vm_config.vm.hostname = 'fedora' << hostname_suffix
-    vm_config.vm.provider :digital_ocean do |provider|
+    vm_config.vm.provider :digital_ocean do |provider,override|
       provider.image = 'Fedora 19 x64'
+      #https://github.com/smdahlen/vagrant-digitalocean/issues/100
+      override.ssh.pty = true if ENV['SSH_PTY']
     end
     vm_config.vm.provider :virtualbox do |provider, override|
       provider.memory = 512
@@ -126,8 +130,9 @@ Vagrant.configure('2') do |config|
   # x32 saves some memory, but may run a bit slower
   config.vm.define :ubuntu32 do |vm_config|
     vm_config.vm.hostname = 'ubuntu' << hostname_suffix
-    vm_config.vm.provider :digital_ocean do |provider|
+    vm_config.vm.provider :digital_ocean do |provider, override|
       provider.image = 'Ubuntu 12.04.3 x32'
+      override.ssh.pty = true if ENV['SSH_PTY']
     end
     vm_config.vm.provider :virtualbox do |provider, override|
       provider.memory = 512
@@ -139,8 +144,9 @@ Vagrant.configure('2') do |config|
   # x64 uses more memory but generally runs a bit faster
   config.vm.define :ubuntu do |vm_config|
     vm_config.vm.hostname = 'ubuntu' << hostname_suffix
-    vm_config.vm.provider :digital_ocean do |provider|
+    vm_config.vm.provider :digital_ocean do |provider, override|
       provider.image = 'Ubuntu 12.04.3 x64'
+      override.ssh.pty = true if ENV['SSH_PTY']
     end
     vm_config.vm.provider :virtualbox do |provider, override|
       provider.memory = 512
