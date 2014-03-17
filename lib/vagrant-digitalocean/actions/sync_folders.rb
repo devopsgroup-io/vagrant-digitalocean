@@ -17,10 +17,10 @@ module VagrantPlugins
           @machine.config.vm.synced_folders.each do |id, data|
             next if data[:disabled]
 
-						unless Vagrant::Util::Which.which('rsync')
-							env[:ui].warn I18n.t('vagrant_digital_ocean.info.rsync_missing')
-							break
-						end
+            unless Vagrant::Util::Which.which('rsync')
+              env[:ui].warn I18n.t('vagrant_digital_ocean.info.rsync_missing')
+              break
+            end
 
             hostpath  = File.expand_path(data[:hostpath], env[:root_path])
             guestpath = data[:guestpath]
@@ -29,10 +29,10 @@ module VagrantPlugins
             # avoid creating an additional directory with rsync
             hostpath = "#{hostpath}/" if hostpath !~ /\/$/
 
-						# on windows rsync.exe requires cygdrive-style paths
-						if Vagrant::Util::Platform.windows?
-							hostpath = hostpath.gsub(/^(\w):/) { "/cygdrive/#{$1}" }
-						end
+            # on windows rsync.exe requires cygdrive-style paths
+            if Vagrant::Util::Platform.windows?
+              hostpath = hostpath.gsub(/^(\w):/) { "/cygdrive/#{$1}" }
+            end
 
             env[:ui].info I18n.t('vagrant_digital_ocean.info.rsyncing', {
               :hostpath => hostpath,
@@ -44,23 +44,29 @@ module VagrantPlugins
             @machine.communicate.sudo(
               "chown -R #{ssh_info[:username]} #{guestpath}")
 
-						key = ssh_info[:private_key_path]
-						key = key[0] if key.is_a?(Array)
+            key = ssh_info[:private_key_path]
+            key = key[0] if key.is_a?(Array)
 
             # rsync over to the guest path using the ssh info
             command = [
-              "rsync", "--verbose", "--archive", "-z", "--delete",
+              "rsync", "--verbose", "--progress", "--archive", "-z", "--delete",
               "-e", "ssh -p #{ssh_info[:port]} -o StrictHostKeyChecking=no -i '#{key}'",
               hostpath,
-              "#{ssh_info[:username]}@#{ssh_info[:host]}:#{guestpath}"]
+              "#{ssh_info[:username]}@#{ssh_info[:host]}:#{guestpath}",
+              { :notify => [:stdout, :stderr] } ]
 
-						# we need to fix permissions when using rsync.exe on windows, see
-					  # http://stackoverflow.com/questions/5798807/rsync-permission-denied-created-directories-have-no-permissions
-						if Vagrant::Util::Platform.windows?
-							command.insert(1, "--chmod", "ugo=rwX")
-						end
+            # we need to fix permissions when using rsync.exe on windows, see
+            # http://stackoverflow.com/questions/5798807/rsync-permission-denied-created-directories-have-no-permissions
+            if Vagrant::Util::Platform.windows?
+              command.insert(1, "--chmod", "ugo=rwX")
+            end
 
-            r = Vagrant::Util::Subprocess.execute(*command)
+            r = Vagrant::Util::Subprocess.execute(*command) do |type, data|
+              if type == :stdout || type == :stderr
+                @machine.env.ui.info(data, :new_line => false, :prefix => false)
+              end
+            end
+
             if r.exit_code != 0
               raise Errors::RsyncError,
                 :guestpath => guestpath,
