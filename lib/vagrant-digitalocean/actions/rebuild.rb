@@ -5,7 +5,7 @@ module VagrantPlugins
     module Actions
       class Rebuild
         include Helpers::Client
-				include Vagrant::Util::Retryable
+        include Vagrant::Util::Retryable
 
         def initialize(app, env)
           @app = app
