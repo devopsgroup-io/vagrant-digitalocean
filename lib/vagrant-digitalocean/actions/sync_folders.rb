@@ -17,9 +17,14 @@ module VagrantPlugins
           @machine.config.vm.synced_folders.each do |id, data|
             next if data[:disabled]
 
-            unless Vagrant::Util::Which.which('rsync')
-              env[:ui].warn I18n.t('vagrant_digital_ocean.info.rsync_missing')
-              break
+            if @machine.guest.capability?(:rsync_installed)
+              installed = @machine.guest.capability(:rsync_installed)
+              if !installed
+                can_install = @machine.guest.capability?(:rsync_install)
+                raise Vagrant::Errors::RSyncNotInstalledInGuest if !can_install
+                @machine.ui.info I18n.t("vagrant.rsync_installing")
+                @machine.guest.capability(:rsync_install)
+              end
             end
 
             hostpath  = File.expand_path(data[:hostpath], env[:root_path])
