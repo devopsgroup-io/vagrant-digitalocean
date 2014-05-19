@@ -19,6 +19,7 @@ en:
       creating_key: "Creating new SSH key: %{name}..."
       trying_rsync_install: "Rsync not found, attempting to install with yum..."
       rsyncing: "Rsyncing folder: %{hostpath} => %{guestpath}..."
+      rsync_missing: "The rsync executable was not found in the current path."
     config:
       client_id: "Client ID is required"
       api_key: "API key is required"
