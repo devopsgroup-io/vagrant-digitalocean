@@ -15,7 +15,7 @@ module VagrantPlugins
         include Vagrant::Util::Retryable
 
         def initialize(machine)
-					@logger = Log4r::Logger.new('vagrant::digitalocean::apiclient')
+          @logger = Log4r::Logger.new('vagrant::digitalocean::apiclient')
           @config = machine.provider_config
           @client = Faraday.new({
             :url => 'https://api.digitalocean.com/',
@@ -27,7 +27,7 @@ module VagrantPlugins
 
         def request(path, params = {})
           begin
-						@logger.info "Request: #{path}"
+            @logger.info "Request: #{path}"
             result = @client.get(path, params = params.merge({
               :client_id => @config.client_id,
               :api_key => @config.api_key
@@ -48,7 +48,7 @@ module VagrantPlugins
 
           begin
             body = JSON.parse(result.body)
-						@logger.info "Response: #{body}"
+            @logger.info "Response: #{body}"
           rescue JSON::ParserError => e
             raise(Errors::JSONError, {
               :message => e.message,

@@ -44,7 +44,7 @@ module VagrantPlugins
 
           # add the specified key to the authorized keys file
           path = @machine.config.ssh.private_key_path
-					path = path[0] if path.is_a?(Array)
+          path = path[0] if path.is_a?(Array)
           path = File.expand_path(path, @machine.env.root_path)
           pub_key = DigitalOcean.public_key(path)
           @machine.communicate.execute(<<-BASH)
