@@ -77,7 +77,7 @@ The following attributes are available to further configure the provider:
 - `provider.image` - A string representing the image to use when creating a
    new droplet (e.g. `Debian 6.0 x64`). The available options may
    be found on Digital Ocean's new droplet [form](https://www.digitalocean.com/droplets/new).
-   It defaults to `Ubuntu 14.04.3 x64`.
+   It defaults to `Ubuntu 14.04 x64`.
 - `provider.region` - A string representing the region to create the new
    droplet in. It defaults to `New York 2`.
 - `provider.size` - A string representing the size to use when creating a
