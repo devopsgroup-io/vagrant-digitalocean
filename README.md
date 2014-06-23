@@ -120,7 +120,7 @@ The provider supports the following Vagrant sub-commands:
   specified `config.vm.synced_folder`.
 - `vagrant reload` - Reboots the droplet instance.
 - `vagrant rebuild` - Destroys the droplet instance and recreates it with the
-  same IP address it was assigned to previously.
+  same IP address which was previously assigned.
 - `vagrant status` - Outputs the status (active, off, not created) for the
   droplet instance.
 
