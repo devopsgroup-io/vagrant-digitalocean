@@ -1,5 +1,5 @@
 require 'vagrant-digitalocean/helpers/client'
-
+#TODO: --force
 module VagrantPlugins
   module DigitalOcean
     module Actions
@@ -15,11 +15,13 @@ module VagrantPlugins
 
         def call(env)
           # submit power off droplet request
-          result = @client.request("/droplets/#{@machine.id}/power_off")
+          result = @client.post("/v2/droplets/#{@machine.id}/actions", {
+            :type => 'power_off'
+          })
 
           # wait for request to complete
           env[:ui].info I18n.t('vagrant_digital_ocean.info.powering_off')
-          @client.wait_for_event(env, result['event_id'])
+          @client.wait_for_event(env, result['action']['id'])
 
           # refresh droplet state with provider
           Provider.droplet(@machine, :refresh => true)

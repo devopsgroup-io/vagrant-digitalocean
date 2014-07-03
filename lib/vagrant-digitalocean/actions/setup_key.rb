@@ -20,7 +20,7 @@ module VagrantPlugins
           begin
             # assigns existing ssh key id to env for use by other commands
             env[:ssh_key_id] = @client
-              .request('/ssh_keys/')
+              .request('/v2/account/keys')
               .find_id(:ssh_keys, :name => ssh_key_name)
 
             env[:ui].info I18n.t('vagrant_digital_ocean.info.using_key', {
@@ -46,7 +46,7 @@ module VagrantPlugins
             :name => name
           }) 
 
-          result = @client.request('/ssh_keys/new', {
+          result = @client.post('/v2/account/keys', {
             :name => name,
             :ssh_pub_key => pub_key
           })
