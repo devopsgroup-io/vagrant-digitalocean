@@ -52,12 +52,17 @@ module VagrantPlugins
             key = ssh_info[:private_key_path]
             key = key[0] if key.is_a?(Array)
 
+            # build exclude rules
+            excludes = ['.vagrant/']
+            excludes += Array(data[:rsync__exclude]).map(&:to_s) if data[:rsync__exclude]
+            excludes.uniq!
+
             # rsync over to the guest path using the ssh info
             command = [
-              "rsync", "--verbose", "--archive", "-z", "--delete",
+              "rsync", "--verbose", "--archive", "-z", "--delete", excludes.map { |e| "--exclude=#{e}" },
               "-e", "ssh -p #{ssh_info[:port]} -o StrictHostKeyChecking=no -i '#{key}'",
               hostpath,
-              "#{ssh_info[:username]}@#{ssh_info[:host]}:#{guestpath}"]
+              "#{ssh_info[:username]}@#{ssh_info[:host]}:#{guestpath}"].flatten
 
             # we need to fix permissions when using rsync.exe on windows, see
             # http://stackoverflow.com/questions/5798807/rsync-permission-denied-created-directories-have-no-permissions

@@ -8,6 +8,8 @@ Vagrant.configure('2') do |config|
   config.ssh.private_key_path = 'test_id_rsa'
 
   config.vm.synced_folder '.', '/vagrant', :disabled => true
+  config.vm.synced_folder '.', '/tmp/test', type: "rsync",
+    rsync__exclude: ['cookbooks/', 'scripts/']
 
   config.vm.provider :digital_ocean do |provider, override|
     override.vm.box = 'digital_ocean'
