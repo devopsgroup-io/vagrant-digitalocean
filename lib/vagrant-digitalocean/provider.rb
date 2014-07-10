@@ -12,14 +12,14 @@ module VagrantPlugins
 
         # load status of droplets if it has not been done before
         if !@droplets
-          result = client.request('/droplets')
+          result = client.request('/v2/droplets')
           @droplets = result['droplets']
         end
 
         if opts[:refresh] && machine.id
           # refresh the droplet status for the given machine
           @droplets.delete_if { |d| d['id'].to_s == machine.id }
-          result = client.request("/droplets/#{machine.id}")
+          result = client.request("/v2/droplets/#{machine.id}")
           @droplets << droplet = result['droplet']
         else
           # lookup droplet status for the given machine
@@ -80,7 +80,7 @@ module VagrantPlugins
         return nil if droplet['status'].to_sym != :active
 
         return {
-          :host => droplet['ip_address'],
+          :host => droplet['networks']['v4'].first['ip_address'],
           :port => '22',
           :username => 'root',
           :private_key_path => nil

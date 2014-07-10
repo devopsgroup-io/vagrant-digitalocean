@@ -25,13 +25,23 @@ module VagrantPlugins
           })
         end
 
-        def request(path, params = {})
+        def delete(path, params = {}, method = :delete)
+          @client.request :url_encoded
+          request(path, params, :delete)
+        end
+
+        def post(path, params = {}, method = :post)
+          @client.headers['Content-Type'] = 'application/json'
+          request(path, params, :post)
+        end
+
+        def request(path, params = {}, method = :get)
           begin
             @logger.info "Request: #{path}"
-            result = @client.get(path, params = params.merge({
-              :client_id => @config.client_id,
-              :api_key => @config.api_key
-            }))
+            result = @client.send(method) do |req|
+              req.url path, params
+              req.headers['Authorization'] = "Bearer #{@config.token}"
+            end
           rescue Faraday::Error::ConnectionFailed => e
             # TODO this is suspect but because farady wraps the exception
             #      in something generic there doesn't appear to be another
@@ -43,26 +53,25 @@ module VagrantPlugins
             raise e
           end
 
-          # remove the api key in case an error gets dumped to the console
-          params[:api_key] = 'REMOVED'
-
-          begin
-            body = JSON.parse(result.body)
-            @logger.info "Response: #{body}"
-          rescue JSON::ParserError => e
-            raise(Errors::JSONError, {
-              :message => e.message,
-              :path => path,
-              :params => params,
-              :response => result.body
-            })
+          unless method == :delete
+            begin
+              body = JSON.parse(result.body)
+              @logger.info "Response: #{body}"
+            rescue JSON::ParserError => e
+              raise(Errors::JSONError, {
+                :message => e.message,
+                :path => path,
+                :params => params,
+                :response => result.body
+              })
+            end
           end
 
-          if body['status'] != 'OK'
+          unless /^2\d\d$/ =~ result.status.to_s
             raise(Errors::APIStatusError, {
               :path => path,
               :params => params,
-              :status => body['status'],
+              :status => result.status,
               :response => body.inspect
             })
           end
@@ -75,11 +84,11 @@ module VagrantPlugins
             # stop waiting if interrupted
             next if env[:interrupted]
 
-            # check event status
-            result = self.request("/events/#{id}")
+            # check action status
+            result = self.request("/v2/actions/#{id}")
 
             yield result if block_given?
-            raise 'not ready' if result['event']['action_status'] != 'done'
+            raise 'not ready' if result['action']['status'] != 'completed'
           end
         end
       end

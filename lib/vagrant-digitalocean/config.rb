@@ -1,8 +1,7 @@
 module VagrantPlugins
   module DigitalOcean
     class Config < Vagrant.plugin('2', :config)
-      attr_accessor :client_id
-      attr_accessor :api_key
+      attr_accessor :token
       attr_accessor :image
       attr_accessor :region
       attr_accessor :size
@@ -15,8 +14,7 @@ module VagrantPlugins
       alias_method :setup?, :setup
 
       def initialize
-        @client_id          = UNSET_VALUE
-        @api_key            = UNSET_VALUE
+        @token              = UNSET_VALUE
         @image              = UNSET_VALUE
         @region             = UNSET_VALUE
         @size               = UNSET_VALUE
@@ -28,11 +26,10 @@ module VagrantPlugins
       end
 
       def finalize!
-        @client_id          = ENV['DO_CLIENT_ID'] if @client_id == UNSET_VALUE
-        @api_key            = ENV['DO_API_KEY'] if @api_key == UNSET_VALUE
+        @token              = ENV['DO_TOKEN'] if @token == UNSET_VALUE
         @image              = 'Ubuntu 14.04 x64' if @image == UNSET_VALUE
-        @region             = 'New York 2' if @region == UNSET_VALUE
-        @size               = '512MB' if @size == UNSET_VALUE
+        @region             = 'nyc2' if @region == UNSET_VALUE
+        @size               = '512mb' if @size == UNSET_VALUE
         @private_networking = false if @private_networking == UNSET_VALUE
         @backups_enabled    = false if @backups_enabled == UNSET_VALUE
         @ca_path            = nil if @ca_path == UNSET_VALUE
@@ -42,8 +39,7 @@ module VagrantPlugins
 
       def validate(machine)
         errors = []
-        errors << I18n.t('vagrant_digital_ocean.config.client_id') if !@client_id
-        errors << I18n.t('vagrant_digital_ocean.config.api_key') if !@api_key
+        errors << I18n.t('vagrant_digital_ocean.config.token') if !@token
 
         key = machine.config.ssh.private_key_path
         key = key[0] if key.is_a?(Array)

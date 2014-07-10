@@ -17,17 +17,18 @@ module VagrantPlugins
         def call(env)
           # look up image id
           image_id = @client
-            .request('/images')
+            .request('/v2/images')
             .find_id(:images, :name => @machine.provider_config.image)
 
           # submit rebuild request
-          result = @client.request("/droplets/#{@machine.id}/rebuild", {
-            :image_id => image_id
+          result = @client.post("/v2/droplets/#{@machine.id}/actions", {
+            :type => 'rebuild',
+            :image => image_id
           })
 
           # wait for request to complete
           env[:ui].info I18n.t('vagrant_digital_ocean.info.rebuilding')
-          @client.wait_for_event(env, result['event_id'])
+          @client.wait_for_event(env, result['action']['id'])
 
           # refresh droplet state with provider
           Provider.droplet(@machine, :refresh => true)
