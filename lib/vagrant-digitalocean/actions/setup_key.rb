@@ -48,7 +48,7 @@ module VagrantPlugins
 
           result = @client.post('/v2/account/keys', {
             :name => name,
-            :ssh_pub_key => pub_key
+            :public_key => pub_key
           })
           result['ssh_key']['id']
         end
