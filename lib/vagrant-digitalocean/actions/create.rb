@@ -41,12 +41,14 @@ module VagrantPlugins
 
           # refresh droplet state with provider and output ip address
           droplet = Provider.droplet(@machine, :refresh => true)
+          public_network = droplet['networks']['v4'].find { |network| network['type'] == 'public' }
+          private_network = droplet['networks']['v4'].find { |network| network['type'] == 'private' }
           env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_ip', {
-            :ip => droplet['ip_address']
+            :ip => public_network['ip_address']
           })
-          if droplet['private_ip_address']
+          if private_network
             env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_private_ip', {
-              :ip => droplet['private_ip_address']
+              :ip => private_network['ip_address']
             })
           end
 
