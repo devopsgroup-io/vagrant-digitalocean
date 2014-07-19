@@ -18,6 +18,12 @@ module VagrantPlugins
             next if data[:disabled]
 
             if @machine.guest.capability?(:rsync_installed)
+
+              # XXX: changed the sudoers without using visudo.
+              @machine.communicate.tap do |comm|
+                comm.execute('cp /etc/sudoers /etc/sudoers.backup; cat /etc/sudoers | sed -e "s/Defaults\ *requiretty/Defaults:vagrant \!requiretty/"  > /etc/_sudoers; mv /etc/_sudoers /etc/sudoers', {})
+              end
+
               installed = @machine.guest.capability(:rsync_installed)
               if !installed
                 can_install = @machine.guest.capability?(:rsync_install)
