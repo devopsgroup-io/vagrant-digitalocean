@@ -57,6 +57,13 @@ module VagrantPlugins
             begin
               body = JSON.parse(result.body)
               @logger.info "Response: #{body}"
+              next_page = body["links"]["pages"]["next"] rescue nil
+              unless next_page.nil?
+                uri = URI.parse(next_page)
+                next_result = self.request("#{path}?#{uri.query}")
+                req_target = path.split("/")[-1]
+                body["#{req_target}"].concat(next_result["#{req_target}"])
+              end
             rescue JSON::ParserError => e
               raise(Errors::JSONError, {
                 :message => e.message,
