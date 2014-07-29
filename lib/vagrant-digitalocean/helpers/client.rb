@@ -62,7 +62,7 @@ module VagrantPlugins
                 uri = URI.parse(next_page)
                 remove_query = path.split("?")[-1]
                 new_path = path.sub(remove_query, "")
-                next_result = self.request("#{new_path}?#{uri.query}")
+                next_result = self.request("#{new_path}#{uri.query}")
                 req_target = path.split("/")[-1]
                 body["#{req_target}"].concat(next_result["#{req_target}"])
               end
