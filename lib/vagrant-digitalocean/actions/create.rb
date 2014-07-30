@@ -15,46 +15,40 @@ module VagrantPlugins
         end
 
         def call(env)
-          ssh_key_id = env[:ssh_key_id]
-
-          size_id = @client
-            .request('/sizes')
-            .find_id(:sizes, :name => @machine.provider_config.size)
+          ssh_key_id = [env[:ssh_key_id]]
 
           image_id = @client
-            .request('/images')
+            .request('/v2/images')
             .find_id(:images, :name => @machine.provider_config.image)
 
-          region_id = @client
-            .request('/regions')
-            .find_id(:regions, :name => @machine.provider_config.region)
-
           # submit new droplet request
-          result = @client.request('/droplets/new', {
-            :size_id => size_id,
-            :region_id => region_id,
-            :image_id => image_id,
+          result = @client.post('/v2/droplets', {
+            :size => @machine.provider_config.size,
+            :region => @machine.provider_config.region,
+            :image => image_id,
             :name => @machine.config.vm.hostname || @machine.name,
-            :ssh_key_ids => ssh_key_id,
+            :ssh_keys => ssh_key_id,
             :private_networking => @machine.provider_config.private_networking,
-            :backups_enabled => @machine.provider_config.backups_enabled
+            :backups => @machine.provider_config.backups_enabled
           })
 
           # wait for request to complete
           env[:ui].info I18n.t('vagrant_digital_ocean.info.creating') 
-          @client.wait_for_event(env, result['droplet']['event_id'])
+          @client.wait_for_event(env, result['droplet']['action_ids'].first)
 
           # assign the machine id for reference in other commands
           @machine.id = result['droplet']['id'].to_s
 
           # refresh droplet state with provider and output ip address
           droplet = Provider.droplet(@machine, :refresh => true)
+          public_network = droplet['networks']['v4'].find { |network| network['type'] == 'public' }
+          private_network = droplet['networks']['v4'].find { |network| network['type'] == 'private' }
           env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_ip', {
-            :ip => droplet['ip_address']
+            :ip => public_network['ip_address']
           })
-          if droplet['private_ip_address']
+          if private_network
             env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_private_ip', {
-              :ip => droplet['private_ip_address']
+              :ip => private_network['ip_address']
             })
           end
 

@@ -22,8 +22,7 @@ en:
       rsyncing: "Rsyncing folder: %{hostpath} => %{guestpath}..."
       rsync_missing: "The rsync executable was not found in the current path."
     config:
-      client_id: "Client ID is required"
-      api_key: "API key is required"
+      token: "Token is required"
       private_key: "SSH private key path is required"
       public_key: "SSH public key not found: %{key}"
     errors:

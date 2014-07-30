@@ -57,8 +57,10 @@ Vagrant.configure('2') do |config|
     override.vm.box = 'digital_ocean'
     override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
     
-    provider.client_id = 'YOUR CLIENT ID'
-    provider.api_key = 'YOUR API KEY'
+    provider.token = 'YOUR TOKEN'
+    provider.image = 'Ubuntu 14.04 x64'
+    provider.region = 'nyc2'
+    provider.size = '512mb'
   end
 end
 ```
@@ -76,12 +78,12 @@ Please note the following:
 The following attributes are available to further configure the provider:
 - `provider.image` - A string representing the image to use when creating a
    new droplet (e.g. `Debian 6.0 x64`). The available options may
-   be found on Digital Ocean's new droplet [form](https://www.digitalocean.com/droplets/new).
+   be found on Digital Ocean's new droplet [form](https://cloud.digitalocean.com/droplets/new).
    It defaults to `Ubuntu 14.04 x64`.
 - `provider.region` - A string representing the region to create the new
-   droplet in. It defaults to `New York 2`.
+   droplet in. It defaults to `nyc2`.
 - `provider.size` - A string representing the size to use when creating a
-  new droplet (e.g. `1GB`). It defaults to `512MB`.
+  new droplet (e.g. `1gb`). It defaults to `512mb`.
 - `provider.private_networking` - A boolean flag indicating whether to enable
   a private network interface (if the region supports private networking). It
   defaults to `false`.

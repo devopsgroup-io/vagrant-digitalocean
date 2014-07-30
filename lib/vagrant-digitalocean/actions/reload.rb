@@ -15,11 +15,13 @@ module VagrantPlugins
 
         def call(env)
           # submit reboot droplet request
-          result = @client.request("/droplets/#{@machine.id}/reboot")
+          result = @client.post("/v2/droplets/#{@machine.id}/actions", {
+            :type => 'reboot'
+          })
 
           # wait for request to complete
           env[:ui].info I18n.t('vagrant_digital_ocean.info.reloading')
-          @client.wait_for_event(env, result['event_id'])
+          @client.wait_for_event(env, result['action']['id'])
 
           @app.call(env)
         end
