@@ -60,7 +60,9 @@ module VagrantPlugins
               next_page = body["links"]["pages"]["next"] rescue nil
               unless next_page.nil?
                 uri = URI.parse(next_page)
-                next_result = self.request("#{path}?#{uri.query}")
+                remove_query = path.split("?")[-1]
+                new_path = path.sub(remove_query, "")
+                next_result = self.request("#{new_path}#{uri.query}")
                 req_target = path.split("/")[-1]
                 body["#{req_target}"].concat(next_result["#{req_target}"])
               end
