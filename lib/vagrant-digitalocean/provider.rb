@@ -79,8 +79,10 @@ module VagrantPlugins
 
         return nil if droplet['status'].to_sym != :active
 
+        public_network = droplet['networks']['v4'].find { |network| network['type'] == 'public' }
+
         return {
-          :host => droplet['networks']['v4'].first['ip_address'],
+          :host => public_network['ip_address'],
           :port => '22',
           :username => 'root',
           :private_key_path => nil
