@@ -56,7 +56,7 @@ Vagrant.configure('2') do |config|
     override.ssh.private_key_path = '~/.ssh/id_rsa'
     override.vm.box = 'digital_ocean'
     override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
-    
+
     provider.token = 'YOUR TOKEN'
     provider.image = 'Ubuntu 14.04 x64'
     provider.region = 'nyc2'
@@ -70,8 +70,8 @@ Please note the following:
   with the droplet. The provider will create a new Digital Ocean SSH key using
   your public key which is assumed to be the `private_key_path` with a *.pub*
   extension.
-- You *must* specify your Digital Ocean Client and API keys. These may be
-  found on the control panel within the *My Settings > API Access* section.
+- You *must* specify your Digital Ocean Personal Access Token. This may be
+  found on the control panel within the *Apps &amp; API* section.
 
 **Supported Configuration Attributes**
 
