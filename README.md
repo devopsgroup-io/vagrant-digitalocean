@@ -70,7 +70,7 @@ Please note the following:
   with the droplet. The provider will create a new Digital Ocean SSH key using
   your public key which is assumed to be the `private_key_path` with a *.pub*
   extension.
-- You *must* specify your Digital Ocean Client and API keys. These may be
+- You *must* specify your Digital Ocean API token. These may be
   found on the control panel within the *My Settings > API Access* section.
 
 **Supported Configuration Attributes**
