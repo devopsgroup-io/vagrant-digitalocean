@@ -34,7 +34,7 @@ module VagrantPlugins
 
           # wait for request to complete
           env[:ui].info I18n.t('vagrant_digital_ocean.info.creating') 
-          @client.wait_for_event(env, result['droplet']['action_ids'].first)
+          @client.wait_for_event(env, result['links']['actions'].first['id'])
 
           # assign the machine id for reference in other commands
           @machine.id = result['droplet']['id'].to_s
