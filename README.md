@@ -29,18 +29,19 @@ Installation of the provider requires two steps:
         $ vagrant plugin install vagrant-digitalocean
 
 
-**NOTE:** If you are using a Mac, you may need to install a CA bundle to enable SSL
-communication with the Digital Ocean API. It is recommended to first install
-[Homebrew](http://mxcl.github.io/homebrew/). With Homebrew installed, run
-the following command to install the bundle:
+**NOTE:** If you are using a Mac, and this plugin would not work caused by SSL certificate problem,
+You may need to specify certificate path explicitly.  
+You can verify actual certificate path by running:
 
-    $ brew install curl-ca-bundle
+```bash
+ruby -ropenssl -e "p OpenSSL::X509::DEFAULT_CERT_FILE"
+```
 
-Once the bundle is installed, add the following environment variable to your
+Then, add the following environment variable to your
 `.bash_profile` script and `source` it:
 
 ```bash
-export SSL_CERT_FILE=/usr/local/opt/curl-ca-bundle/share/ca-bundle.crt
+export SSL_CERT_FILE=/usr/local/etc/openssl/cert.pem
 ```
 
 Configure
