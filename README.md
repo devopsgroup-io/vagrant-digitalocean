@@ -100,6 +100,34 @@ The provider will create a new user account with the specified SSH key for
 authorization if `config.ssh.username` is set and the `provider.setup`
 attribute is `true`.
 
+### provider.region slug
+
+Each region has been specify with slug name.  
+Current Region-slug table is:
+
+| slug | Region Name     |
+|:---- |:----------------|
+| nyc1 | New York 1      |
+| ams1 | Amsterdam 1     |
+| sfo1 | San Francisco 1 |
+| nyc2 | New York 2      |
+| ams2 | Amsterdam 2     |
+| sgp1 | Singapore 1     |
+| lon1 | London 1        |
+| nyc3 | New York 3      |
+
+You can find latest region slug name using DigitalOcean API V2 call.
+
+- example call.
+
+```
+curl -X GET "https://api.digitalocean.com/v2/regions" \
+     -H "Authorization: Bearer $DIGITAL_OCEAN_TOKEN" \
+     2>/dev/null | jq '.regions [] | .slug,.name'
+```
+
+More detail: [DigitalOcean API - Regions](https://developers.digitalocean.com/#regions)
+
 Run
 ---
 After creating your project's `Vagrantfile` with the required configuration
