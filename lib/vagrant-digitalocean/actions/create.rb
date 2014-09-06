@@ -30,7 +30,8 @@ module VagrantPlugins
             :ssh_keys => ssh_key_id,
             :private_networking => @machine.provider_config.private_networking,
             :backups => @machine.provider_config.backups_enabled,
-            :ipv6 => @machine.provider_config.ipv6
+            :ipv6 => @machine.provider_config.ipv6,
+            :user_data => @machine.provider_config.user_data
           })
 
           # wait for request to complete
