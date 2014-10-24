@@ -19,7 +19,7 @@ module VagrantPlugins
 
           image_id = @client
             .request('/v2/images')
-            .find_id(:images, :name => @machine.provider_config.image)
+            .find_id(:images, :slug => @machine.provider_config.image)
 
           # submit new droplet request
           result = @client.post('/v2/droplets', {
@@ -35,7 +35,7 @@ module VagrantPlugins
           })
 
           # wait for request to complete
-          env[:ui].info I18n.t('vagrant_digital_ocean.info.creating') 
+          env[:ui].info I18n.t('vagrant_digital_ocean.info.creating')
           @client.wait_for_event(env, result['links']['actions'].first['id'])
 
           # assign the machine id for reference in other commands
