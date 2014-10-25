@@ -77,13 +77,11 @@ Please note the following:
 **Supported Configuration Attributes**
 
 The following attributes are available to further configure the provider:
-- `provider.image` - A string representing the image to use when creating a
-   new droplet. It defaults to `ubuntu-14-04-x64`.
+- `provider.image` - A string representing the image to use when creating a new droplet. It defaults to `ubuntu-14-04-x64`. List available images with the `digitalocean-list images` command.
 - `provider.ipv6` - A boolean flag indicating whether to enable IPv6
-- `provider.region` - A string representing the region to create the new
-   droplet in. It defaults to `nyc2`.
+- `provider.region` - A string representing the region to create the new droplet in. It defaults to `nyc2`. List available regions with the `digitalocean-list regions` command.
 - `provider.size` - A string representing the size to use when creating a
-  new droplet (e.g. `1gb`). It defaults to `512mb`.
+  new droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `digitalocean-list sizes` command.
 - `provider.private_networking` - A boolean flag indicating whether to enable
   a private network interface (if the region supports private networking). It
   defaults to `false`.
@@ -100,68 +98,15 @@ The provider will create a new user account with the specified SSH key for
 authorization if `config.ssh.username` is set and the `provider.setup`
 attribute is `true`.
 
-### provider.image slug
+### image, region and size slugs
 
-Each image has to be specified with the slug name.
-
-| slug                | image name                |
-|:--------------------|:--------------------------|
-| ubuntu-14-10-x32    | Ubuntu 14.10 x32          |
-| coreos-beta         | CoreOS 444.5.0 (beta)     |
-| coreos-stable       | CoreOS 444.5.0 (stable)   |
-| coreos-alpha        | CoreOS 472.0.0 (alpha)    |
-| fedora-20-x64       | Fedora 0 x64              |
-| fedora-20-x32       | Fedora 20 x32             |
-| fedora-19-x64       | Fedora 19 x64             |
-| fedora-19-x32       | Fedora 19 x32             |
-| centos-6-5-x32      | CentOS 6.5 x32            |
-| centos-6-5-x64      | CentOS 6.5 x64            |
-| centos-5-8-x64      | CentOS 5.10 x64           |
-| centos-5-8-x32      | CentOS 5.10 x32           |
-| debian-7-0-x64      | Debian 7.0 x64            |
-| debian-7-0-x32      | Debian 7.0 x32            |
-| debian-6-0-x64      | Debian 6.0 x64            |
-| debian-6-0-x32      | Debian 6.0 x32            |
-| ubuntu-10-04-x64    | Ubuntu 10.04 x64          |
-| ubuntu-10-04-x32    | Ubuntu 10.04 x32          |
-| ubuntu-12-04-x64    | Ubuntu 12.04.5 x64        |
-| ubuntu-12-04-x32    | Ubuntu 12.04.5 x32        |
-
-You can find latest image slug name using DigitalOcean API V2 call. Example call:
+Images, regions and sizes have to be specified with the slug name. You can find the slug names with the `digitalocean-list` commands:
 
 ```
-curl -s https://api.digitalocean.com/v2/images \
-      -H 'Authorization:Bearer $DIGITAL_OCEAN_TOKEN' \
-      | jq '.images[].slug'
+vagrant digitalocean-list images $DIGITAL_OCEAN_TOKEN
+vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN
+vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN
 ```
-
-More details: [DigitalOcean API - Images](https://developers.digitalocean.com/#images)
-
-### provider.region slug
-
-Each region has to be specified with the slug name.
-Current Region-slug table is:
-
-| slug | Region Name     |
-|:---- |:----------------|
-| nyc1 | New York 1      |
-| ams1 | Amsterdam 1     |
-| sfo1 | San Francisco 1 |
-| nyc2 | New York 2      |
-| ams2 | Amsterdam 2     |
-| sgp1 | Singapore 1     |
-| lon1 | London 1        |
-| nyc3 | New York 3      |
-
-You can find latest region slug name using DigitalOcean API V2 call. Example call:
-
-```
-curl -X GET "https://api.digitalocean.com/v2/regions" \
-     -H "Authorization: Bearer $DIGITAL_OCEAN_TOKEN" \
-     2>/dev/null | jq '.regions [] | .slug,.name'
-```
-
-More details: [DigitalOcean API - Regions](https://developers.digitalocean.com/#regions)
 
 Run
 ---
