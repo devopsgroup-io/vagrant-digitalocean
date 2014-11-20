@@ -31,7 +31,7 @@ module VagrantPlugins
 
       def finalize!
         @token              = ENV['DO_TOKEN'] if @token == UNSET_VALUE
-        @image              = 'Ubuntu 14.04 x64' if @image == UNSET_VALUE
+        @image              = 'ubuntu-14-04-x64' if @image == UNSET_VALUE
         @region             = 'nyc2' if @region == UNSET_VALUE
         @size               = '512mb' if @size == UNSET_VALUE
         @private_networking = false if @private_networking == UNSET_VALUE

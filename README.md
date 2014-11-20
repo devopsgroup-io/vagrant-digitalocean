@@ -59,7 +59,7 @@ Vagrant.configure('2') do |config|
     override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
 
     provider.token = 'YOUR TOKEN'
-    provider.image = 'Ubuntu 14.04 x64'
+    provider.image = 'ubuntu-14-04-x64'
     provider.region = 'nyc2'
     provider.size = '512mb'
   end
@@ -77,15 +77,11 @@ Please note the following:
 **Supported Configuration Attributes**
 
 The following attributes are available to further configure the provider:
-- `provider.image` - A string representing the image to use when creating a
-   new droplet (e.g. `Debian 6.0 x64`). The available options may
-   be found on Digital Ocean's new droplet [form](https://cloud.digitalocean.com/droplets/new).
-   It defaults to `Ubuntu 14.04 x64`.
+- `provider.image` - A string representing the image to use when creating a new droplet. It defaults to `ubuntu-14-04-x64`. List available images with the `digitalocean-list images` command.
 - `provider.ipv6` - A boolean flag indicating whether to enable IPv6
-- `provider.region` - A string representing the region to create the new
-   droplet in. It defaults to `nyc2`.
+- `provider.region` - A string representing the region to create the new droplet in. It defaults to `nyc2`. List available regions with the `digitalocean-list regions` command.
 - `provider.size` - A string representing the size to use when creating a
-  new droplet (e.g. `1gb`). It defaults to `512mb`.
+  new droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `digitalocean-list sizes` command.
 - `provider.private_networking` - A boolean flag indicating whether to enable
   a private network interface (if the region supports private networking). It
   defaults to `false`.
@@ -102,33 +98,15 @@ The provider will create a new user account with the specified SSH key for
 authorization if `config.ssh.username` is set and the `provider.setup`
 attribute is `true`.
 
-### provider.region slug
+### image, region and size slugs
 
-Each region has been specify with slug name.  
-Current Region-slug table is:
-
-| slug | Region Name     |
-|:---- |:----------------|
-| nyc1 | New York 1      |
-| ams1 | Amsterdam 1     |
-| sfo1 | San Francisco 1 |
-| nyc2 | New York 2      |
-| ams2 | Amsterdam 2     |
-| sgp1 | Singapore 1     |
-| lon1 | London 1        |
-| nyc3 | New York 3      |
-
-You can find latest region slug name using DigitalOcean API V2 call.
-
-- example call.
+Images, regions and sizes have to be specified with the slug name. You can find the slug names with the `digitalocean-list` commands:
 
 ```
-curl -X GET "https://api.digitalocean.com/v2/regions" \
-     -H "Authorization: Bearer $DIGITAL_OCEAN_TOKEN" \
-     2>/dev/null | jq '.regions [] | .slug,.name'
+vagrant digitalocean-list images $DIGITAL_OCEAN_TOKEN
+vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN
+vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN
 ```
-
-More detail: [DigitalOcean API - Regions](https://developers.digitalocean.com/#regions)
 
 Run
 ---

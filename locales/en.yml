@@ -20,6 +20,11 @@ en:
       trying_rsync_install: "Rsync not found, attempting to install with yum..."
       rsyncing: "Rsyncing folder: %{hostpath} => %{guestpath}..."
       rsync_missing: "The rsync executable was not found in the current path."
+      images: "Description                                        Slug\n\n%{images}"
+      images_with_regions: "Description                                        Slug                           Regions\n\n%{images}"
+      regions: "Description                    Slug\n\n%{regions}"
+      sizes: "Memory          CPUs            Slug\n\n%{sizes}"
+      list_error: 'Could not contact the Digital Ocean API: %{message}'
     config:
       token: "Token is required"
       private_key: "SSH private key path is required"

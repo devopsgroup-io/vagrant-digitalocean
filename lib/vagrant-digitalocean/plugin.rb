@@ -21,6 +21,11 @@ module VagrantPlugins
         require_relative 'commands/rebuild'
         Commands::Rebuild
       end
+
+      command("digitalocean-list", primary: false) do
+        require_relative 'commands/list'
+        Commands::List
+      end
     end
   end
 end

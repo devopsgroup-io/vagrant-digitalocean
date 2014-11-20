@@ -18,7 +18,7 @@ module VagrantPlugins
           # look up image id
           image_id = @client
             .request('/v2/images')
-            .find_id(:images, :name => @machine.provider_config.image)
+            .find_id(:images, :slug => @machine.provider_config.image)
 
           # submit rebuild request
           result = @client.post("/v2/droplets/#{@machine.id}/actions", {
