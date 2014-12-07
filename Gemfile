@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
 
-gem 'vagrant', :git => 'git://github.com/mitchellh/vagrant.git', :tag => 'v1.6.3'
-gem 'vagrant-omnibus'
-gem 'rake'
-
-group :plugins do
-  gem 'vagrant-digitalocean', :path => '.'
+group :development do
+  gem 'vagrant', :git => 'git://github.com/mitchellh/vagrant.git'
+  gem 'rake'
 end
 
-gemspec
+group :plugins do
+  gemspec
+  gem 'vagrant-omnibus'
+end
