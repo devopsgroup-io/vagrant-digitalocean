@@ -25,13 +25,13 @@ Vagrant.configure('2') do |config|
 
   config.vm.define :ubuntu do |ubuntu|
     ubuntu.vm.provider :digital_ocean do |provider|
-      provider.image = 'Ubuntu 14.04 x64'
+      provider.image = 'ubuntu-14-04-x64'
     end
   end
 
   config.vm.define :centos do |centos|
     centos.vm.provider :digital_ocean do |provider|
-      provider.image = 'CentOS 6.4 x64'
+      provider.image = 'centos-6-5-x64'
     end
   end
 end
