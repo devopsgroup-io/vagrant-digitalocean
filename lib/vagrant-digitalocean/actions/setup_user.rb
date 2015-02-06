@@ -50,6 +50,7 @@ module VagrantPlugins
           @machine.communicate.execute(<<-BASH)
             if ! grep '#{pub_key}' /home/#{user}/.ssh/authorized_keys; then
               echo '#{pub_key}' >> /home/#{user}/.ssh/authorized_keys;
+              chown -R #{user} /home/#{user}/.ssh;
             fi
           BASH
 
