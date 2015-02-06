@@ -51,6 +51,8 @@ module VagrantPlugins
             if ! grep '#{pub_key}' /home/#{user}/.ssh/authorized_keys; then
               echo '#{pub_key}' >> /home/#{user}/.ssh/authorized_keys;
             fi
+
+            chown -R #{user} /home/#{user}/.ssh;
           BASH
 
           # reset username
