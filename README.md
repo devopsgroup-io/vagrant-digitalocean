@@ -5,7 +5,7 @@ Adding support for root users that are not named 'root'.
 For example CoreOS root username is 'core' not 'root'.
 
 For changing the default 'root' username use .root_username attribute.
-                                             -------------- 
+
 Example:
 
   config.vm.provider :digital_ocean do |provider, override|
@@ -18,7 +18,6 @@ Example:
     provider.region = 'nyc2'
     provider.size = '512mb'
     privider.root_username = 'core'
-    -------------------------------
   end
 
 Digital Ocean Vagrant Provider
