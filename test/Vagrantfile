@@ -34,4 +34,11 @@ Vagrant.configure('2') do |config|
       provider.image = 'centos-6-5-x64'
     end
   end
+  
+  config.vm.define :coreos do |centos|
+    centos.vm.provider :digital_ocean do |provider|
+      provider.image = 'coreos-alpha'
+      provider.root_username = 'core'
+    end
+  end
 end
