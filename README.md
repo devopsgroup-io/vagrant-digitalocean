@@ -1,3 +1,26 @@
+Contribution:
+=============
+
+Adding support for root users that are not named 'root'. 
+For example CoreOS root username is 'core' not 'root'.
+
+For changing the default 'root' username use .root_username attribute.
+                                             -------------- 
+Example:
+
+  config.vm.provider :digital_ocean do |provider, override|
+    override.ssh.private_key_path = '~/.ssh/id_rsa'
+    override.vm.box = 'digital_ocean'
+    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+
+    provider.token = 'YOUR TOKEN'
+    provider.image = 'ubuntu-14-04-x64'
+    provider.region = 'nyc2'
+    provider.size = '512mb'
+    privider.root_username = 'core'
+    -------------------------------
+  end
+
 Digital Ocean Vagrant Provider
 ==============================
 `vagrant-digitalocean` is a provider plugin for Vagrant that supports the
