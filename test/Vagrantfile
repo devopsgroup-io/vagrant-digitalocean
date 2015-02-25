@@ -35,8 +35,8 @@ Vagrant.configure('2') do |config|
     end
   end
   
-  config.vm.define :coreos do |centos|
-    centos.vm.provider :digital_ocean do |provider|
+  config.vm.define :coreos do |coreos|
+    coreos.vm.provider :digital_ocean do |provider|
       provider.image = 'coreos-alpha'
       provider.root_username = 'core'
     end
