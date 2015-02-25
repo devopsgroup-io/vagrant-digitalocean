@@ -14,7 +14,7 @@ module VagrantPlugins
 
           # override ssh username to root
           user = @machine.config.ssh.username
-          @machine.config.ssh.username = 'root'
+          @machine.config.ssh.username = @machine.provider_config.root_username
 
           # check for guest name available in Vagrant 1.2 first
           guest_name = @machine.guest.name if @machine.guest.respond_to?(:name)

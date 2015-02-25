@@ -17,7 +17,7 @@ module VagrantPlugins
 
           # override ssh username to root temporarily
           user = @machine.config.ssh.username
-          @machine.config.ssh.username = 'root'
+          @machine.config.ssh.username = @machine.provider_config.root_username
 
           env[:ui].info I18n.t('vagrant_digital_ocean.info.creating_user', {
             :user => user
