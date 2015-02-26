@@ -77,7 +77,8 @@ Please note the following:
 **Supported Configuration Attributes**
 
 The following attributes are available to further configure the provider:
-- `provider.image` - A string representing the image to use when creating a new droplet. It defaults to `ubuntu-14-04-x64`. List available images with the `digitalocean-list images` command.
+- `provider.image` - A string referring to the image slug to use when creating a new droplet. It defaults to `ubuntu-14-04-x64`. List available images with the `digitalocean-list images` command.
+- `provider.image_name` - Same as above, but refers to the actual image name rather than the slug. Use this to create a droplet from one of your private snapshots.
 - `provider.ipv6` - A boolean flag indicating whether to enable IPv6
 - `provider.region` - A string representing the region to create the new droplet in. It defaults to `nyc2`. List available regions with the `digitalocean-list regions` command.
 - `provider.size` - A string representing the size to use when creating a

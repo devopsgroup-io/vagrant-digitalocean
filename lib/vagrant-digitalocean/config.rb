@@ -3,6 +3,7 @@ module VagrantPlugins
     class Config < Vagrant.plugin('2', :config)
       attr_accessor :token
       attr_accessor :image
+      attr_accessor :image_name
       attr_accessor :region
       attr_accessor :size
       attr_accessor :private_networking
@@ -18,6 +19,7 @@ module VagrantPlugins
       def initialize
         @token              = UNSET_VALUE
         @image              = UNSET_VALUE
+        @image_name         = UNSET_VALUE
         @region             = UNSET_VALUE
         @size               = UNSET_VALUE
         @private_networking = UNSET_VALUE
@@ -32,6 +34,7 @@ module VagrantPlugins
       def finalize!
         @token              = ENV['DO_TOKEN'] if @token == UNSET_VALUE
         @image              = 'ubuntu-14-04-x64' if @image == UNSET_VALUE
+        @image_name         = nil if @image_name == UNSET_VALUE
         @region             = 'nyc2' if @region == UNSET_VALUE
         @size               = '512mb' if @size == UNSET_VALUE
         @private_networking = false if @private_networking == UNSET_VALUE

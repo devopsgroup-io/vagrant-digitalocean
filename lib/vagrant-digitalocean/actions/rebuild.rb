@@ -15,10 +15,14 @@ module VagrantPlugins
         end
 
         def call(env)
+          search = @machine.provider_config.image_name.nil? ?
+            {:slug => @machine.provider_config.image} :
+            {:name => @machine.provider_config.image_name}
+
           # look up image id
           image_id = @client
             .request('/v2/images')
-            .find_id(:images, :slug => @machine.provider_config.image)
+            .find_id(:images, search)
 
           # submit rebuild request
           result = @client.post("/v2/droplets/#{@machine.id}/actions", {
