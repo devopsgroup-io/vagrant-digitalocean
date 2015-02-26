@@ -17,9 +17,13 @@ module VagrantPlugins
         def call(env)
           ssh_key_id = [env[:ssh_key_id]]
 
+          search = @machine.provider_config.image_name.nil? ?
+            {:slug => @machine.provider_config.image} :
+            {:name => @machine.provider_config.image_name}
+
           image_id = @client
             .request('/v2/images')
-            .find_id(:images, :slug => @machine.provider_config.image)
+            .find_id(:images, search)
 
           # submit new droplet request
           result = @client.post('/v2/droplets', {
