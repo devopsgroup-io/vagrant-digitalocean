@@ -108,6 +108,8 @@ vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN
 vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN
 ```
 
+You can as well eliminate the need to enter the token manually by setting the `DO_TOKEN` environment variable.
+
 Run
 ---
 After creating your project's `Vagrantfile` with the required configuration
