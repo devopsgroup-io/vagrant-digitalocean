@@ -11,6 +11,7 @@ module VagrantPlugins
 
         def execute
           @token = nil
+          id = false
 
           @opts = OptionParser.new do |o|
             o.banner = 'Usage: vagrant digitalocean-list [options] <images|regions|sizes> <token>'
@@ -18,6 +19,11 @@ module VagrantPlugins
             o.on("-r", "--[no-]regions", "show the regions when listing images") do |r|
               @regions = r
             end
+
+            o.on("-i", "--ids", "show image ids in addition to image slugs") do |i|
+              id = true
+            end
+
           end
 
           argv = parse_options(@opts)
@@ -34,12 +40,14 @@ module VagrantPlugins
             images = Array(result["images"])
             if @regions
               images_table = images.map do |image|
-                '%-50s %-30s %-50s' % ["#{image['distribution']} #{image['name']}", image['slug'], image['regions'].join(', ')]
+                identifier = id ? "#{image['slug']} (#{image['id']})" : image['slug']
+                '%-50s %-30s %-50s' % ["#{image['distribution']} #{image['name']}", identifier, image['regions'].join(', ')]
               end
               @env.ui.info I18n.t('vagrant_digital_ocean.info.images_with_regions', images: images_table.sort.join("\r\n"))
             else
               images_table = images.map do |image|
-                '%-50s %-30s' % ["#{image['distribution']} #{image['name']}", image['slug']]
+                identifier = id ? "#{image['slug']} (#{image['id']})" : image['slug']
+                '%-50s %-30s' % ["#{image['distribution']} #{image['name']}", identifier]
               end
               @env.ui.info I18n.t('vagrant_digital_ocean.info.images', images: images_table.sort.join("\r\n"))
             end
