@@ -21,7 +21,7 @@ module VagrantPlugins
           end
 
           argv = parse_options(@opts)
-          @token = argv[1]
+          @token = argv[0].nil? ? ENV['DIGITAL_OCEAN_TOKEN'] : argv[0]
 
           if @token.nil?
             usage
