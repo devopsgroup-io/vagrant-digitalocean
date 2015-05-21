@@ -34,12 +34,12 @@ module VagrantPlugins
             images = Array(result["images"])
             if @regions
               images_table = images.map do |image|
-                '%-50s %-30s %-50s' % ["#{image['distribution']} #{image['name']}", image['slug'], image['regions'].join(', ')]
+                '%-50s %-20s %-20s %-50s' % ["#{image['distribution']} #{image['name']}", image['slug'], image['id'], image['regions'].join(', ')]
               end
               @env.ui.info I18n.t('vagrant_digital_ocean.info.images_with_regions', images: images_table.sort.join("\r\n"))
             else
               images_table = images.map do |image|
-                '%-50s %-30s' % ["#{image['distribution']} #{image['name']}", image['slug']]
+                '%-50s %-30s %-30s' % ["#{image['distribution']} #{image['name']}", image['slug'], image['id']]
               end
               @env.ui.info I18n.t('vagrant_digital_ocean.info.images', images: images_table.sort.join("\r\n"))
             end
