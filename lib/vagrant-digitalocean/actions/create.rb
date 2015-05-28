@@ -53,7 +53,7 @@ module VagrantPlugins
           # wait for ssh to be ready
           switch_user = @machine.provider_config.setup?
           user = @machine.config.ssh.username
-          @machine.config.ssh.username = 'root' if switch_user
+          @machine.config.ssh.username = @machine.provider_config.root_username if switch_user
 
           retryable(:tries => 120, :sleep => 10) do
             next if env[:interrupted]

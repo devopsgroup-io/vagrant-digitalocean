@@ -84,7 +84,7 @@ module VagrantPlugins
         return {
           :host => public_network['ip_address'],
           :port => '22',
-          :username => 'root',
+          :username => @machine.provider_config.root_username,
           :private_key_path => nil
         }
       end
