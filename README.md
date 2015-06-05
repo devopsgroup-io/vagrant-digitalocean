@@ -52,6 +52,8 @@ is shown below:
 
 ```ruby
 Vagrant.configure('2') do |config|
+  config.vm.hostname = 'dropletname.example.com'
+  # Alternatively, use provider.name below to set the Droplet name. config.vm.hostname takes precedence.
 
   config.vm.provider :digital_ocean do |provider, override|
     override.ssh.private_key_path = '~/.ssh/id_rsa'
