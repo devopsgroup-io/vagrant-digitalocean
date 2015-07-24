@@ -60,7 +60,7 @@ module VagrantPlugins
 
             # rsync over to the guest path using the ssh info
             command = [
-              "rsync", "--verbose", "--archive", "-z", "--delete",
+              "rsync", "--verbose", "--archive", "--delete", "-z", "--copy-links",
               excludes.map { |e| "--exclude=#{e}" },
               "-e", "ssh -p #{ssh_info[:port]} -o StrictHostKeyChecking=no -i '#{key}'",
               hostpath,
