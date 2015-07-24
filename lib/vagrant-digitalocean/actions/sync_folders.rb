@@ -54,14 +54,12 @@ module VagrantPlugins
 
             # build exclude rules
             # http://docs.vagrantup.com/v2/synced-folders/rsync.html
-            excludes = ['.vagrant/']
-            excludes += Array(data[:rsync__exclude]).map(&:to_s) if data[:rsync__exclude]
-            excludes.uniq!
+            excludes = ['.vagrant/', *Array(data[:rsync_excludes])]
 
             # rsync over to the guest path using the ssh info
             command = [
               "rsync", "--verbose", "--archive", "--delete", "-z", "--copy-links",
-              excludes.map { |e| "--exclude=#{e}" },
+              *excludes.map{|e|['--exclude', e]}.flatten,
               "-e", "ssh -p #{ssh_info[:port]} -o StrictHostKeyChecking=no -i '#{key}'",
               hostpath,
               "#{ssh_info[:username]}@#{ssh_info[:host]}:#{guestpath}"]
