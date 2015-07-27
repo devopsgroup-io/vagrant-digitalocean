@@ -1,15 +1,8 @@
 Digital Ocean Vagrant Provider
 ==============================
-`vagrant-digitalocean` is a provider plugin for Vagrant that supports the
-management of [Digital Ocean](https://www.digitalocean.com/) droplets
-(instances).
+`vagrant-digitalocean` is a provider plugin for Vagrant that supports the management of [Digital Ocean](https://www.digitalocean.com/) droplets (instances).
 
-**NOTE:** The Chef provisioner is no longer supported by default (as of 0.2.0).
-Please use the `vagrant-omnibus` plugin to install Chef on Vagrant-managed
-machines. This plugin provides control over the specific version of Chef
-to install.
-
-Current features include:
+Features include:
 - create and destroy droplets
 - power on and off droplets
 - rebuild a droplet
@@ -20,35 +13,17 @@ Current features include:
 The provider has been tested with Vagrant 1.1.5+ using Ubuntu 12.04 and
 CentOS 6.3 guest operating systems.
 
+
 Install
 -------
-Installation of the provider requires two steps:
+Install the provider plugin using the Vagrant command-line interface:
 
-1. Install the provider plugin using the Vagrant command-line interface:
+`vagrant plugin install vagrant-digitalocean`
 
-        $ vagrant plugin install vagrant-digitalocean
-
-
-**NOTE:** If you are using a Mac, and this plugin would not work caused by SSL certificate problem,
-You may need to specify certificate path explicitly.  
-You can verify actual certificate path by running:
-
-```bash
-ruby -ropenssl -e "p OpenSSL::X509::DEFAULT_CERT_FILE"
-```
-
-Then, add the following environment variable to your
-`.bash_profile` script and `source` it:
-
-```bash
-export SSL_CERT_FILE=/usr/local/etc/openssl/cert.pem
-```
 
 Configure
 ---------
-Once the provider has been installed, you will need to configure your project
-to use it. The most basic `Vagrantfile` to create a droplet on Digital Ocean
-is shown below:
+Once the provider has been installed, you will need to configure your project to use it. The most basic `Vagrantfile` to create a droplet on Digital Ocean is shown below:
 
 ```ruby
 Vagrant.configure('2') do |config|
@@ -66,26 +41,22 @@ Vagrant.configure('2') do |config|
 end
 ```
 
-Please note the following:
-- You *must* specify the `override.ssh.private_key_path` to enable authentication
-  with the droplet. The provider will create a new Digital Ocean SSH key using
-  your public key which is assumed to be the `private_key_path` with a *.pub*
-  extension.
-- You *must* specify your Digital Ocean Personal Access Token at `provider.token`. This may be
-  found on the control panel within the *Apps &amp; API* section.
+**Configuration Requirements**
+- You *must* specify the `override.ssh.private_key_path` to enable authentication with the droplet. The provider will create a new Digital Ocean SSH key using your public key which is assumed to be the `private_key_path` with a *.pub* extension.
+- You *must* specify your Digital Ocean Personal Access Token at `provider.token`. This may be found on the control panel within the *Apps &amp; API* section.
 
 **Supported Configuration Attributes**
 
 The following attributes are available to further configure the provider:
 - `provider.image`
     * A string representing the image to use when creating a new droplet. It defaults to `ubuntu-14-04-x64`.
-    List available images with the `digitalocean-list images` command. Like when using the DigitalOcean API directly, [it can be an image ID or slug](https://developers.digitalocean.com/documentation/v2/#create-a-new-droplet).
+    List available images with the `digitalocean-list images $DIGITAL_OCEAN_TOKEN` command. Like when using the DigitalOcean API directly, [it can be an image ID or slug](https://developers.digitalocean.com/documentation/v2/#create-a-new-droplet).
 - `provider.ipv6`
     * A boolean flag indicating whether to enable IPv6
 - `provider.region`
-    * A string representing the region to create the new droplet in. It defaults to `nyc2`. List available regions with the `digitalocean-list regions` command.
+    * A string representing the region to create the new droplet in. It defaults to `nyc2`. List available regions with the `digitalocean-list regions $DIGITAL_OCEAN_TOKEN` command.
 - `provider.size`
-    * A string representing the size to use when creating a new droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `digitalocean-list sizes` command.
+    * A string representing the size to use when creating a new droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `digitalocean-list sizes $DIGITAL_OCEAN_TOKEN` command.
 - `provider.private_networking`
     * A boolean flag indicating whether to enable a private network interface (if the region supports private networking). It defaults to `false`.
 - `provider.backups_enabled`
@@ -97,19 +68,8 @@ The following attributes are available to further configure the provider:
 - `config.vm.synced_folder`
     * Supports both rsync__args and rsync__exclude, see the [Vagrant Docs](http://docs.vagrantup.com/v2/synced-folders/rsync.html) for more information. rsync__args default to `["--verbose", "--archive", "--delete", "-z", "--copy-links"]` and rsync__exclude defaults to `[".vagrant/"]`.
 
-The provider will create a new user account with the specified SSH key for
-authorization if `config.ssh.username` is set and the `provider.setup`
-attribute is `true`.
+The provider will create a new user account with the specified SSH key for authorization if `config.ssh.username` is set and the `provider.setup` attribute is `true`.
 
-### image, region and size slugs
-
-Images, regions and sizes have to be specified with the slug name. You can find the slug names with the `digitalocean-list` commands:
-
-```
-vagrant digitalocean-list images $DIGITAL_OCEAN_TOKEN
-vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN
-vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN
-```
 
 Run
 ---
@@ -132,6 +92,20 @@ The provider supports the following Vagrant sub-commands:
 - `vagrant reload` - Reboots the droplet instance.
 - `vagrant rebuild` - Destroys the droplet instance and recreates it with the same IP address which was previously assigned.
 - `vagrant status` - Outputs the status (active, off, not created) for the droplet instance.
+
+
+Troubleshooting
+---------------
+
+* `vagrant plugin install vagrant-digitalocean` 
+    * Installation on OS X may not working due to a SSL certificate problem, and you may need to specify a certificate path explicitly. To do so, run `ruby -ropenssl -e "p OpenSSL::X509::DEFAULT_CERT_FILE"`. Then, add the following environment variable to your `.bash_profile` script and `source` it: `export SSL_CERT_FILE=/usr/local/etc/openssl/cert.pem`.
+
+
+FAQ
+---
+
+* The Chef provisioner is no longer supported by default (as of 0.2.0). Please use the `vagrant-omnibus` plugin to install Chef on Vagrant-managed machines. This plugin provides control over the specific version of Chef to install.
+
 
 Contribute
 ----------
