@@ -1,5 +1,8 @@
 Digital Ocean Vagrant Provider
 ==============================
+
+[![Gem](https://img.shields.io/gem/dt/vagrant-digitalocean.svg)]()
+
 `vagrant-digitalocean` is a provider plugin for Vagrant that supports the management of [Digital Ocean](https://www.digitalocean.com/) droplets (instances).
 
 Features include:
