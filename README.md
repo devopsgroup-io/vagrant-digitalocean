@@ -5,7 +5,7 @@ Digital Ocean Vagrant Provider
 Features include:
 - create and destroy droplets
 - power on and off droplets
-- rebuild a droplet (using the same IP address)
+- rebuild a droplet (destroys and ups with same IP address)
 - provision a droplet with shell
 - setup a SSH public key for authentication
 - create a new user account during droplet creation
