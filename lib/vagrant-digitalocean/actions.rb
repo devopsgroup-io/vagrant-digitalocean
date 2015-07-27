@@ -1,6 +1,7 @@
 require 'vagrant-digitalocean/actions/check_state'
 require 'vagrant-digitalocean/actions/create'
 require 'vagrant-digitalocean/actions/destroy'
+require 'vagrant-digitalocean/actions/shut_down'
 require 'vagrant-digitalocean/actions/power_off'
 require 'vagrant-digitalocean/actions/power_on'
 require 'vagrant-digitalocean/actions/rebuild'
@@ -112,7 +113,11 @@ module VagrantPlugins
           builder.use Call, CheckState do |env, b|
             case env[:machine_state]
             when :active
-              b.use PowerOff
+              if env[:force_halt] 
+                b.use PowerOff
+              else
+                b.use ShutDown
+              end
             when :off
               env[:ui].info I18n.t('vagrant_digital_ocean.info.already_off')
             when :not_created
