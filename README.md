@@ -71,31 +71,31 @@ Please note the following:
   with the droplet. The provider will create a new Digital Ocean SSH key using
   your public key which is assumed to be the `private_key_path` with a *.pub*
   extension.
-- You *must* specify your Digital Ocean Personal Access Token. This may be
+- You *must* specify your Digital Ocean Personal Access Token at `provider.token`. This may be
   found on the control panel within the *Apps &amp; API* section.
 
 **Supported Configuration Attributes**
 
 The following attributes are available to further configure the provider:
-- `provider.image` - A string representing the image to use when creating a new
-   droplet. It defaults to `ubuntu-14-04-x64`. List available images with the
-   `digitalocean-list images` command. Like when using the DigitalOcean API
-   directly, [it can be an image ID or slug](https://developers.digitalocean.com/documentation/v2/#create-a-new-droplet).
-- `provider.ipv6` - A boolean flag indicating whether to enable IPv6
-- `provider.region` - A string representing the region to create the new droplet in. It defaults to `nyc2`. List available regions with the `digitalocean-list regions` command.
-- `provider.size` - A string representing the size to use when creating a
-  new droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `digitalocean-list sizes` command.
-- `provider.private_networking` - A boolean flag indicating whether to enable
-  a private network interface (if the region supports private networking). It
-  defaults to `false`.
-- `provider.backups_enabled` - A boolean flag indicating whether to enable backups for
-   the droplet. It defaults to `false`.
-- `provider.ssh_key_name` - A string representing the name to use when creating
-  a Digital Ocean SSH key for droplet authentication. It defaults to `Vagrant`.
-- `provider.setup` - A boolean flag indicating whether to setup a new user
-  account and modify sudo to disable tty requirement. It defaults to `true`.
-  If you are using a tool like [packer](https://packer.io) to create
-  reusable snapshots with user accounts already provisioned, set to `false`.
+- `provider.image`
+    * A string representing the image to use when creating a new droplet. It defaults to `ubuntu-14-04-x64`.
+    List available images with the `digitalocean-list images` command. Like when using the DigitalOcean API directly, [it can be an image ID or slug](https://developers.digitalocean.com/documentation/v2/#create-a-new-droplet).
+- `provider.ipv6`
+    * A boolean flag indicating whether to enable IPv6
+- `provider.region`
+    * A string representing the region to create the new droplet in. It defaults to `nyc2`. List available regions with the `digitalocean-list regions` command.
+- `provider.size`
+    * A string representing the size to use when creating a new droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `digitalocean-list sizes` command.
+- `provider.private_networking`
+    * A boolean flag indicating whether to enable a private network interface (if the region supports private networking). It defaults to `false`.
+- `provider.backups_enabled`
+    * A boolean flag indicating whether to enable backups for the droplet. It defaults to `false`.
+- `provider.ssh_key_name`
+    * A string representing the name to use when creating a Digital Ocean SSH key for droplet authentication. It defaults to `Vagrant`.
+- `provider.setup`
+    * A boolean flag indicating whether to setup a new user account and modify sudo to disable tty requirement. It defaults to `true`. If you are using a tool like [Packer](https://packer.io) to create reusable snapshots with user accounts already provisioned, set to `false`.
+- `config.vm.synced_folder`
+    * Supports both rsync__args and rsync__exclude, see the [Vagrant Docs](http://docs.vagrantup.com/v2/synced-folders/rsync.html) for more information. rsync__args default to `["--verbose", "--archive", "--delete", "-z", "--copy-links"]` and rsync__exclude defaults to `[".vagrant/"]`.
 
 The provider will create a new user account with the specified SSH key for
 authorization if `config.ssh.username` is set and the `provider.setup`

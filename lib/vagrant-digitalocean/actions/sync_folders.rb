@@ -52,14 +52,16 @@ module VagrantPlugins
             key = ssh_info[:private_key_path]
             key = key[0] if key.is_a?(Array)
 
-            # build exclude rules
+            # attach to vagrant's default rsync opetions
             # http://docs.vagrantup.com/v2/synced-folders/rsync.html
-            excludes = ['.vagrant/', *Array(data[:rsync_excludes])]
+            args = ["--verbose", "--archive", "--delete", "-z", "--copy-links", *Array(data[:rsync__args])]
+            exclude = [".vagrant/", *Array(data[:rsync__exclude])]
 
             # rsync over to the guest path using the ssh info
             command = [
-              "rsync", "--verbose", "--archive", "--delete", "-z", "--copy-links",
-              *excludes.map{|e|['--exclude', e]}.flatten,
+              "rsync",
+              *args.map{|e|[e]}.flatten,
+              *exclude.map{|e|["--exclude", e]}.flatten,
               "-e", "ssh -p #{ssh_info[:port]} -o StrictHostKeyChecking=no -i '#{key}'",
               hostpath,
               "#{ssh_info[:username]}@#{ssh_info[:host]}:#{guestpath}"]
