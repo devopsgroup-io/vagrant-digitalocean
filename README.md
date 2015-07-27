@@ -135,7 +135,7 @@ The provider supports the following Vagrant sub-commands:
 
 Contribute
 ----------
-To contribute, clone the repository, then the following:
+To contribute, fork then clone the repository, and then the following:
 
 **Developing**
 
@@ -148,6 +148,7 @@ To contribute, clone the repository, then the following:
     * `bundle _1.7.9_ exec vagrant digitalocean-list images`
 5. You can then run a test:
     * `bundle _1.7.9_ exec rake test`
+6. Once you are satisfied with your changes, please submit a pull request.
 
 **Releasing**
 
