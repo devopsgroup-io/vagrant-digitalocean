@@ -5,13 +5,12 @@ Digital Ocean Vagrant Provider
 Features include:
 - create and destroy droplets
 - power on and off droplets
-- rebuild a droplet
-- provision a droplet with the shell or Chef provisioners
+- rebuild a droplet (using the same IP address)
+- provision a droplet with shell
 - setup a SSH public key for authentication
 - create a new user account during droplet creation
 
-The provider has been tested with Vagrant 1.1.5+ using Ubuntu 12.04 and
-CentOS 6.3 guest operating systems.
+The provider has been tested with Vagrant 1.1.5+ using Ubuntu 12.04 and CentOS 6.3 guest operating systems.
 
 
 Install
