@@ -140,7 +140,7 @@ To contribute, clone the repository, then the following:
 **Developing**
 
 1. Install [Bundler](http://bundler.io/)
-2. Currenty the Bundler version is locked to 1.7.9, please install this version.
+2. Currently the Bundler version is locked to 1.7.9, please install this version.
     * `sudo gem install bundler -v '1.7.9'`
 3. Then install vagrant-digitalocean dependancies:
     * `bundle _1.7.9_ install`
@@ -151,6 +151,7 @@ To contribute, clone the repository, then the following:
 
 **Releasing**
 To release a new version of vagrant-digitalocean you will need to do the following:
+(only contributors of the GitHub repo and owners of the project at RubyGems will have rights to do this)
 
 1. First, create a tag and push:
     * `git tag -a v0.7.6 -m 'v0.7.6'`
@@ -159,3 +160,6 @@ To release a new version of vagrant-digitalocean you will need to do the followi
 3. You will then need to build and push the new gem to RubyGems:
     * `rake gem:build`
     * `gem push pkg/vagrant-digitalocean-0.7.6.gem`
+4. Then, when John Doe runs the following, they will receive the updated vagrant-digitalocean plugin:
+    * `vagrant plugin update`
+    * `vagrant plugin update vagrant-digitalocean`
