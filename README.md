@@ -150,6 +150,7 @@ To contribute, clone the repository, then the following:
     * `bundle _1.7.9_ exec rake test`
 
 **Releasing**
+
 To release a new version of vagrant-digitalocean you will need to do the following:
 (only contributors of the GitHub repo and owners of the project at RubyGems will have rights to do this)
 
