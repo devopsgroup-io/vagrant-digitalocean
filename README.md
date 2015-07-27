@@ -126,28 +126,36 @@ create a new user account, and run the provisioners you have configured.
 
 The provider supports the following Vagrant sub-commands:
 - `vagrant destroy` - Destroys the droplet instance.
-- `vagrant ssh` - Logs into the droplet instance using the configured user
-  account.
+- `vagrant ssh` - Logs into the droplet instance using the configured user account.
 - `vagrant halt` - Powers off the droplet instance.
-- `vagrant provision` - Runs the configured provisioners and rsyncs any
-  specified `config.vm.synced_folder`.
+- `vagrant provision` - Runs the configured provisioners and rsyncs any specified `config.vm.synced_folder`.
 - `vagrant reload` - Reboots the droplet instance.
-- `vagrant rebuild` - Destroys the droplet instance and recreates it with the
-  same IP address which was previously assigned.
-- `vagrant status` - Outputs the status (active, off, not created) for the
-  droplet instance.
+- `vagrant rebuild` - Destroys the droplet instance and recreates it with the same IP address which was previously assigned.
+- `vagrant status` - Outputs the status (active, off, not created) for the droplet instance.
 
 Contribute
 ----------
-To contribute, clone the repository, and use [Bundler](http://gembundler.com)
-to install dependencies:
+To contribute, clone the repository, then the following:
 
-    $ bundle
+**Developing**
 
-To run the provider's tests:
+1. Install [Bundler](http://bundler.io/)
+2. Currenty the Bundler version is locked to 1.7.9, please install this version.
+    * `sudo gem install bundler -v '1.7.9'`
+3. Then install vagrant-digitalocean dependancies:
+    * `bundle _1.7.9_ install`
+4. Do your development and run a few commands, one to get started would be:
+    * `bundle _1.7.9_ exec vagrant digitalocean-list images`
+5. You can then run a test:
+    * `bundle _1.7.9_ exec rake test`
 
-    $ bundle exec rake test
+**Releasing**
+To release a new version of vagrant-digitalocean you will need to do the following:
 
-You can now make modifications. Running `vagrant` within the Bundler
-environment will ensure that plugins installed in your Vagrant
-environment are not loaded.
+1. First, create a tag and push:
+    * `git tag -a v0.7.6 -m 'v0.7.6'`
+2. Then, create a release on Github with the same versioning convention:
+    * https://github.com/smdahlen/vagrant-digitalocean/releases
+3. You will then need to build and push the new gem to RubyGems:
+    * `rake gem:build`
+    * `gem push pkg/vagrant-digitalocean-0.7.6.gem`
