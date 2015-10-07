@@ -1,11 +1,11 @@
-Digital Ocean Vagrant Provider
+DigitalOcean Vagrant Provider
 ==============================
 
 [![Gem](https://img.shields.io/gem/dt/vagrant-digitalocean.svg)](https://rubygems.org/gems/vagrant-digitalocean)
 [![Gem](https://img.shields.io/gem/dtv/vagrant-digitalocean.svg)](https://rubygems.org/gems/vagrant-digitalocean)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/smdahlen/vagrant-digitalocean.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20awesome%20Vagrant%20plugin%21&url=https%3A%2F%2Fgithub.com%2Fsmdahlen%2Fvagrant-digitalocean&hashtags=vagrant%2Cdigitalocean&original_referer=)
 
-`vagrant-digitalocean` is a provider plugin for Vagrant that supports the management of [Digital Ocean](https://www.digitalocean.com/) droplets (instances).
+`vagrant-digitalocean` is a provider plugin for Vagrant that supports the management of [DigitalOcean](https://www.digitalocean.com/) droplets (instances).
 
 Features include:
 - create and destroy droplets
@@ -27,7 +27,7 @@ Install the provider plugin using the Vagrant command-line interface:
 
 Configure
 ---------
-Once the provider has been installed, you will need to configure your project to use it. The most basic `Vagrantfile` to create a droplet on Digital Ocean is shown below:
+Once the provider has been installed, you will need to configure your project to use it. The most basic `Vagrantfile` to create a droplet on DigitalOcean is shown below:
 
 ```ruby
 Vagrant.configure('2') do |config|
@@ -46,8 +46,8 @@ end
 ```
 
 **Configuration Requirements**
-- You *must* specify the `override.ssh.private_key_path` to enable authentication with the droplet. The provider will create a new Digital Ocean SSH key using your public key which is assumed to be the `private_key_path` with a *.pub* extension.
-- You *must* specify your Digital Ocean Personal Access Token at `provider.token`. This may be found on the control panel within the *Apps &amp; API* section.
+- You *must* specify the `override.ssh.private_key_path` to enable authentication with the droplet. The provider will create a new DigitalOcean SSH key using your public key which is assumed to be the `private_key_path` with a *.pub* extension.
+- You *must* specify your DigitalOcean Personal Access Token at `provider.token`. This may be found on the control panel within the *Apps &amp; API* section.
 
 **Supported Configuration Attributes**
 
@@ -66,7 +66,7 @@ The following attributes are available to further configure the provider:
 - `provider.backups_enabled`
     * A boolean flag indicating whether to enable backups for the droplet. It defaults to `false`.
 - `provider.ssh_key_name`
-    * A string representing the name to use when creating a Digital Ocean SSH key for droplet authentication. It defaults to `Vagrant`.
+    * A string representing the name to use when creating a DigitalOcean SSH key for droplet authentication. It defaults to `Vagrant`.
 - `provider.setup`
     * A boolean flag indicating whether to setup a new user account and modify sudo to disable tty requirement. It defaults to `true`. If you are using a tool like [Packer](https://packer.io) to create reusable snapshots with user accounts already provisioned, set to `false`.
 - `config.vm.synced_folder`

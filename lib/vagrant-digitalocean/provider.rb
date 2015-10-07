@@ -5,7 +5,7 @@ module VagrantPlugins
     class Provider < Vagrant.plugin('2', :provider)
 
       # This class method caches status for all droplets within
-      # the Digital Ocean account. A specific droplet's status
+      # the DigitalOcean account. A specific droplet's status
       # may be refreshed by passing :refresh => true as an option.
       def self.droplet(machine, opts = {})
         client = Helpers::ApiClient.new(machine)

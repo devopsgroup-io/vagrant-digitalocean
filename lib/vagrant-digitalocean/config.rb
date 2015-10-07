@@ -57,7 +57,7 @@ module VagrantPlugins
           })
         end
 
-        { 'Digital Ocean Provider' => errors }
+        { 'DigitalOcean Provider' => errors }
       end
     end
   end

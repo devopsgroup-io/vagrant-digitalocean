@@ -6,7 +6,7 @@ module VagrantPlugins
     module Commands
       class List < Vagrant.plugin('2', :command)
         def self.synopsis
-          "list available images and regions from Digital Ocean"
+          "list available images and regions from DigitalOcean"
         end
 
         def execute
