@@ -134,9 +134,10 @@ To release a new version of vagrant-digitalocean you will need to do the followi
 
 *(only contributors of the GitHub repo and owners of the project at RubyGems will have rights to do this)*
 
-1. First, create a tag and push:
-    * `git tag -a v0.7.6 -m 'v0.7.6'`
-2. Then, create a release on Github with the same versioning convention:
+1. First, bump the version in ~/lib/vagrant-digitalocean/version.rb:
+    * Follow [Semantic Versioning](http://semver.org/).
+2. Then, create a matching GitHub Release (this will also create a tag):
+    * Preface the version number with a `v`.
     * https://github.com/smdahlen/vagrant-digitalocean/releases
 3. You will then need to build and push the new gem to RubyGems:
     * `rake gem:build`
