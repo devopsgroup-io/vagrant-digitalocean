@@ -54,13 +54,13 @@ end
 The following attributes are available to further configure the provider:
 - `provider.image`
     * A string representing the image to use when creating a new droplet. It defaults to `ubuntu-14-04-x64`.
-    List available images with the `digitalocean-list images $DIGITAL_OCEAN_TOKEN` command. Like when using the DigitalOcean API directly, [it can be an image ID or slug](https://developers.digitalocean.com/documentation/v2/#create-a-new-droplet).
+    List available images with the `vagrant digitalocean-list images $DIGITAL_OCEAN_TOKEN` command. Like when using the DigitalOcean API directly, [it can be an image ID or slug](https://developers.digitalocean.com/documentation/v2/#create-a-new-droplet).
 - `provider.ipv6`
     * A boolean flag indicating whether to enable IPv6
 - `provider.region`
-    * A string representing the region to create the new droplet in. It defaults to `nyc2`. List available regions with the `digitalocean-list regions $DIGITAL_OCEAN_TOKEN` command.
+    * A string representing the region to create the new droplet in. It defaults to `nyc2`. List available regions with the `vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN` command.
 - `provider.size`
-    * A string representing the size to use when creating a new droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `digitalocean-list sizes $DIGITAL_OCEAN_TOKEN` command.
+    * A string representing the size to use when creating a new droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN` command.
 - `provider.private_networking`
     * A boolean flag indicating whether to enable a private network interface (if the region supports private networking). It defaults to `false`.
 - `provider.backups_enabled`
