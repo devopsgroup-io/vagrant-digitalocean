@@ -15,15 +15,11 @@ module VagrantPlugins
         end
 
         def call(env)
-          # look up image id
-          image_id = @client
-            .request('/v2/images')
-            .find_id(:images, :slug => @machine.provider_config.image)
 
           # submit rebuild request
           result = @client.post("/v2/droplets/#{@machine.id}/actions", {
             :type => 'rebuild',
-            :image => image_id
+            :image => @machine.provider_config.image
           })
 
           # wait for request to complete
