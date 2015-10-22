@@ -32,6 +32,9 @@ Once the provider has been installed, you will need to configure your project to
 ```ruby
 Vagrant.configure('2') do |config|
 
+  # name for your droplet; visible in DO control panel
+  config.vm.hostname = 'vagrant_droplet'
+
   config.vm.provider :digital_ocean do |provider, override|
     override.ssh.private_key_path = '~/.ssh/id_rsa'
     override.vm.box = 'digital_ocean'
@@ -48,6 +51,7 @@ end
 **Configuration Requirements**
 - You *must* specify the `override.ssh.private_key_path` to enable authentication with the droplet. The provider will create a new DigitalOcean SSH key using your public key which is assumed to be the `private_key_path` with a *.pub* extension.
 - You *must* specify your DigitalOcean Personal Access Token at `provider.token`. This may be found on the control panel within the *Apps &amp; API* section.
+- To specify a name for your droplet, specify the `config.vm.hostname` property as documented in the [Vagrant documentation](https://docs.vagrantup.com/v2/vagrantfile/machine_settings.html); this will be used in your DigitalOcean control panel. Falls back to "*default*".
 
 **Supported Configuration Attributes**
 
