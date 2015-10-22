@@ -31,6 +31,8 @@ Once the provider has been installed, you will need to configure your project to
 
 ```ruby
 Vagrant.configure('2') do |config|
+  config.vm.hostname = 'dropletname.example.com'
+  # Alternatively, use provider.name below to set the Droplet name. config.vm.hostname takes precedence.
 
   config.vm.provider :digital_ocean do |provider, override|
     override.ssh.private_key_path = '~/.ssh/id_rsa'
