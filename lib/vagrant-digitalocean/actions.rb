@@ -9,7 +9,6 @@ require 'vagrant-digitalocean/actions/reload'
 require 'vagrant-digitalocean/actions/setup_user'
 require 'vagrant-digitalocean/actions/setup_sudo'
 require 'vagrant-digitalocean/actions/setup_key'
-require 'vagrant-digitalocean/actions/sync_folders'
 require 'vagrant-digitalocean/actions/modify_provision_path'
 
 module VagrantPlugins
@@ -76,7 +75,7 @@ module VagrantPlugins
             when :active
               b.use Provision
               b.use ModifyProvisionPath
-              b.use SyncFolders
+              b.use SyncedFolders
             when :off
               env[:ui].info I18n.t('vagrant_digital_ocean.info.off')
             when :not_created
