@@ -63,6 +63,7 @@ module VagrantPlugins
                 new_path = path.split("?")[0]
                 next_result = self.request("#{new_path}?#{uri.query}")
                 req_target = new_path.split("/")[-1]
+                req_target = "ssh_keys" if req_target == "keys"
                 body["#{req_target}"].concat(next_result["#{req_target}"])
               end
             rescue JSON::ParserError => e
