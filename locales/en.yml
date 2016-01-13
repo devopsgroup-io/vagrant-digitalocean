@@ -15,6 +15,7 @@ en:
       rebuilding: "Rebuilding the droplet..."
       reloading: "Rebooting the droplet..."
       creating_user: "Creating user account: %{user}..."
+      late_sudo_install_deb8:  "DigitalOcean's debian-8 image lacks sudo. Installing now."
       modifying_sudo: "Modifying sudoers file to remove tty requirement..."
       using_key: "Using existing SSH key: %{name}"
       creating_key: "Creating new SSH key: %{name}..."

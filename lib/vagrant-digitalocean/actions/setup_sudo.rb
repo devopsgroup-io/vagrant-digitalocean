@@ -23,7 +23,7 @@ module VagrantPlugins
           case guest_name
           when /debian/
             if @machine.provider_config.image =~ /^debian-8/
-              @logger.info "DigitalOcean's debian-8 image lacks sudo. Installing now."
+              @logger.info I18n.t('vagrant_digital_ocean.info.late_sudo_install_deb8')
               @machine.communicate.execute(<<-'BASH')
                 if [ ! -x /usr/bin/sudo ] ; then apt-get update -y && apt-get install -y sudo ; fi
               BASH
