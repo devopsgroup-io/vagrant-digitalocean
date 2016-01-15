@@ -130,6 +130,17 @@ To contribute, fork then clone the repository, and then the following:
     * `bundle _1.7.9_ exec rake test`
 6. Once you are satisfied with your changes, please submit a pull request.
 
+**Testing**
+
+1. Build and package your newly developed code:
+    * `rake gem:build`
+2. Then install the packaged plugin:
+    * `vagrant plugin install pkg/vagrant-digitalocean-*.gem`
+3. Once you're done testing, roll-back to the latest released version:
+    * `vagrant plugin uninstall vagrant-digitalocean`
+    * `vagrant plugin install vagrant-digitalocean`
+4. Once you're satisfied developing and testing your new code, please submit a pull request for review.
+
 **Releasing**
 
 To release a new version of vagrant-digitalocean you will need to do the following:
