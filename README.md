@@ -16,8 +16,6 @@ Features include:
 - setup a SSH public key for authentication
 - create a new user account during droplet creation
 
-The provider has been tested with Vagrant 1.1.5+ using Ubuntu 12.04 and CentOS 6.3 guest operating systems.
-
 
 Install
 -------
@@ -100,9 +98,21 @@ The provider supports the following Vagrant sub-commands:
 - `vagrant rebuild` - Destroys the droplet instance and recreates it with the same IP address which was previously assigned.
 - `vagrant status` - Outputs the status (active, off, not created) for the droplet instance.
 
+Compatability
+-------------
+This [DigitalOcean API](https://developers.digitalocean.com/documentation/changelog/) provider plugin for Vagrant has been tested with the following technology.
+
+Date Tested | Vagrant Version | vagrant-digitalocean Version | Host (Workstation) Operating System | Guest (DigitalOcean) Operating System
+------------|-----------------|------------------------------|-----------------------|--------------------------------------
+03/22/2016  | 1.8.1           | 0.7.10                       | OS X 10.11.4          | CentOS 7.0
+04/03/2013  | 1.1.5           | 0.1.0                        | Ubuntu 12.04          | CentOS 6.3
+
 
 Troubleshooting
 ---------------
+Before submitting a GitHub issue, please ensure both Vagrant and vagrant-digitalocean are fully up-to-date.
+* For the latest Vagrant version, please visit the [Vagrant](https://www.vagrantup.com/) website
+* To update Vagrant plugins, run the following command: `vagrant plugin update`
 
 * `vagrant plugin install vagrant-digitalocean` 
     * Installation on OS X may not working due to a SSL certificate problem, and you may need to specify a certificate path explicitly. To do so, run `ruby -ropenssl -e "p OpenSSL::X509::DEFAULT_CERT_FILE"`. Then, add the following environment variable to your `.bash_profile` script and `source` it: `export SSL_CERT_FILE=/usr/local/etc/openssl/cert.pem`.
