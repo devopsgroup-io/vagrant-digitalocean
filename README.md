@@ -6,7 +6,7 @@ DigitalOcean Vagrant Provider
 [![Gem](https://img.shields.io/gem/dtv/vagrant-digitalocean.svg)](https://rubygems.org/gems/vagrant-digitalocean)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/smdahlen/vagrant-digitalocean.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20awesome%20Vagrant%20plugin%21&url=https%3A%2F%2Fgithub.com%2Fsmdahlen%2Fvagrant-digitalocean&hashtags=vagrant%2Cdigitalocean&original_referer=)
 
-`vagrant-digitalocean` is a provider plugin for Vagrant that supports the management of [DigitalOcean](https://www.digitalocean.com/) droplets (instances).
+`vagrant-digitalocean` is a Vagrant provider plugin that supports the management of [DigitalOcean](https://www.digitalocean.com/) droplets (instances).
 
 Features include:
 - create and destroy droplets
