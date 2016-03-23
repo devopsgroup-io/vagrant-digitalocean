@@ -4,7 +4,7 @@ DigitalOcean Vagrant Provider
 [![Gem](https://img.shields.io/gem/v/vagrant-digitalocean.svg)](https://rubygems.org/gems/vagrant-digitalocean)
 [![Gem](https://img.shields.io/gem/dt/vagrant-digitalocean.svg)](https://rubygems.org/gems/vagrant-digitalocean)
 [![Gem](https://img.shields.io/gem/dtv/vagrant-digitalocean.svg)](https://rubygems.org/gems/vagrant-digitalocean)
-[![Twitter](https://img.shields.io/twitter/url/https/github.com/smdahlen/vagrant-digitalocean.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20awesome%20Vagrant%20plugin%21&url=https%3A%2F%2Fgithub.com%2Fsmdahlen%2Fvagrant-digitalocean&hashtags=vagrant%2Cdigitalocean&original_referer=)
+[![Twitter](https://img.shields.io/twitter/url/https/github.com/devopsgroup-io/vagrant-digitalocean.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20awesome%20Vagrant%20plugin%21&url=https%3A%2F%2Fgithub.com%2Fdevopsgroup-io%2Fvagrant-digitalocean&hashtags=vagrant%2Cdigitalocean&original_referer=)
 
 `vagrant-digitalocean` is a Vagrant provider plugin that supports the management of [DigitalOcean](https://www.digitalocean.com/) droplets (instances).
 
@@ -36,7 +36,7 @@ Vagrant.configure('2') do |config|
   config.vm.provider :digital_ocean do |provider, override|
     override.ssh.private_key_path = '~/.ssh/id_rsa'
     override.vm.box = 'digital_ocean'
-    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+    override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
 
     provider.token = 'YOUR TOKEN'
     provider.image = 'ubuntu-14-04-x64'
@@ -162,7 +162,7 @@ To release a new version of vagrant-digitalocean you will need to do the followi
     * Follow [Semantic Versioning](http://semver.org/).
 2. Then, create a matching GitHub Release (this will also create a tag):
     * Preface the version number with a `v`.
-    * https://github.com/smdahlen/vagrant-digitalocean/releases
+    * https://github.com/devopsgroup-io/vagrant-digitalocean/releases
 3. You will then need to build and push the new gem to RubyGems:
     * `rake gem:build`
     * `gem push pkg/vagrant-digitalocean-0.7.6.gem`
