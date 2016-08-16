@@ -12,7 +12,7 @@ module VagrantPlugins
         Config
       end
 
-      provider(:digital_ocean, parallel: true) do
+      provider(:digital_ocean, parallel: true, defaultable: false) do
         require_relative 'provider'
         Provider
       end
