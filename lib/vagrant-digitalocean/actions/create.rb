@@ -22,7 +22,7 @@ module VagrantPlugins
             :size => @machine.provider_config.size,
             :region => @machine.provider_config.region,
             :image => @machine.provider_config.image,
-            :name => @machine.config.vm.hostname || @machine.provider_config.name || @machine.name,
+            :name => @machine.provider_config.name || @machine.config.vm.hostname || @machine.name,
             :ssh_keys => ssh_key_id,
             :private_networking => @machine.provider_config.private_networking,
             :backups => @machine.provider_config.backups_enabled,

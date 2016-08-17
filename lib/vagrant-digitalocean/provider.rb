@@ -30,7 +30,7 @@ module VagrantPlugins
         # and set the id to ensure vagrant stores locally
         # TODO allow the user to configure this behavior
         if !droplet
-          name = machine.config.vm.hostname || machine.provider_config.name || machine.name
+          name = machine.provider_config.name || machine.config.vm.hostname || machine.name
           droplet = @droplets.find { |d| d['name'] == name.to_s }
           machine.id = droplet['id'].to_s if droplet
         end
