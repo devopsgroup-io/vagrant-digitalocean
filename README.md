@@ -6,15 +6,15 @@ DigitalOcean Vagrant Provider
 [![Gem](https://img.shields.io/gem/dtv/vagrant-digitalocean.svg)](https://rubygems.org/gems/vagrant-digitalocean)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/devopsgroup-io/vagrant-digitalocean.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20awesome%20Vagrant%20plugin%21&url=https%3A%2F%2Fgithub.com%2Fdevopsgroup-io%2Fvagrant-digitalocean&hashtags=vagrant%2Cdigitalocean&original_referer=)
 
-`vagrant-digitalocean` is a Vagrant provider plugin that supports the management of [DigitalOcean](https://www.digitalocean.com/) droplets (instances).
+`vagrant-digitalocean` is a Vagrant provider plugin that supports the management of [DigitalOcean](https://www.digitalocean.com/) Droplets (instances).
 
 Features include:
-- create and destroy droplets
-- power on and off droplets
-- rebuild a droplet (destroys and ups with same IP address)
-- provision a droplet with shell
-- setup a SSH public key for authentication
-- create a new user account during droplet creation
+- Create and destroy Droplets
+- Power on and off Droplets
+- Rebuild a Droplet (destroys and ups with same IP address)
+- Provision a Droplet with shell
+- Setup a SSH public key for authentication
+- Create a new user account during Droplet creation
 
 
 Install
@@ -26,48 +26,60 @@ Install the provider plugin using the Vagrant command-line interface:
 
 Configure
 ---------
-Once the provider has been installed, you will need to configure your project to use it. The most basic `Vagrantfile` to create a droplet on DigitalOcean is shown below:
+Once the provider has been installed, you will need to configure your project to use it. See the following example for a basic multi-machine `Vagrantfile` implementation that manages two DigitalOcean Droplets:
 
 ```ruby
 Vagrant.configure('2') do |config|
-  config.vm.hostname = 'dropletname.example.com'
-  # Alternatively, use provider.name below to set the Droplet name. config.vm.hostname takes precedence.
 
-  config.vm.provider :digital_ocean do |provider, override|
-    override.ssh.private_key_path = '~/.ssh/id_rsa'
-    override.vm.box = 'digital_ocean'
-    override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
-
-    provider.token = 'YOUR TOKEN'
-    provider.image = 'ubuntu-14-04-x64'
-    provider.region = 'nyc2'
-    provider.size = '512mb'
+  config.vm.define "droplet1" do |config|
+      config.vm.provider :digital_ocean do |provider, override|
+        override.ssh.private_key_path = '~/.ssh/id_rsa'
+        override.vm.box = 'digital_ocean'
+        override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+        provider.token = 'YOUR TOKEN'
+        provider.image = 'ubuntu-14-04-x64'
+        provider.region = 'nyc1'
+        provider.size = '512mb'
+      end
   end
+  
+  config.vm.define "droplet2" do |config|
+      config.vm.provider :digital_ocean do |provider, override|
+        override.ssh.private_key_path = '~/.ssh/id_rsa'
+        override.vm.box = 'digital_ocean'
+        override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+        provider.token = 'YOUR TOKEN'
+        provider.image = 'ubuntu-14-04-x64'
+        provider.region = 'nyc3'
+        provider.size = '1gb'
+      end
+  end
+  
 end
 ```
 
 **Configuration Requirements**
-- You *must* specify the `override.ssh.private_key_path` to enable authentication with the droplet. The provider will create a new DigitalOcean SSH key using your public key which is assumed to be the `private_key_path` with a *.pub* extension.
+- You *must* specify the `override.ssh.private_key_path` to enable authentication with the Droplet. The provider will create a new DigitalOcean SSH key using your public key which is assumed to be the `private_key_path` with a *.pub* extension.
 - You *must* specify your DigitalOcean Personal Access Token at `provider.token`. This may be found on the control panel within the *Apps &amp; API* section.
 
 **Supported Configuration Attributes**
 
 The following attributes are available to further configure the provider:
 - `provider.image`
-    * A string representing the image to use when creating a new droplet. It defaults to `ubuntu-14-04-x64`.
+    * A string representing the image to use when creating a new Droplet. It defaults to `ubuntu-14-04-x64`.
     List available images with the `vagrant digitalocean-list images $DIGITAL_OCEAN_TOKEN` command. Like when using the DigitalOcean API directly, [it can be an image ID or slug](https://developers.digitalocean.com/documentation/v2/#create-a-new-droplet).
 - `provider.ipv6`
     * A boolean flag indicating whether to enable IPv6
 - `provider.region`
-    * A string representing the region to create the new droplet in. It defaults to `nyc2`. List available regions with the `vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN` command.
+    * A string representing the region to create the new Droplet in. It defaults to `nyc2`. List available regions with the `vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN` command.
 - `provider.size`
-    * A string representing the size to use when creating a new droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN` command.
+    * A string representing the size to use when creating a new Droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN` command.
 - `provider.private_networking`
     * A boolean flag indicating whether to enable a private network interface (if the region supports private networking). It defaults to `false`.
 - `provider.backups_enabled`
-    * A boolean flag indicating whether to enable backups for the droplet. It defaults to `false`.
+    * A boolean flag indicating whether to enable backups for the Droplet. It defaults to `false`.
 - `provider.ssh_key_name`
-    * A string representing the name to use when creating a DigitalOcean SSH key for droplet authentication. It defaults to `Vagrant`.
+    * A string representing the name to use when creating a DigitalOcean SSH key for Droplet authentication. It defaults to `Vagrant`.
 - `provider.setup`
     * A boolean flag indicating whether to setup a new user account and modify sudo to disable tty requirement. It defaults to `true`. If you are using a tool like [Packer](https://packer.io) to create reusable snapshots with user accounts already provisioned, set to `false`.
 - `config.vm.synced_folder`
@@ -79,24 +91,24 @@ The provider will create a new user account with the specified SSH key for autho
 Run
 ---
 After creating your project's `Vagrantfile` with the required configuration
-attributes described above, you may create a new droplet with the following
+attributes described above, you may create a new Droplet with the following
 command:
 
     $ vagrant up --provider=digital_ocean
 
-This command will create a new droplet, setup your SSH key for authentication,
+This command will create a new Droplet, setup your SSH key for authentication,
 create a new user account, and run the provisioners you have configured.
 
 **Supported Commands**
 
 The provider supports the following Vagrant sub-commands:
-- `vagrant destroy` - Destroys the droplet instance.
-- `vagrant ssh` - Logs into the droplet instance using the configured user account.
-- `vagrant halt` - Powers off the droplet instance.
+- `vagrant destroy` - Destroys the Droplet instance.
+- `vagrant ssh` - Logs into the Droplet instance using the configured user account.
+- `vagrant halt` - Powers off the Droplet instance.
 - `vagrant provision` - Runs the configured provisioners and rsyncs any specified `config.vm.synced_folder`.
-- `vagrant reload` - Reboots the droplet instance.
-- `vagrant rebuild` - Destroys the droplet instance and recreates it with the same IP address which was previously assigned.
-- `vagrant status` - Outputs the status (active, off, not created) for the droplet instance.
+- `vagrant reload` - Reboots the Droplet instance.
+- `vagrant rebuild` - Destroys the Droplet instance and recreates it with the same IP address which was previously assigned.
+- `vagrant status` - Outputs the status (active, off, not created) for the Droplet instance.
 
 Compatability
 -------------
