@@ -110,7 +110,7 @@ The provider supports the following Vagrant sub-commands:
 - `vagrant rebuild` - Destroys the Droplet instance and recreates it with the same IP address which was previously assigned.
 - `vagrant status` - Outputs the status (active, off, not created) for the Droplet instance.
 
-Compatability
+Compatibility
 -------------
 This [DigitalOcean API](https://developers.digitalocean.com/documentation/changelog/) provider plugin for Vagrant has been tested with the following technology.
 
@@ -145,7 +145,7 @@ To contribute, fork then clone the repository, and then the following:
 1. Install [Bundler](http://bundler.io/)
 2. Currently the Bundler version is locked to 1.7.9, please install this version.
     * `sudo gem install bundler -v '1.7.9'`
-3. Then install vagrant-digitalocean dependancies:
+3. Then install vagrant-digitalocean dependencies:
     * `bundle _1.7.9_ install`
 4. Do your development and run a few commands, one to get started would be:
     * `bundle _1.7.9_ exec vagrant digitalocean-list images`
