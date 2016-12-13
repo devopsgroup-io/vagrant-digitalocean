@@ -12,6 +12,7 @@ module VagrantPlugins
       attr_accessor :ssh_key_name
       attr_accessor :setup
       attr_accessor :user_data
+      attr_accessor :name
 
       alias_method :setup?, :setup
 
@@ -27,6 +28,7 @@ module VagrantPlugins
         @ssh_key_name       = UNSET_VALUE
         @setup              = UNSET_VALUE
         @user_data          = UNSET_VALUE
+        @name               = UNSET_VALUE
       end
 
       def finalize!
@@ -41,6 +43,7 @@ module VagrantPlugins
         @ssh_key_name       = 'Vagrant' if @ssh_key_name == UNSET_VALUE
         @setup              = true if @setup == UNSET_VALUE
         @user_data          = nil if @user_data == UNSET_VALUE
+        @name               = nil if @name == UNSET_VALUE
       end
 
       def validate(machine)
