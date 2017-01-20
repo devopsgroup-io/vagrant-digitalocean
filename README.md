@@ -42,7 +42,7 @@ Vagrant.configure('2') do |config|
         provider.size = '512mb'
       end
   end
-  
+
   config.vm.define "droplet2" do |config|
       config.vm.provider :digital_ocean do |provider, override|
         override.ssh.private_key_path = '~/.ssh/id_rsa'
@@ -54,7 +54,7 @@ Vagrant.configure('2') do |config|
         provider.size = '1gb'
       end
   end
-  
+
 end
 ```
 
@@ -82,6 +82,10 @@ The following attributes are available to further configure the provider:
     * A string representing the name to use when creating a DigitalOcean SSH key for Droplet authentication. It defaults to `Vagrant`.
 - `provider.setup`
     * A boolean flag indicating whether to setup a new user account and modify sudo to disable tty requirement. It defaults to `true`. If you are using a tool like [Packer](https://packer.io) to create reusable snapshots with user accounts already provisioned, set to `false`.
+- `provider.monitoring`
+    * A boolean indicating whether to install the DigitalOcean agent for monitoring. It defaults to `false`.
+- `provider.tags`
+    * A flat array of tag names as strings to apply to the Droplet after it is created. Tag names can either be existing or new tags.
 - `config.vm.synced_folder`
     * Supports both rsync__args and rsync__exclude, see the [Vagrant Docs](http://docs.vagrantup.com/v2/synced-folders/rsync.html) for more information. rsync__args default to `["--verbose", "--archive", "--delete", "-z", "--copy-links"]` and rsync__exclude defaults to `[".vagrant/"]`.
 
@@ -126,7 +130,7 @@ Before submitting a GitHub issue, please ensure both Vagrant and vagrant-digital
 * For the latest Vagrant version, please visit the [Vagrant](https://www.vagrantup.com/) website
 * To update Vagrant plugins, run the following command: `vagrant plugin update`
 
-* `vagrant plugin install vagrant-digitalocean` 
+* `vagrant plugin install vagrant-digitalocean`
     * Installation on OS X may not working due to a SSL certificate problem, and you may need to specify a certificate path explicitly. To do so, run `ruby -ropenssl -e "p OpenSSL::X509::DEFAULT_CERT_FILE"`. Then, add the following environment variable to your `.bash_profile` script and `source` it: `export SSL_CERT_FILE=/usr/local/etc/openssl/cert.pem`.
 
 
