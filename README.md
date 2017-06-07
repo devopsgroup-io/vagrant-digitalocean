@@ -86,6 +86,8 @@ The following attributes are available to further configure the provider:
     * A boolean indicating whether to install the DigitalOcean agent for monitoring. It defaults to `false`.
 - `provider.tags`
     * A flat array of tag names as strings to apply to the Droplet after it is created. Tag names can either be existing or new tags.
+- `provider.volumes`
+    * A flat array including the unique identifier for each Block Storage volume attached to the Droplet.
 - `config.vm.synced_folder`
     * Supports both rsync__args and rsync__exclude, see the [Vagrant Docs](http://docs.vagrantup.com/v2/synced-folders/rsync.html) for more information. rsync__args default to `["--verbose", "--archive", "--delete", "-z", "--copy-links"]` and rsync__exclude defaults to `[".vagrant/"]`.
 
