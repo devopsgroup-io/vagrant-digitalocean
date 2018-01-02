@@ -27,7 +27,10 @@ module VagrantPlugins
             :private_networking => @machine.provider_config.private_networking,
             :backups => @machine.provider_config.backups_enabled,
             :ipv6 => @machine.provider_config.ipv6,
-            :user_data => @machine.provider_config.user_data
+            :user_data => @machine.provider_config.user_data,
+            :monitoring => @machine.provider_config.monitoring,
+            :tags => @machine.provider_config.tags,
+            :volumes => @machine.provider_config.volumes
           }.delete_if { |k, v| v.nil? })
 
           # wait for request to complete
