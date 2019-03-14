@@ -74,6 +74,8 @@ The following attributes are available to further configure the provider:
     * A boolean flag indicating whether to enable IPv6
 - `provider.region`
     * A string representing the region to create the new Droplet in. It defaults to `nyc2`. List available regions with the `vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN` command.
+- `provider.floating_ip`
+    * Automatically assigns a DigitalOcean [Floating IP](https://www.digitalocean.com/docs/networking/floating-ips/) to a Droplet after it is created.
 - `provider.size`
     * A string representing the size to use when creating a new Droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN` command.
 - `provider.private_networking`

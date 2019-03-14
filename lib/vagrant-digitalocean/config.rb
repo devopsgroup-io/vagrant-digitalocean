@@ -15,6 +15,7 @@ module VagrantPlugins
       attr_accessor :monitoring
       attr_accessor :tags
       attr_accessor :volumes
+      attr_accessor :floating_ip
 
       alias_method :setup?, :setup
 
@@ -33,6 +34,7 @@ module VagrantPlugins
         @monitoring         = UNSET_VALUE
         @tags               = UNSET_VALUE
         @volumes            = UNSET_VALUE
+        @floating_ip        = UNSET_VALUE
       end
 
       def finalize!
@@ -50,6 +52,7 @@ module VagrantPlugins
         @monitoring         = false if @monitoring == UNSET_VALUE
         @tags               = nil if @tags == UNSET_VALUE
         @volumes            = nil if @volumes == UNSET_VALUE
+        @floating_ip        = nil if @floating_ip == UNSET_VALUE
       end
 
       def validate(machine)
