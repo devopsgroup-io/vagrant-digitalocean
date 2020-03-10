@@ -31,17 +31,19 @@ module VagrantPlugins
         end
 
         def post(path, params = {}, method = :post)
-          @client.headers['Content-Type'] = 'application/json'
-          request(path, params, :post)
+          request(path, {}, :post) do |req|
+            req.body = params.to_json
+            req.headers['Content-Type'] = 'application/json'
+          end
         end
 
         def request(path, params = {}, method = :get)
           begin
             @logger.info "Request: #{path}"
             result = @client.send(method) do |req|
-              req.url path
-              req.body = params.to_json
+              req.url path, params
               req.headers['Authorization'] = "Bearer #{@config.token}"
+              yield req if block_given?
             end
           rescue Faraday::Error::ConnectionFailed => e
             # TODO this is suspect but because farady wraps the exception
