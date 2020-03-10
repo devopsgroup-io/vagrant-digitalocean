@@ -39,7 +39,8 @@ module VagrantPlugins
           begin
             @logger.info "Request: #{path}"
             result = @client.send(method) do |req|
-              req.url path, params
+              req.url path
+              req.body = params.to_json
               req.headers['Authorization'] = "Bearer #{@config.token}"
             end
           rescue Faraday::Error::ConnectionFailed => e
