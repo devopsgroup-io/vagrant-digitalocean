@@ -26,7 +26,7 @@ Install the provider plugin using the Vagrant command-line interface:
 
 Configure
 ---------
-Once the provider has been installed, you will need to configure your project to use it. See the following example for a basic multi-machine `Vagrantfile` implementation that manages two DigitalOcean Droplets:
+Once the provider has been installed, you will need to configure your project to use it. See the following example for a basic multi-machine `Vagrantfile` implementation that manages two DigitalOcean Droplets running Ubuntu 18.04 using a single CPU Droplet with 1GB of memory:
 
 ```ruby
 Vagrant.configure('2') do |config|
@@ -37,23 +37,34 @@ Vagrant.configure('2') do |config|
         override.vm.box = 'digital_ocean'
         override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
         override.nfs.functional = false
+        override.vm.allowed_synced_folder_types = :rsync
         provider.token = 'YOUR TOKEN'
-        provider.image = 'ubuntu-14-04-x64'
+        provider.image = 'ubuntu-18-04-x64'
         provider.region = 'nyc1'
-        provider.size = '512mb'
+        provider.size = 's-1vcpu-1gb'
+        provider.backups_enabled = false
+        provider.private_networking = false
+        provider.ipv6 = false
+        provider.monitoring = false
       end
   end
 
   config.vm.define "droplet2" do |config|
+
       config.vm.provider :digital_ocean do |provider, override|
         override.ssh.private_key_path = '~/.ssh/id_rsa'
         override.vm.box = 'digital_ocean'
         override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
         override.nfs.functional = false
+        override.vm.allowed_synced_folder_types = :rsync
         provider.token = 'YOUR TOKEN'
-        provider.image = 'ubuntu-14-04-x64'
+        provider.image = 'ubuntu-18-04-x64'
         provider.region = 'nyc3'
-        provider.size = '1gb'
+        provider.size = 's-1vcpu-1gb'
+        provider.backups_enabled = false
+        provider.private_networking = false
+        provider.ipv6 = false
+        provider.monitoring = false
       end
   end
 
@@ -68,14 +79,14 @@ end
 
 The following attributes are available to further configure the provider:
 - `provider.image`
-    * A string representing the image to use when creating a new Droplet. It defaults to `ubuntu-14-04-x64`.
+    * A string representing the image to use when creating a new Droplet. It defaults to `ubuntu-18-04-x64`.
     List available images with the `vagrant digitalocean-list images $DIGITAL_OCEAN_TOKEN` command. Like when using the DigitalOcean API directly, [it can be an image ID or slug](https://developers.digitalocean.com/documentation/v2/#create-a-new-droplet).
 - `provider.ipv6`
     * A boolean flag indicating whether to enable IPv6
 - `provider.region`
     * A string representing the region to create the new Droplet in. It defaults to `nyc2`. List available regions with the `vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN` command.
 - `provider.size`
-    * A string representing the size to use when creating a new Droplet (e.g. `1gb`). It defaults to `512mb`. List available sizes with the `vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN` command.
+    * A string representing the size to use when creating a new Droplet (e.g. `s-1vcpu-1gb`). It defaults to `s-1vcpu-1gb`. List available sizes with the `vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN` command.
 - `provider.private_networking`
     * A boolean flag indicating whether to enable a private network interface (if the region supports private networking). It defaults to `false`.
 - `provider.backups_enabled`
@@ -124,6 +135,7 @@ This [DigitalOcean API](https://developers.digitalocean.com/documentation/change
 
 Date Tested | Vagrant Version | vagrant-digitalocean Version | Host (Workstation) Operating System | Guest (DigitalOcean) Operating System
 ------------|-----------------|------------------------------|-----------------------|--------------------------------------
+03/12/2020  | 2.2.7           | 0.9.4                        | OS X 10.14.6          | Ubuntu 18.04, Debian 10, Debian 9, Debian 8, CentOS 7
 03/22/2016  | 1.8.1           | 0.7.10                       | OS X 10.11.4          | CentOS 7.0
 04/03/2013  | 1.1.5           | 0.1.0                        | Ubuntu 12.04          | CentOS 6.3
 
