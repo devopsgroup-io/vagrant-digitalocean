@@ -1,6 +1,3 @@
-Vagrant.require_plugin('vagrant-digitalocean')
-Vagrant.require_plugin('vagrant-omnibus')
-
 Vagrant.configure('2') do |config|
   config.omnibus.chef_version = :latest
 
