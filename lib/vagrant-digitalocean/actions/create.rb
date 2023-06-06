@@ -44,13 +44,9 @@ module VagrantPlugins
           droplet = Provider.droplet(@machine, :refresh => true)
           public_network = droplet['networks']['v4'].find { |network| network['type'] == 'public' }
           private_network = droplet['networks']['v4'].find { |network| network['type'] == 'private' }
-          env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_ip', {
-            :ip => public_network['ip_address']
-          })
+          env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_ip', :ip => public_network['ip_address'])
           if private_network
-            env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_private_ip', {
-              :ip => private_network['ip_address']
-            })
+            env[:ui].info I18n.t('vagrant_digital_ocean.info.droplet_private_ip', :ip => private_network['ip_address'])
           end
 
           # wait for ssh to be ready

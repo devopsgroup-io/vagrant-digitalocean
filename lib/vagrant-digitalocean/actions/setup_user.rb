@@ -19,9 +19,7 @@ module VagrantPlugins
           user = @machine.config.ssh.username
           @machine.config.ssh.username = 'root'
 
-          env[:ui].info I18n.t('vagrant_digital_ocean.info.creating_user', {
-            :user => user
-          })
+          env[:ui].info I18n.t('vagrant_digital_ocean.info.creating_user', :user => user)
 
           # create user account
           @machine.communicate.execute(<<-BASH)
