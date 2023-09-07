@@ -162,16 +162,10 @@ To contribute, fork then clone the repository, and then the following:
 
 **Developing**
 
-1. Install [Bundler](http://bundler.io/)
-2. Currently the Bundler version is locked to 1.7.9, please install this version.
-    * `sudo gem install bundler -v '1.7.9'`
-3. Then install vagrant-digitalocean dependencies:
-    * `bundle _1.7.9_ install`
-4. Do your development and run a few commands, one to get started would be:
-    * `bundle _1.7.9_ exec vagrant digitalocean-list images`
-5. You can then run a test:
-    * `bundle _1.7.9_ exec rake test`
-6. Once you are satisfied with your changes, please submit a pull request.
+1. Install [RVM](https://rvm.io/rvm/install)
+2. If using MacOS, follow these [OpenSSL instructions](https://github.com/rvm/rvm/issues/5252#issuecomment-1298835941)
+3. Use Ruby v3.0.0 `rvm use 3.0.0`
+4. Run `bundle install`
 
 **Testing**
 
