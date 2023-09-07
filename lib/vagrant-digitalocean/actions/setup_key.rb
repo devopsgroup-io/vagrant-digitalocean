@@ -23,9 +23,7 @@ module VagrantPlugins
               .request('/v2/account/keys')
               .find_id(:ssh_keys, :name => ssh_key_name)
 
-            env[:ui].info I18n.t('vagrant_digital_ocean.info.using_key', {
-              :name => ssh_key_name
-            })
+            env[:ui].info I18n.t('vagrant_digital_ocean.info.using_key', :name => ssh_key_name)
           rescue Errors::ResultMatchError
             env[:ssh_key_id] = create_ssh_key(ssh_key_name, env)
           end
@@ -42,9 +40,7 @@ module VagrantPlugins
           path = File.expand_path(path, @machine.env.root_path)
           pub_key = DigitalOcean.public_key(path)
 
-          env[:ui].info I18n.t('vagrant_digital_ocean.info.creating_key', {
-            :name => name
-          }) 
+          env[:ui].info I18n.t('vagrant_digital_ocean.info.creating_key', :name => name)
 
           result = @client.post('/v2/account/keys', {
             :name => name,
