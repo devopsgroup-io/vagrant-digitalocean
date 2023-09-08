@@ -40,6 +40,14 @@ module VagrantPlugins
           # assign the machine id for reference in other commands
           @machine.id = result['droplet']['id'].to_s
 
+          # assign a specific floating IP to this droplet
+          if @machine.provider_config.floating_ip
+            result = @client.post("/v2/floating_ips/#{@machine.provider_config.floating_ip}/actions", {
+              :type => 'assign',
+              :droplet_id => @machine.id,
+            })
+          end
+
           # refresh droplet state with provider and output ip address
           droplet = Provider.droplet(@machine, :refresh => true)
           public_network = droplet['networks']['v4'].find { |network| network['type'] == 'public' }
